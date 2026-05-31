@@ -12,7 +12,8 @@
   "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.10.0",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
   },
   "allowScripts": {
     "better-sqlite3@12.10.0": true
