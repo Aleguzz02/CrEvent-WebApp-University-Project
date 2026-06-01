@@ -1,0 +1,7 @@
+{
+  "name": "progettoPMW",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
