@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonInput, IonList, IonButton
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonInput, IonList, IonButton, 
+  IonModal, IonButtons
  } from '@ionic/angular/standalone';
 
 @Component({
@@ -9,7 +10,8 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonInput, IonList
   templateUrl: './pag1.page.html',
   styleUrls: ['./pag1.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonItem, IonInput, IonList, IonButton]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonItem, IonInput,
+     IonList, IonButton, IonModal, IonButtons]
 })
 export class Pag1Page implements OnInit {
 
