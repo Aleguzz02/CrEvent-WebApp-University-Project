@@ -4,10 +4,12 @@ const bcrypt = require("bcrypt");
 const db = new sql.Database("./db/database.sqlite", (err) => {
     if(err) console.error(err.message);
     else console.log("Connected to SQLite DB of CrEvent");
-});
+}); //connessione con il db usando una funzione di callback per gestire eventuali errori
 
 db.run("PRAGMA foreign_keys = ON");
+//abilitazione delle chiavi esterne
 
+//serializzazione delle operazioni per farle eseguire in ordine e mantenere l'integrità della base di dati
 db.serialize(() => {
 
     db.run(`
@@ -21,7 +23,7 @@ db.serialize(() => {
         coordX REAL,
         coordY REAL,
         linkSito TEXT,
-        costo INTEGER NOT NULL
+        costo INTEGER NOT NULL 
         )
         `);
 
