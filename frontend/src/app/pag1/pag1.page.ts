@@ -31,13 +31,7 @@ export class Pag1Page implements OnInit {
   }
 
   confirm() {
-    this.modal.dismiss(this.name, 'confirm');
-  }
-
-  onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
-    if (event.detail.role === 'confirm') {
-      this.message = `Hello, ${event.detail.data}!`;
-    }
+    this.modal.dismiss(null, 'confirm');
   }
 
 }
