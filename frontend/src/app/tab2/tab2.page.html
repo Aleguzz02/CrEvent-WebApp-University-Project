@@ -13,5 +13,17 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  @if(sezione !== 'iniziale'){
+  <ion-toolbar mode="ios" class="toolbar-sottile">
+    <ion-segment [value]="sezione" (ionChange)="selezionaSezione($any($event).detail.value)">
+      <ion-segment-button value="location">
+        <ion-label>Location</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="staff">
+        <ion-label>Staff</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  }
+
 </ion-content>

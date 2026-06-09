@@ -1,9 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-card-crevent',
   templateUrl: './card-crevent.component.html',
   styleUrls: ['./card-crevent.component.scss'],
+  imports: [CommonModule, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton],
+  standalone: true
 })
 export class CardCreventComponent  implements OnInit {
 

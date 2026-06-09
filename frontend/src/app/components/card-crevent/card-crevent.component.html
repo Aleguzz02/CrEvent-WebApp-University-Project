@@ -5,7 +5,7 @@
     <ion-card-title>
       {{ dati?.nome }} {{ dati?.cognome ? dati.cognome : '' }}
     </ion-card-title>
-  </ion-header>
+  </ion-card-header>
 
   <ion-card-content>
     @for(dettaglio of dettagliSpecifici; track dettaglio){
@@ -13,7 +13,7 @@
     }
     <div class="card-footer">
       <span class="prezzo">
-        <storng>{{ testoPrezzo }}</storng>
+        <strong>{{ testoPrezzo }}</strong>
       </span>
       <ion-button fill="clear" color="primary">Vedi Disponibilità</ion-button>
     </div>
