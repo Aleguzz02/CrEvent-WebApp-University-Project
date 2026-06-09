@@ -28,11 +28,7 @@ db.serialize(() => {
         `);
 
     db.run(`
-<<<<<<< HEAD
-        CREATE TABLE IF NOT EXISTS Professionista (
-=======
         CREATE TABLE IF NOT EXISTS Staff (
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         cognome TEXT NOT NULL,
@@ -47,29 +43,17 @@ db.serialize(() => {
         `);
 
      db.run(`
-<<<<<<< HEAD
-        CREATE TABLE IF NOT EXISTS users (
-=======
         CREATE TABLE IF NOT EXISTS User (
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         email TEXT PRIMARY KEY,
         password TEXT NOT NULL, 
         nome TEXT NOT NULL,
         cognome TEXT NOT NULL,
         telefono TEXT NOT NULL,
-<<<<<<< HEAD
-        dataNascita DATE NOT NULL,
-        tipoUtente NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0
-        idStaff INTEGER,
-        idLocation INTEGER,
-        FOREIGN KEY (idStaff) REFERENCES Professionista(id), ON DELETE SET NULL, -- chiave esterna per gli account dei professionisti collegati ai loro eventi
-=======
         dataNascita TEXT NOT NULL,
         tipoUtente NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
         idStaff INTEGER,
         idLocation INTEGER,
         FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE SET NULL, -- chiave esterna per gli account dei professionisti collegati ai loro eventi
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE SET NULL -- chiave esterna per gli account delle location collegati ai loro eventi
         ) -- le chiavi sono necessariamente nulle per gli utenti normali, e nulle alternandosi per professionisti o location
         `);
@@ -86,45 +70,27 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS dateProfessionisti (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-<<<<<<< HEAD
-        idProfessionista INTEGER,
-        dataInizio DATE NOT NULL,
-        dataFine DATE NOT NULL,
-        FOREIGN KEY (idProfessionista) REFERENCES Professionista(id) ON DELETE CASCADE
-=======
         idStaff INTEGER,
         dataInizio TEXT NOT NULL,
         dataFine TEXT NOT NULL,
         FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         )
     `);
         db.run(`
         CREATE TABLE IF NOT EXISTS dateLocation (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         idLocation INTEGER,
-<<<<<<< HEAD
-        dataInizio DATE NOT NULL,
-        dataFine DATE NOT NULL,
-=======
         dataInizio TEXT NOT NULL,
         dataFine TEXT NOT NULL,
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
         )
     `);
     db.run(`
         CREATE TABLE IF NOT EXISTS immaginiProfessionisti(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-<<<<<<< HEAD
-        idProfessionista INTEGER,
-        url TEXT NOT NULL,
-        FOREIGN KEY (idProfessionista) REFERENCES Professionista(id) ON DELETE CASCADE
-=======
         idStaff INTEGER,
         url TEXT NOT NULL,
         FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         )
     `); 
 
@@ -136,20 +102,6 @@ db.serialize(() => {
     
         db.run(`
             CREATE TABLE IF NOT EXISTS Lavora(
-<<<<<<< HEAD
-            idProfessionista INTEGER,
-            idLocation INTEGER,
-            PRIMARY KEY (idProfessionista, idLocation),
-            FOREIGN KEY (idProfessionista) REFERENCES Professionista(id) ON DELETE CASCADE,
-            FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
-        )
-        `);
-        //Se non compare qui un professionista, si assume che abbia una disponibilità indipendnente, e che possa lavorare in qualsiasi location, altrimenti si assume che possa lavorare solo nelle location specificate.
-        //*****VALUTARE SE INSERIRE RAPPORTI DI LAVORO DETERMINATI*****//
-    });
-
-module.exports = db;
-=======
             idStaff INTEGER,
             idLocation INTEGER,
             PRIMARY KEY (idStaff, idLocation),
@@ -356,4 +308,3 @@ putData();
 
 module.exports = db;
 
->>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
