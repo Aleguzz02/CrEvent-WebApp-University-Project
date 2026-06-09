@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+.toolbar-grande {
+
+  --min-height: 85px; 
+  
+  ion-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ion-color-primary, #3880ff); 
+  }
+}
+
+// Stile per il titolo grande quando la pagina non è ancora scrollata
+ion-header[collapse="condense"] .toolbar-grande ion-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+}

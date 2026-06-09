@@ -1,0 +1,21 @@
+<ion-card class="crevent-card">
+  <img [src]="dati?.url || 'https://via.placeholder.com/350x150'" alt="Immagine Risorsa" />
+  
+  <ion-card-header>
+    <ion-card-title>
+      {{ dati?.nome }} {{ dati?.cognome ? dati.cognome : '' }}
+    </ion-card-title>
+  </ion-header>
+
+  <ion-card-content>
+    @for(dettaglio of dettagliSpecifici; track dettaglio){
+      <p>{{ dettaglio }}</p>
+    }
+    <div class="card-footer">
+      <span class="prezzo">
+        <storng>{{ testoPrezzo }}</storng>
+      </span>
+      <ion-button fill="clear" color="primary">Vedi Disponibilità</ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>
