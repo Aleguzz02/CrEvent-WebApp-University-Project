@@ -23,7 +23,8 @@ db.serialize(() => {
         coordX REAL,
         coordY REAL,
         linkSito TEXT,
-        costo INTEGER NOT NULL 
+        costo INTEGER NOT NULL,
+        UNIQUE(nome, indirizzo) 
         )
         `);
 
@@ -50,7 +51,7 @@ db.serialize(() => {
         cognome TEXT NOT NULL,
         telefono TEXT NOT NULL,
         dataNascita TEXT NOT NULL,
-        tipoUtente NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
+        tipoUtente INTEGER NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
         idStaff INTEGER,
         idLocation INTEGER,
         FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE SET NULL, -- chiave esterna per gli account dei professionisti collegati ai loro eventi
