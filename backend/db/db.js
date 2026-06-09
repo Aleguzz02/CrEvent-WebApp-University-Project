@@ -28,7 +28,11 @@ db.serialize(() => {
         `);
 
     db.run(`
+<<<<<<< HEAD
         CREATE TABLE IF NOT EXISTS Professionista (
+=======
+        CREATE TABLE IF NOT EXISTS Staff (
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         cognome TEXT NOT NULL,
@@ -43,17 +47,29 @@ db.serialize(() => {
         `);
 
      db.run(`
+<<<<<<< HEAD
         CREATE TABLE IF NOT EXISTS users (
+=======
+        CREATE TABLE IF NOT EXISTS User (
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         email TEXT PRIMARY KEY,
         password TEXT NOT NULL, 
         nome TEXT NOT NULL,
         cognome TEXT NOT NULL,
         telefono TEXT NOT NULL,
+<<<<<<< HEAD
         dataNascita DATE NOT NULL,
         tipoUtente NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0
         idStaff INTEGER,
         idLocation INTEGER,
         FOREIGN KEY (idStaff) REFERENCES Professionista(id), ON DELETE SET NULL, -- chiave esterna per gli account dei professionisti collegati ai loro eventi
+=======
+        dataNascita TEXT NOT NULL,
+        tipoUtente NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
+        idStaff INTEGER,
+        idLocation INTEGER,
+        FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE SET NULL, -- chiave esterna per gli account dei professionisti collegati ai loro eventi
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE SET NULL -- chiave esterna per gli account delle location collegati ai loro eventi
         ) -- le chiavi sono necessariamente nulle per gli utenti normali, e nulle alternandosi per professionisti o location
         `);
@@ -70,27 +86,45 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS dateProfessionisti (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+<<<<<<< HEAD
         idProfessionista INTEGER,
         dataInizio DATE NOT NULL,
         dataFine DATE NOT NULL,
         FOREIGN KEY (idProfessionista) REFERENCES Professionista(id) ON DELETE CASCADE
+=======
+        idStaff INTEGER,
+        dataInizio TEXT NOT NULL,
+        dataFine TEXT NOT NULL,
+        FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         )
     `);
         db.run(`
         CREATE TABLE IF NOT EXISTS dateLocation (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         idLocation INTEGER,
+<<<<<<< HEAD
         dataInizio DATE NOT NULL,
         dataFine DATE NOT NULL,
+=======
+        dataInizio TEXT NOT NULL,
+        dataFine TEXT NOT NULL,
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
         )
     `);
     db.run(`
         CREATE TABLE IF NOT EXISTS immaginiProfessionisti(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+<<<<<<< HEAD
         idProfessionista INTEGER,
         url TEXT NOT NULL,
         FOREIGN KEY (idProfessionista) REFERENCES Professionista(id) ON DELETE CASCADE
+=======
+        idStaff INTEGER,
+        url TEXT NOT NULL,
+        FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
         )
     `); 
 
@@ -102,6 +136,7 @@ db.serialize(() => {
     
         db.run(`
             CREATE TABLE IF NOT EXISTS Lavora(
+<<<<<<< HEAD
             idProfessionista INTEGER,
             idLocation INTEGER,
             PRIMARY KEY (idProfessionista, idLocation),
@@ -114,3 +149,211 @@ db.serialize(() => {
     });
 
 module.exports = db;
+=======
+            idStaff INTEGER,
+            idLocation INTEGER,
+            PRIMARY KEY (idStaff, idLocation),
+            FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE,
+            FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
+        )
+        `);
+        //Se non compare qui un Staff, si assume che abbia una disponibilità indipendnente, e che possa lavorare in qualsiasi location, altrimenti si assume che possa lavorare solo nelle location specificate.
+        //*****VALUTARE SE INSERIRE RAPPORTI DI LAVORO DETERMINATI*****//
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS Evento(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            data TEXT NOT NULL,
+            nome TEXT NOT NULL,
+            svolto INTEGER DEFAULT 0 CHECK(svolto IN (0,1)),
+            invitati INTEGER NOT NULL,
+            emailUtente TEXT NOT NULL,
+            idLocation INTEGER NOT NULL,
+            FOREIGN KEY (emailUtente) REFERENCES User(email) ON DELETE CASCADE,
+            FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
+        )
+            `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS Coinvolge(
+                idEvento INTEGER,
+                idStaff INTEGER,
+                PRIMARY KEY (idEvento, idStaff),
+                FOREIGN KEY (idEvento)  REFERENCES Evento(id) ON DELETE CASCADE,
+                FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
+        )
+            `);
+    });
+
+async function putData() {
+    try{
+        const saltRounds = 10;
+        const pw1 = await bcrypt.hash('password1', saltRounds);
+        const pw2 = await bcrypt.hash('password2', saltRounds);
+        const pw3 = await bcrypt.hash('password3', saltRounds);
+        db.serialize(() => {
+        
+            db.run(`
+                INSERT OR IGNORE INTO Location (nome, indirizzo, citta, descrizione, capienza, linkSito, costo)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Villa Zuccarello', 'Via Villagrazia 103', 'Palermo', 'Una splendida villa con ampio giardino e piscina, con spazi interni molto moderni, ideale per qualsiasi tipo di evento da trascorrere in pace e eleganza', 200, 'https://www.villazuccarello.net', 2500],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+                );
+            db.run(`
+                INSERT OR IGNORE INTO Location (nome, indirizzo, citta, descrizione, capienza, linkSito, costo)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Villa Infinito', 'Viale Regione Siciliana 6985', 'Palermo', 'Una villa molto moderna con ampio spazio interno, situata in una zona meno centrale di Palermo ma perfetta per eventi eleganti e sofisticati.', 150, 'https://www.villainfinito.it', 2000],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+                );
+            db.run(`
+                INSERT OR IGNORE INTO Location (nome, indirizzo, citta, descrizione, capienza, linkSito, costo)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Baglio Culluzia', 'Via Funnuta 9', 'Palermo', 'Baglio Culluzia: un\'oasi di pace che rispecchia la tradizione siciliana, con spazi ampi all\'esterno e sul prato, che permettono di vivere un evento unico tra storia, tradizione e natura', 300, 'https://www.baglioculluzia.it', 3500],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+                );
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione)
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                ['Galati', 'Catering', 'https://www.galaticatering.it', 'catering', 80, 'Storico catering di Palermo specializzato in ricevimenti di altissima qualità, per matrimoni ed eventi istituzionali tra i più importanti ricadono sempre tra la prima scelta.'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione)
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                ['Natale', 'Chef Catering', 'https://www.natalegiunta.it', 'catering', 95, 'Chef Natale Giunta offre un servizio di catering gourmet focalizzato sulla rivisitazione moderna dei piatti tradizionali siciliani.'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, genereMusicale)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Riccardo', 'Ferrarese', 'https://www.riccardoferrarese.it', 'intrattenimento', 500, 'DJ e produver attivo nella movida palermitana e con grande esperienza sui matrimoni, eventi aziendali e dj-set personalizzati.', 'Commerciale, House, Revival 70/80/90'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, genereMusicale)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Nello', 'Anfuso', 'https://www.nelloanfusodj.com', 'intrattenimento', 450, 'DJ professionista specializzato in intrattenimento musicale per ricevimenti privati, rinomato per l\'eleganza del sound selection mista a delle tracce che sono la miccia pura per il divertimento.', 'Deep House, Chillout, Lounge, Pop Italiano'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, genereFotografico)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Tiberio', 'Cantafia', 'https://www.tiberiocantafia.it', 'fotografo', 1200, 'Fotografo professionista di Palermo specializzato nel genere reportage per matrimoni ed eventi privati.', 'Reportage, Wedding Storytelling, Candid Photography'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, genereFotografico)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Ines', 'Mendola', 'https://www.inesmendola.com', 'fotografo', 1000, 'Studio fotografico focalizzato sulla cattura spontanea delle emozioni durante eventi privati in tutta la Sicilia.', 'Fine Art, Ritrattistica, Reportage Moderno'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, mansione)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Emanuele', 'D\'Angeli', 'https://www.emanueledangeli.com', 'altro', 600, 'Illusionista e prestigiatore palermitano, offre spettacoli di mentalismo e magia close-up itinerante tra i tavoli degli ospiti.', 'Illusionismo e Close-up Magic'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Staff (nome, cognome, linkSito, tipo, costo, descrizione, mansione)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['Sogni', 'di Grande', 'https://www.sognidigrande.it', 'altro', 850, 'Compagnia di spettacolo specializzata in attrazioni fuori dall\'ordinario: performance con il fuoco, farfalle luminose sui trampolini ed effetti speciali per il taglio torta.', 'Spettacoli di Fuoco e Trampolieri Luminosi'],
+                (err) => {
+                    if (err) console.error(err);
+                }    
+            );
+            db.run(`
+                INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['prova1@example.com', pw1, 'Mario', 'Rossi', '1234567890', '1990-01-01', '0'],
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
+            db.run(`
+                INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                ['admin1@crevent.com', pw2, 'Luca', 'Bianchi', '0987654321', '1985-05-15', '1'],
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
+            db.run(`
+                INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idStaff) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                ['inesmendola@crevent.com', pw3, 'Ines', 'Mendola', '1111111111', '1992-12-25', '2', 6],
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
+            db.run(`
+                INSERT OR IGNORE INTO Evento (data, nome, svolto, invitati, emailUtente, idLocation) 
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                ['2025-09-15', 'Matrimonio Rossi-Verdi', 0, 150, 'prova1@example.com', 1],
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
+            db.run(`
+                INSERT OR IGNORE INTO Lavora (idStaff, idLocation) VALUES (?, ?)`,
+                [1, 1], 
+                (err) => { if (err) console.error(err); }
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Lavora (idStaff, idLocation) VALUES (?, ?)`,
+                [5, 1], 
+                (err) => { if (err) console.error(err); }
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Lavora (idStaff, idLocation) VALUES (?, ?)`,
+                [3, 1], 
+                (err) => { if (err) console.error(err); }
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Coinvolge (idEvento, idStaff) VALUES (?, ?)`,
+                [1, 1], 
+                (err) => { if (err) console.error(err); }
+            );
+
+            db.run(`
+                INSERT OR IGNORE INTO Coinvolge (idEvento, idStaff) VALUES (?, ?)`,
+                [1, 5], 
+                (err) => { if (err) console.error(err); }
+            );
+        })
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+putData();
+
+module.exports = db;
+
+>>>>>>> 5734b2ed1456a3211c555ad398fefc812d238dce
