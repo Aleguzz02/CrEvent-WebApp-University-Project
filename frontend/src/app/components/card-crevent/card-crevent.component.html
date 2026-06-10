@@ -8,8 +8,8 @@
   </ion-card-header>
 
   <ion-card-content>
-    @for(dettaglio of dettagliSpecifici; track dettaglio){
-      <p>{{ dettaglio }}</p>
+    @for(dettaglio of dettagliSpecifici; track dettaglio.label){
+      <p><strong>{{ dettaglio.label }} </strong>{{ dettaglio.valore }}</p>
     }
     <div class="card-footer">
       <span class="prezzo">

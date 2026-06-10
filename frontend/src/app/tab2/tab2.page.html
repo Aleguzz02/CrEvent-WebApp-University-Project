@@ -62,44 +62,52 @@
           <ion-item-divider color="light">
             <ion-label>Servizi di Catering</ion-label>
           </ion-item-divider>
-          @for (staff of catering; track staff.id) {
-            <app-card-crevent [dati]="staff"></app-card-crevent>
-          }@empty{
-          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
-          }
+          <div class="cards-container">
+            @for (staff of catering; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
         </div>
 
         <div class="categoria-staff-gruppo">
           <ion-item-divider color="light">
             <ion-label>DJ e Intrattenimento</ion-label>
           </ion-item-divider>
-          @for (staff of dj; track staff.id) {
-            <app-card-crevent [dati]="staff"></app-card-crevent>
-          }@empty{
-          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
-          }
+          <div class="cards-container">
+            @for (staff of dj; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
         </div>
 
         <div class="categoria-staff-gruppo">
           <ion-item-divider color="light">
             <ion-label>Fotografi</ion-label>
           </ion-item-divider>
-          @for (staff of fotografo; track staff.id) {
-            <app-card-crevent [dati]="staff"></app-card-crevent>
-          }@empty{
-          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
-          }
+          <div class="cards-container">
+            @for (staff of fotografo; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
         </div>
 
         <div class="categoria-staff-gruppo">
           <ion-item-divider color="light">
             <ion-label>Altri Servizi e Spettacoli</ion-label>
           </ion-item-divider>
-          @for (staff of altro; track staff.id) {
-            <app-card-crevent [dati]="staff"></app-card-crevent>
-          }@empty{
-          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
-          }
+          <div class="cards-container">
+            @for (staff of altro; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
         </div>
     }
 </ion-content>

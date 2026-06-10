@@ -39,11 +39,11 @@ export class Tab2Page implements OnInit {
       { id: 2, nome: 'Villa Infinito', indirizzo: 'Viale Regione Siciliana 6985', citta: 'Palermo', costo: 2000, capienza: 150, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600' }
     ];
     this.listaStaff = [
-      { id: 1, nome: 'Galati', cognome: 'Catering', tipo: 'catering', costo: 80 },
-      { id: 2, nome: 'Natale', cognome: 'Chef Catering', tipo: 'catering', costo: 95 },
-      { id: 3, nome: 'Riccardo', cognome: 'Ferrarese', tipo: 'intrattenimento', costo: 500, genereMusicale: 'Commerciale' },
-      { id: 5, nome: 'Tiberio', cognome: 'Cantafia', tipo: 'fotografo', costo: 1200 },
-      { id: 7, nome: 'Emanuele', cognome: 'D\'Angeli', tipo: 'altro', costo: 600, mansione: 'Illusionista' }];
+      { id: 1, nome: 'Galati', cognome: 'Catering', tipo: 'catering', costo: 80, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
+      { id: 2, nome: 'Natale', cognome: 'Chef Catering', tipo: 'catering', costo: 95, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
+      { id: 3, nome: 'Riccardo', cognome: 'Ferrarese', tipo: 'dj', costo: 500, genereMusicale: 'Commerciale', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
+      { id: 5, nome: 'Tiberio', cognome: 'Cantafia', tipo: 'fotografo', costo: 1200, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
+      { id: 7, nome: 'Emanuele', cognome: 'D\'Angeli', tipo: 'altro', costo: 600, mansione: 'Illusionista', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  }];
   }
 
   filtraDati() {

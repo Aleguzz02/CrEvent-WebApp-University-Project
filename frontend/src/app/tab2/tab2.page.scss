@@ -108,7 +108,51 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
 
 // Layout contenitore liste dati dal DB
 .categoria-staff-gruppo {
+  width: 100%;
   padding: 16px;
-  max-width: 800px;        // Dimensione ottimale di lettura sul web desktop
-  margin: 0 auto;          // Centra la lista orizzontalmente sulla pagina web
+  max-width: 1200px;        // Dimensione ottimale di lettura sul web desktop
+  margin: 0 auto 24px auto;    // Centra la lista orizzontalmente sulla pagina web
+
+  ion-item-divider {
+    --background: transparent;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
+    margin-bottom: 16px;
+  }
+  .cards-container{
+    display: flex;
+    flex-direction: column;   // Dispone prima in verticale (riga 1 e riga 2)
+    flex-wrap: wrap;          // Quando finisce l'altezza, crea una nuova colonna a destra
+    height: 420px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
+    
+    overflow-x: auto;         // Abilita lo scorrimento orizzontale quando superano lo schermo
+    overflow-y: hidden;       // Blocca lo scorrimento verticale interno
+    
+    gap: 20px;
+    padding: 10px;
+    
+    // Centra il contenuto se ci sono poche card che non riempiono lo schermo web
+    justify-content: center;  
+    align-content: center;    // Centra le colonne aggregate rispetto all'asse principale
+  }
+
+  // Configurazione della larghezza delle card del componente figlio
+  app-card-crevent {
+    width: 320px;             // Larghezza fissa ideale per una card leggibile sul web
+    flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
+  }
+}
+.emptyBrowseSection {
+  text-align: center;
+  color: var(--ion-color-medium);
+  font-size: 16px;
+  padding: 32px;
+  width: 100%;
+}
+
+ion-list {
+    width: clamp(200px,60vw,800px);
+    margin: 0px auto 0 auto;
+    background-color: rgba(0, 0, 0, 0);
 }
