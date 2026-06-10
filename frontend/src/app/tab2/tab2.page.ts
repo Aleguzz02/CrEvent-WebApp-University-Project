@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Tab2Page implements OnInit {
 
-  sezione: 'iniziale' | 'location' | 'staff' = 'staff';
+  sezione: 'iniziale' | 'location' | 'staff' = 'iniziale';
   listaLocation: any[] = [];
   listaStaff: any[] = [];
 

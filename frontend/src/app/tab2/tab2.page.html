@@ -25,5 +25,26 @@
     </ion-segment>
   </ion-toolbar>
   }
+  <ion-content>
+    @if (sezione === 'iniziale') {
+    <div class="contenitore-iniziale">
+      <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
+        <div class="overlay-scuro">
+          <ion-card-header>
+            <ion-card-title>Location</ion-card-title>
+          </ion-card-header>
+        </div>
+      </ion-card>
+
+      <ion-card class="bottone-grande staff-bg" (click)="selezionaSezione('staff')">
+        <div class="overlay-scuro">
+          <ion-card-header>
+            <ion-card-title>Staff</ion-card-title>
+          </ion-card-header>
+        </div>
+      </ion-card>
+    </div>
+    }
+  </ion-content>
 
 </ion-content>

@@ -18,3 +18,61 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
   font-family: 'Montserrat', sans-serif;
   font-size: 36px;
 }
+
+.contenitore-iniziale{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: clamp(10vw, 10vw, 50vw);
+  box-sizing: border-box;
+  gap: clamp(10px, 20vw, 200px);
+
+  @media (max-width: 480px) {
+    flex-direction: column; 
+    gap: 16px;
+  }
+
+  .bottone-grande {
+  width: 100%;
+  // Definiamo una dimensione base flessibile ed elegante per schermi desktop/web
+  min-width: 180px;
+  max-width: 260px;        
+  aspect-ratio: 1 / 1;     // Rapporto 1:1 fisso (Larghezza = Altezza)
+  
+  margin: 0;               // Elimina i margini nativi di Ionic
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  border-radius: 20px;     // Arrotondamento moderno dei bordi
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  //transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+
+  // Effetto sollevamento al passaggio del mouse (Hover web)
+  &:hover {
+    transform: translateY(-6px); 
+    box-shadow: 0 0ch 40px rgba(255, 255, 255, 0.7);
+
+    @media(prefers-color-scheme: light){
+      box-shadow: 0 0ch 40px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  // Sfondi fotografici provvisori
+  &.location-bg {
+    background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop');
+  }
+
+  &.staff-bg {
+    background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop');
+  }
+}
+}
