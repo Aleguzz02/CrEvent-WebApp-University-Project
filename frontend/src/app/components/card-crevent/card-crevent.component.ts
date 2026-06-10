@@ -34,7 +34,7 @@ export class CardCreventComponent  implements OnInit {
     if(this.isLocation){
       if(this.dati.citta) this.dettagliSpecifici.push(`<strong>Città:</strong> ${this.dati.citta} (${this.dati.indirizzo || ''})`);
       if(this.dati.capienza) this.dettagliSpecifici.push(`<strong>Capienza:</strong> ${this.dati.capienza} persone`);
-      if(this.dati.costo) this.dettagliSpecifici.push(`${this.dati.costo}€`);
+      if(this.dati.costo)  this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€`;
     }
     else if(this.isStaff){
       if(this.dati.tipo) this.dettagliSpecifici.push(`<strong>Categoria:</strong> ${this.dati.tipo.toUpperCase()}`);
@@ -42,9 +42,9 @@ export class CardCreventComponent  implements OnInit {
       if(this.dati.genereFotografico) this.dettagliSpecifici.push(`<strong>Stile fotografico:</strong> ${this.dati.genereFotografico}`);
       if(this.dati.mansione) this.dettagliSpecifici.push(`<strong>Specialità:</strong> ${this.dati.mansione}`);
       if(this.dati.tipo === 'catering'){
-        if(this.dati.costo) this.testoPrezzo.concat(`${this.dati.costo}€ pp`);
+        if(this.dati.costo) this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€ pp`;
       }else{
-        if(this.dati.costo) this.testoPrezzo.concat(`${this.dati.costo}€`);
+        if(this.dati.costo) this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€`;
       }
     }
   }

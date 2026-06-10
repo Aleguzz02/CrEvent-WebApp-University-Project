@@ -25,13 +25,14 @@
     </ion-segment>
   </ion-toolbar>
   }
-  <ion-content>
     @if (sezione === 'iniziale') {
     <div class="contenitore-iniziale">
       <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
         <div class="overlay-scuro">
           <ion-card-header>
-            <ion-card-title>Location</ion-card-title>
+            <ion-card-title id="locationTitleButtonBrowse">
+              <strong>Location</strong>
+            </ion-card-title>
           </ion-card-header>
         </div>
       </ion-card>
@@ -39,12 +40,66 @@
       <ion-card class="bottone-grande staff-bg" (click)="selezionaSezione('staff')">
         <div class="overlay-scuro">
           <ion-card-header>
-            <ion-card-title>Staff</ion-card-title>
+            <ion-card-title>
+              <strong>Staff</strong>
+            </ion-card-title>
           </ion-card-header>
         </div>
       </ion-card>
     </div>
     }
-  </ion-content>
+    @if(sezione === 'location'){
+      <ion-list>
+        @for(loc of listaLocation; track loc.id){
+          <app-card-crevent [dati]="loc"></app-card-crevent>
+        }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+        }
+      </ion-list>
+    }
+    @if(sezione === 'staff'){
+      <div class="categoria-staff-gruppo">
+          <ion-item-divider color="light">
+            <ion-label>Servizi di Catering</ion-label>
+          </ion-item-divider>
+          @for (staff of catering; track staff.id) {
+            <app-card-crevent [dati]="staff"></app-card-crevent>
+          }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          }
+        </div>
 
+        <div class="categoria-staff-gruppo">
+          <ion-item-divider color="light">
+            <ion-label>DJ e Intrattenimento</ion-label>
+          </ion-item-divider>
+          @for (staff of dj; track staff.id) {
+            <app-card-crevent [dati]="staff"></app-card-crevent>
+          }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          }
+        </div>
+
+        <div class="categoria-staff-gruppo">
+          <ion-item-divider color="light">
+            <ion-label>Fotografi</ion-label>
+          </ion-item-divider>
+          @for (staff of fotografo; track staff.id) {
+            <app-card-crevent [dati]="staff"></app-card-crevent>
+          }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          }
+        </div>
+
+        <div class="categoria-staff-gruppo">
+          <ion-item-divider color="light">
+            <ion-label>Altri Servizi e Spettacoli</ion-label>
+          </ion-item-divider>
+          @for (staff of altro; track staff.id) {
+            <app-card-crevent [dati]="staff"></app-card-crevent>
+          }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          }
+        </div>
+    }
 </ion-content>
