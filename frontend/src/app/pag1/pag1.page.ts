@@ -6,6 +6,8 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonInput, IonList
  } from '@ionic/angular/standalone';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { SignupFormComponent } from './signup-form/signup-form.component';
+import { AuthService } from '../services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-pag1',
@@ -19,6 +21,7 @@ export class Pag1Page implements OnInit {
 
   @ViewChild('loginModal') loginModal!: IonModal;
   @ViewChild('signupModal') signupModal!: IonModal;
+  @ViewChild(SignupFormComponent) signupFormComp!: SignupFormComponent;
 
   constructor() { }
 
@@ -38,7 +41,16 @@ export class Pag1Page implements OnInit {
   }
 
   signupConfirm() {
-    this.signupModal.dismiss(null, 'confirm');
+  const formData = this.signupFormComp.onSubmit();
+  if (formData) {
+    this.authService.signup(formData).subscribe({
+      next: (res) => console.log('Server response:', res),
+      error: (err) => console.error('Error:', err)
+    });
+    this.signupModal.dismiss(formData, 'confirm');
   }
+  }
+
+  private authService = inject(AuthService);
 
 }
