@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonItem, IonInput, IonList, IonButton } from '@ionic/angular/standalone';
+import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-signup-form',
   standalone: true,
-  imports: [IonItem, IonInput, IonList, IonButton, ReactiveFormsModule],
+  imports: [IonItem, IonInput, IonList, ReactiveFormsModule],
   templateUrl: './signup-form.component.html',
   styleUrls: ['./signup-form.component.scss'],
 })
