@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonInput, IonList, IonButton, 
   IonModal, IonButtons
  } from '@ionic/angular/standalone';
-import { OverlayEventDetail } from '@ionic/core/components';
+import { SignupFormComponent } from './signup-form/signup-form.component';
 
 @Component({
   selector: 'app-pag1',
@@ -12,14 +12,11 @@ import { OverlayEventDetail } from '@ionic/core/components';
   styleUrls: ['./pag1.page.scss'],
   standalone: true,
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonItem, IonInput,
-     IonList, IonButton, IonModal, IonButtons]
+     IonList, IonButton, IonModal, IonButtons, SignupFormComponent]
 })
 export class Pag1Page implements OnInit {
 
   @ViewChild(IonModal) modal!: IonModal;
-
-  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
-  name!: string;
 
   constructor() { }
 
