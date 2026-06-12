@@ -1,4 +1,4 @@
-// Libreria jsonwebtoken
+// Libreria json web token
 const jwt = require("jsonwebtoken");
 
 // Chiave segreta per firmare e verificare i JWT
@@ -26,6 +26,12 @@ module.exports = (req, res, next) => {
         req.user = verified;
         next();
     } catch (err) {
-        res.status(400).json({ message: "Token non valido"});
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ message : "Token scaduto. Effettua di nuovo il login"});
+        } else if (err.name === "JsonWebTokenError") {
+            return res.status(401).json({ message : "Token di autenticazione non valido"});
+        } else {
+            return res.status(400).json({ message: "Errore nella verifica del token" });
+        }
     }
 }
