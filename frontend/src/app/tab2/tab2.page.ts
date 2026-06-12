@@ -39,6 +39,13 @@ export class Tab2Page implements OnInit {
       { id: 2, nome: 'Villa Infinito', indirizzo: 'Viale Regione Siciliana 6985', citta: 'Palermo', costo: 2000, capienza: 150, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600' }
     ];
     this.listaStaff = [
+      { id: 1, nome: 'Galati', cognome: 'Catering', tipo: 'catering', costo: 80, url: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600' },
+      { id: 2, nome: 'Natale', cognome: 'Chef Catering', tipo: 'catering', costo: 95, url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600' },
+      { id: 10, nome: 'Prestigio', cognome: 'Ricevimenti', tipo: 'catering', costo: 110, url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600' },
+      { id: 11, nome: 'Gourmet', cognome: 'Banquet', tipo: 'catering', costo: 75, url: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=600' },
+      { id: 12, nome: 'Sicilia', cognome: 'Bedda Catering', tipo: 'catering', costo: 65, url: 'https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=600' },
+      { id: 13, nome: 'Luxury', cognome: 'Food Experience', tipo: 'catering', costo: 130, url: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600' },
+      { id: 14, nome: 'Bio', cognome: 'Event Catering', tipo: 'catering', costo: 85, url: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600' },
       { id: 1, nome: 'Galati', cognome: 'Catering', tipo: 'catering', costo: 80, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
       { id: 2, nome: 'Natale', cognome: 'Chef Catering', tipo: 'catering', costo: 95, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
       { id: 3, nome: 'Riccardo', cognome: 'Ferrarese', tipo: 'dj', costo: 500, genereMusicale: 'Commerciale', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },

@@ -4,15 +4,6 @@
       CrEvent
     </ion-title>
   </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar mode="ios" class="toolbar-grande" transparent>
-      <ion-title size="large">CrEvent</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">
     <ion-segment [value]="sezione" (ionChange)="selezionaSezione($any($event).detail.value)">
@@ -25,6 +16,15 @@
     </ion-segment>
   </ion-toolbar>
   }
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar mode="ios" class="toolbar-grande" transparent>
+      <ion-title size="large">CrEvent</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
     @if (sezione === 'iniziale') {
     <div class="contenitore-iniziale">
       <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
@@ -58,11 +58,12 @@
       </ion-list>
     }
     @if(sezione === 'staff'){
+      <ion-item-divider>
+        <ion-label>Servizi di Catering</ion-label>
+      </ion-item-divider>
       <div class="categoria-staff-gruppo">
-          <ion-item-divider color="light">
-            <ion-label>Servizi di Catering</ion-label>
-          </ion-item-divider>
-          <div class="cards-container">
+          
+          <div class="cards-container" [class.oneColumn]="catering.length < 6">
             @for (staff of catering; track staff.id) {
               <app-card-crevent [dati]="staff"></app-card-crevent>
             }@empty{
@@ -71,11 +72,12 @@
           </div>
         </div>
 
+        <ion-item-divider>
+          <ion-label>DJ e Intrattenimento</ion-label>
+        </ion-item-divider>
         <div class="categoria-staff-gruppo">
-          <ion-item-divider color="light">
-            <ion-label>DJ e Intrattenimento</ion-label>
-          </ion-item-divider>
-          <div class="cards-container">
+          
+          <div class="cards-container"  [class.oneColumn]="dj.length < 6">
             @for (staff of dj; track staff.id) {
               <app-card-crevent [dati]="staff"></app-card-crevent>
             }@empty{
@@ -84,11 +86,11 @@
           </div>
         </div>
 
+        <ion-item-divider>
+          <ion-label>Fotografi</ion-label>
+        </ion-item-divider>
         <div class="categoria-staff-gruppo">
-          <ion-item-divider color="light">
-            <ion-label>Fotografi</ion-label>
-          </ion-item-divider>
-          <div class="cards-container">
+          <div class="cards-container"  [class.oneColumn]="fotografo.length < 6">
             @for (staff of fotografo; track staff.id) {
               <app-card-crevent [dati]="staff"></app-card-crevent>
             }@empty{
@@ -97,11 +99,11 @@
           </div>
         </div>
 
+         <ion-item-divider>
+          <ion-label>Altri Servizi e Spettacoli</ion-label>
+        </ion-item-divider>
         <div class="categoria-staff-gruppo">
-          <ion-item-divider color="light">
-            <ion-label>Altri Servizi e Spettacoli</ion-label>
-          </ion-item-divider>
-          <div class="cards-container">
+          <div class="cards-container"  [class.oneColumn]="altro.length < 6">
             @for (staff of altro; track staff.id) {
               <app-card-crevent [dati]="staff"></app-card-crevent>
             }@empty{

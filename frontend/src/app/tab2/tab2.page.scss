@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
+@font-face {
+  font-family: 'Celestial';
+  src: url('../../assets/fonts/Celestial\ Silence.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 .toolbar-grande {
 
   --min-height: 85px; 
@@ -109,22 +117,39 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
 // Layout contenitore liste dati dal DB
 .categoria-staff-gruppo {
   width: 100%;
-  padding: 16px;
+  margin: 0px auto 24px auto;
+  padding: 0;
   max-width: 1200px;        // Dimensione ottimale di lettura sul web desktop
-  margin: 0 auto 24px auto;    // Centra la lista orizzontalmente sulla pagina web
+      // Centra la lista orizzontalmente sulla pagina web
 
   ion-item-divider {
+  
     --background: transparent;
     font-weight: 700;
-    color: var(--ion-color-dark);
+    color: var(--ion-color-white);
     border-bottom: 2px solid var(--ion-color-primary, #3880ff);
     margin-bottom: 16px;
+    width: 100vw;
+
+    
+    ion-label{
+      text-align: center !important;
+      width: 100%;
+      font-family: 'Celestial', sans-serif;
+      letter-spacing: 2px;
+      font-size: clamp(15px, 3vw, 40px);
+      font-weight: 300;
+    }
   }
   .cards-container{
+    max-width: 1200px;
+    margin: 0px auto clamp(0px, 5vh, 100px) auto;
+    padding: 0;
+
     display: flex;
     flex-direction: column;   // Dispone prima in verticale (riga 1 e riga 2)
     flex-wrap: wrap;          // Quando finisce l'altezza, crea una nuova colonna a destra
-    height: 420px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
+    height: 800px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
     
     overflow-x: auto;         // Abilita lo scorrimento orizzontale quando superano lo schermo
     overflow-y: hidden;       // Blocca lo scorrimento verticale interno
@@ -134,15 +159,24 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
     
     // Centra il contenuto se ci sono poche card che non riempiono lo schermo web
     justify-content: center;  
-    align-content: center;    // Centra le colonne aggregate rispetto all'asse principale
+    align-content: flex-start;    // Centra le colonne aggregate rispetto all'asse principale
+  }
+
+  .oneColumn{
+    height: 420px !important;
   }
 
   // Configurazione della larghezza delle card del componente figlio
   app-card-crevent {
     width: 320px;             // Larghezza fissa ideale per una card leggibile sul web
     flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
+    height: 360px;
   }
 }
+.cards-container::-webkit-scrollbar{
+  display: none;
+}
+
 .emptyBrowseSection {
   text-align: center;
   color: var(--ion-color-medium);
@@ -156,3 +190,30 @@ ion-list {
     margin: 0px auto 0 auto;
     background-color: rgba(0, 0, 0, 0);
 }
+
+ion-item-divider {
+  
+    --background: transparent;
+    font-weight: 700;
+    color: var(--ion-color-white);
+    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
+    //border-top: 2px solid rgba(202, 202, 202, 0.626);
+    margin-bottom: 16px;
+    width: 100vw;
+
+    --background: linear-gradient(to bottom, rgba(255, 255, 255, 0.347) 0%, black 60%);
+
+    @media(prefers-color-scheme: light){
+      --background: linear-gradient(to bottom, rgba(0, 0, 0, 0.347) 0%, white 60%);
+    }
+
+    
+    ion-label{
+      text-align: center !important;
+      width: 100%;
+      font-family: 'Celestial', sans-serif;
+      letter-spacing: 2px;
+      font-size: clamp(15px, 3vw, 40px);
+      font-weight: 300;
+    }
+  }
