@@ -3,13 +3,15 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCa
 import { CardCreventComponent } from '../components/card-crevent/card-crevent.component';
 import { CommonModule } from '@angular/common';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, CardCreventComponent, IonLabel, CommonModule, 
-    IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider
-  ],
+    IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider,
+    HttpClientModule],
   standalone: true
 })
 export class Tab2Page implements OnInit {
@@ -23,10 +25,9 @@ export class Tab2Page implements OnInit {
   fotografo: any[] = [];
   altro: any[] = [];
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
   ngOnInit(){
-    this.caricaDatiFinti(); 
-    this.filtraDati();
+    this.caricaDati();
   }
 
   selezionaSezione(sezione: 'location' | 'staff') {
@@ -48,15 +49,32 @@ export class Tab2Page implements OnInit {
       { id: 14, nome: 'Bio', cognome: 'Event Catering', tipo: 'catering', costo: 85, url: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600' },
       { id: 1, nome: 'Galati', cognome: 'Catering', tipo: 'catering', costo: 80, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
       { id: 2, nome: 'Natale', cognome: 'Chef Catering', tipo: 'catering', costo: 95, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
-      { id: 3, nome: 'Riccardo', cognome: 'Ferrarese', tipo: 'dj', costo: 500, genereMusicale: 'Commerciale', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
+      { id: 3, nome: 'Riccardo', cognome: 'Ferrarese', tipo: 'intrattenimento', costo: 500, genereMusicale: 'Commerciale', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
       { id: 5, nome: 'Tiberio', cognome: 'Cantafia', tipo: 'fotografo', costo: 1200, url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  },
       { id: 7, nome: 'Emanuele', cognome: 'D\'Angeli', tipo: 'altro', costo: 600, mansione: 'Illusionista', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600'  }];
   }
 
   filtraDati() {
-    this.dj = this.listaStaff.filter(staff => staff.tipo === 'dj');
+    this.dj = this.listaStaff.filter(staff => staff.tipo === 'intrattenimento');
     this.catering = this.listaStaff.filter(staff => staff.tipo === 'catering');
     this.fotografo = this.listaStaff.filter(staff => staff.tipo === 'fotografo');
     this.altro = this.listaStaff.filter(staff => staff.tipo === 'altro');
+  }
+
+  caricaDati(){
+    this.http.get<any>('http://localhost:3000/api/browse').subscribe({
+      next: (risposta) => {
+        if(risposta.success) {
+          this.listaLocation = risposta.data.location;
+          this.listaStaff = risposta.data.staff;
+          this.filtraDati();
+        }
+      },
+      error: (err) => {
+        console.error("Impossibile connettersi al backend:", err);
+        this.caricaDatiFinti();
+        this.filtraDati();
+      }
+    });
   }
 }

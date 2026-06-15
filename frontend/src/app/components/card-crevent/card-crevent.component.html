@@ -1,5 +1,5 @@
 <ion-card class="crevent-card">
-  <img [src]="dati?.url || 'https://via.placeholder.com/350x150'" alt="Immagine Risorsa" />
+  <img [src]="dati?.url ? 'http://localhost:3000' + dati.url : 'https://via.placeholder.com/350x150'" alt="Immagine Risorsa" />
   
   <ion-card-header>
     <ion-card-title>
@@ -12,10 +12,12 @@
       <p><strong>{{ dettaglio.label }} </strong>{{ dettaglio.valore }}</p>
     }
     <div class="card-footer">
+
       <span class="prezzo">
         <strong>{{ testoPrezzo }}</strong>
       </span>
-      <ion-button fill="clear" color="primary">Vedi Disponibilità</ion-button>
+      
+      <ion-button fill="clear" color="primary" (click)="openDetail()">Info</ion-button>
     </div>
   </ion-card-content>
 </ion-card>

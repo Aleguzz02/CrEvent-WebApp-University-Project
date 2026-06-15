@@ -149,7 +149,7 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
     display: flex;
     flex-direction: column;   // Dispone prima in verticale (riga 1 e riga 2)
     flex-wrap: wrap;          // Quando finisce l'altezza, crea una nuova colonna a destra
-    height: 800px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
+    height: 900px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
     
     overflow-x: auto;         // Abilita lo scorrimento orizzontale quando superano lo schermo
     overflow-y: hidden;       // Blocca lo scorrimento verticale interno
@@ -163,14 +163,14 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
   }
 
   .oneColumn{
-    height: 420px !important;
+    height: 420px;
   }
 
   // Configurazione della larghezza delle card del componente figlio
   app-card-crevent {
     width: 320px;             // Larghezza fissa ideale per una card leggibile sul web
     flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
-    height: 360px;
+    max-height: 420px;
   }
 }
 .cards-container::-webkit-scrollbar{

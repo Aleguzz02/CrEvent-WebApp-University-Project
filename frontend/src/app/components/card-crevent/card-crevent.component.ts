@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
 
 @Component({
@@ -19,7 +20,7 @@ export class CardCreventComponent  implements OnInit {
   dettagliSpecifici: {label: string, valore: string}[] = [];
   testoPrezzo: string = '';  
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     if(!this.dati) return;
@@ -47,6 +48,10 @@ export class CardCreventComponent  implements OnInit {
         if(this.dati.costo) this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€`;
       }
     }
+  }
+
+  openDetail(){
+    this.router.navigate(['/resource-detail'], {state: {details: this.dati}})
   }
 
 }

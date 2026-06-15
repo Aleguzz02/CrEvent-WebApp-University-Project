@@ -1,0 +1,64 @@
+/* Contenitore principale del banner */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Puoi aumentare o diminuire l'altezza del banner */
+  overflow: hidden;
+}
+
+/* L'immagine fa da sfondo, coprendo tutto lo spazio */
+.hero-banner > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Il livello scuro e il testo centrato */
+.overlay-testo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Sfondo nero semitrasparente (modifica lo 0.5 per farlo più o meno scuro) */
+  background: rgba(0, 0, 0, 0.5); 
+  
+  /* Flexbox per centrare tutto in mezzo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  
+  /* Testo bianco per contrastare */
+  color: #ffffff;
+  padding: 20px;
+}
+
+.overlay-testo > h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Ombra per massima leggibilità */
+}
+
+.overlay-testo > h3 {
+  margin: 8px 0 0 0;
+  font-size: 16px;
+  text-transform: capitalize;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+}
+
+.toolbar-grande {
+
+  --min-height: 70px; 
+  
+  ion-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ion-color-primary, #3880ff); 
+  }
+}
