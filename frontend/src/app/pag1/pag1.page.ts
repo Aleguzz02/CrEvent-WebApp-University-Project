@@ -20,6 +20,7 @@ export class Pag1Page implements OnInit {
   @ViewChild('loginModal') loginModal!: IonModal;
   @ViewChild('signupModal') signupModal!: IonModal;
   @ViewChild(SignupFormComponent) signupFormComp!: SignupFormComponent;
+  @ViewChild(LoginFormComponent) loginFormComp!: LoginFormComponent;
 
   constructor() { }
 
@@ -31,7 +32,14 @@ export class Pag1Page implements OnInit {
   }
 
   loginConfirm() {
-    this.loginModal.dismiss(null, 'confirm');
+    const loginFormData = this.loginFormComp.onSubmit();
+    if (loginFormData) {
+      this.authService.login(loginFormData).subscribe({
+        next: (res) => console.log('Server response: ', res),
+        error: (err) => console.log('Error: ', err)
+      })
+      this.loginModal.dismiss(loginFormData, 'confirm');
+    }
   }
 
   signupCancel() {
@@ -39,13 +47,13 @@ export class Pag1Page implements OnInit {
   }
 
   signupConfirm() {
-  const formData = this.signupFormComp.onSubmit();
-  if (formData) {
-    this.authService.signup(formData).subscribe({
+  const signupFormData = this.signupFormComp.onSubmit();
+  if (signupFormData) {
+    this.authService.signup(signupFormData).subscribe({
       next: (res) => console.log('Server response:', res),
       error: (err) => console.error('Error:', err)
     });
-    this.signupModal.dismiss(formData, 'confirm');
+    this.signupModal.dismiss(signupFormData, 'confirm');
   }
   }
 
