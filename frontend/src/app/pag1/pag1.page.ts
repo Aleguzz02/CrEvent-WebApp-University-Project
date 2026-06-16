@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonModal, IonButtons } from '@ionic/angular/standalone';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { SignupFormComponent } from './signup-form/signup-form.component';
@@ -22,7 +23,9 @@ export class Pag1Page implements OnInit {
   @ViewChild(SignupFormComponent) signupFormComp!: SignupFormComponent;
   @ViewChild(LoginFormComponent) loginFormComp!: LoginFormComponent;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit() {
   }
@@ -39,6 +42,7 @@ export class Pag1Page implements OnInit {
         error: (err) => console.log('Error: ', err)
       })
       this.loginModal.dismiss(loginFormData, 'confirm');
+      this.router.navigate(['/tabs']);
     }
   }
 
