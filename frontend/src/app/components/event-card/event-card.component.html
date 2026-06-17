@@ -1,3 +1,34 @@
-<p>
-  event-card works!
-</p>
+<ion-card class="evento-card">
+  <div class="card-layout">
+    
+    <div class="card-info">
+      <ion-card-header>
+        <ion-card-title class="titolo-evento">{{ evento?.nome }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="dettagli-riga">
+          <p><strong>Data:</strong> {{ evento?.data }}</p>
+          <p><strong>Invitati:</strong> {{ evento?.invitati }}</p>
+        </div>
+        
+        <div class="stato-evento" style="margin-top: 8px; margin-bottom: 8px;">
+          <ion-badge [color]="evento?.svolto === 1 ? 'medium' : 'success'">
+            {{ evento?.svolto === 1 ? 'Concluso' : 'In Programma' }}
+          </ion-badge>
+        </div>
+
+        <ion-button fill="clear" size="small" (click)="apriDettagli()" style="margin-left: -8px;">
+          Gestisci / Info
+        </ion-button>
+      </ion-card-content>
+    </div>
+
+    <div class="card-immagine">
+      <img 
+        [src]="evento?.url ? 'http://localhost:3000' + evento.url : 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=300'" 
+        alt="Foto della location" />
+    </div>
+
+  </div>
+</ion-card>
