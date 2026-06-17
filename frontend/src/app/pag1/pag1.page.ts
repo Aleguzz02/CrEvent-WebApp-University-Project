@@ -38,11 +38,18 @@ export class Pag1Page implements OnInit {
     const loginFormData = this.loginFormComp.onSubmit();
     if (loginFormData) {
       this.authService.login(loginFormData).subscribe({
-        next: (res) => console.log('Server response: ', res),
+        next: (res) => {
+          // salva token e mail nel localStorage
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('userEmail', res.userEmail);
+          localStorage.setItem('userNome', res.userNome);
+
+          // chiude il modal e va su Tab2
+          this.loginModal.dismiss(loginFormData, 'confirm');
+          this.router.navigate(['/tabs']);
+        },
         error: (err) => console.log('Error: ', err)
       })
-      this.loginModal.dismiss(loginFormData, 'confirm');
-      this.router.navigate(['/tabs']);
     }
   }
 

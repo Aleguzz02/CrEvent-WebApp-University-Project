@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.json({ token, userEmail: user.email });
+        res.json({ token, userEmail: user.email, userNome: user.nome });
 
     } catch (err) {
         console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
