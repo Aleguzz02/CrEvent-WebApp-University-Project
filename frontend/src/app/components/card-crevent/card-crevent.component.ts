@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
+import { ModalController, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
+import { ResourceDetailPage } from 'src/app/resource-detail/resource-detail.page';
 
 @Component({
   selector: 'app-card-crevent',
@@ -20,7 +21,7 @@ export class CardCreventComponent  implements OnInit {
   dettagliSpecifici: {label: string, valore: string}[] = [];
   testoPrezzo: string = '';  
 
-  constructor(private router: Router) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     if(!this.dati) return;
@@ -50,8 +51,15 @@ export class CardCreventComponent  implements OnInit {
     }
   }
 
-  openDetail(){
-    this.router.navigate(['/resource-detail'], {state: {details: this.dati}})
+  async openDetail(){
+    const modal = await this.modalController.create({
+      component: ResourceDetailPage,
+      componentProps: {
+        resource: this.dati
+      },
+      cssClass: 'resource-detail-modal'
+    });
+    await modal.present();
   }
 
 }

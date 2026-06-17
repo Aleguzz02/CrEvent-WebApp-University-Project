@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonText, IonTitle, IonToolbar, ModalController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-resource-detail',
@@ -11,20 +11,17 @@ import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, I
   standalone: true,
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonImg, IonBackButton, IonIcon, IonText, IonButton]
 })
-export class ResourceDetailPage implements OnInit {
-  itemCorrente: any;
+export class ResourceDetailPage implements OnInit{
+  @Input() resource: any;
 
-  constructor(private router: Router) {
-    const navigation = this.router.getCurrentNavigation();
-    if(navigation?.extras.state){
-      this.itemCorrente = navigation.extras.state['details'];
-    }
-   }
+  constructor(private modalController: ModalController) {}
+
+  chiudi() {
+    this.modalController.dismiss();
+  }
 
   ngOnInit() {
-    if (!this.itemCorrente) {
-      this.router.navigate(['/tabs/tab2']);
-    }
-  }
+  console.log('RESOURCE DETTAGLIO:', this.resource);
+}
 
 }
