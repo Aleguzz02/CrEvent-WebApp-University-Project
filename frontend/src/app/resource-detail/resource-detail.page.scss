@@ -1,0 +1,116 @@
+/* Contenitore principale del banner */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 100%; /* Puoi aumentare o diminuire l'altezza del banner */
+  overflow: hidden;
+}
+
+/* L'immagine fa da sfondo, coprendo tutto lo spazio */
+.hero-banner > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.descrizione{
+  font-size: 16px ; 
+  line-height: 1.5;
+}
+
+/* Il livello scuro e il testo centrato */
+.overlay-testo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Sfondo nero semitrasparente (modifica lo 0.5 per farlo più o meno scuro) */
+  background: rgba(0, 0, 0, 0.5); 
+  
+  /* Flexbox per centrare tutto in mezzo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  
+  /* Testo bianco per contrastare */
+  color: #ffffff;
+  padding: 20px;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Ombra per massima leggibilità */
+  }
+
+  h3 {
+    margin: 8px 0 0 0;
+    font-size: 16px;
+    text-transform: capitalize;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  }
+
+  h2 {
+    color: rgba(34, 227, 34, 0.913);
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+}
+
+.toolbar-grande {
+
+  --min-height: 70px; 
+  
+  ion-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ion-color-primary, #3880ff); 
+  }
+}
+.closeButton{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  z-index: 20;
+
+  display: flex;
+  justify-content: center;
+  //pointer-events: none;
+  //background: transparent;
+  ion-button{
+    border-radius: 10px;
+    transition: transform 0.1s ease-in-out, background-color 0.1s ease-in-out;
+
+    &:hover{
+      color: white;
+      background-color: rgba(255, 255, 255, 0.249);
+    }
+  }
+  
+}
+
+.azione-sito {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+
+  ion-button {
+    // expand="block" rende il bottone a larghezza intera (100%) con angoli squadrati di base,
+    // ma dato che è anche "round", gestiamo la larghezza qui:
+    width: 30%;
+
+    // shape="round" in Ionic imposta il border-radius a 28px (o un valore totalmente arrotondato)
+    --border-radius: 28px;
+
+    // Targetting specifico per il link esterno (target="_blank")
+    // Questo selettore si attiva solo se il bottone 
+  }
+}

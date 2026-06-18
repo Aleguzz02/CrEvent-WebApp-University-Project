@@ -1,21 +1,115 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-title>
-      Tab 2
+      CrEvent
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button>Log In</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button>Sign Up</ion-button>
+    </ion-buttons>
   </ion-toolbar>
+  @if(sezione !== 'iniziale'){
+  <ion-toolbar mode="ios" class="toolbar-sottile">
+    <ion-segment [value]="sezione" (ionChange)="selezionaSezione($any($event).detail.value)">
+      <ion-segment-button value="location">
+        <ion-label>Location</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="staff">
+        <ion-label>Staff</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    @if (sezione === 'iniziale') {
+    <div class="contenitore-iniziale">
+      <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
+        <div class="overlay-scuro">
+          <ion-card-header>
+            <ion-card-title id="locationTitleButtonBrowse">
+              <strong>Location</strong>
+            </ion-card-title>
+          </ion-card-header>
+        </div>
+      </ion-card>
 
-  <ion-text>
-    Bentornato {{ userNome }}
-  </ion-text>
+      <ion-card class="bottone-grande staff-bg" (click)="selezionaSezione('staff')">
+        <div class="overlay-scuro">
+          <ion-card-header>
+            <ion-card-title>
+              <strong>Staff</strong>
+            </ion-card-title>
+          </ion-card-header>
+        </div>
+      </ion-card>
+    </div>
+    }
+    @if(sezione === 'location'){
+      <ion-list>
+        @for(loc of listaLocation; track loc.id){
+          <app-card-crevent [dati]="loc"></app-card-crevent>
+        }@empty{
+          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+        }
+      </ion-list>
+    }
+    @if(sezione === 'staff'){
+      <ion-item-divider>
+        <ion-label>Servizi di Catering</ion-label>
+      </ion-item-divider>
+      <div class="categoria-staff-gruppo">
+          
+          <div class="cards-container" [class.oneColumn]="catering.length < 6">
+            @for (staff of catering; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
+        </div>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+        <ion-item-divider>
+          <ion-label>DJ e Intrattenimento</ion-label>
+        </ion-item-divider>
+        <div class="categoria-staff-gruppo">
+          
+          <div class="cards-container"  [class.oneColumn]="dj.length < 6">
+            @for (staff of dj; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
+        </div>
+
+        <ion-item-divider>
+          <ion-label>Fotografi</ion-label>
+        </ion-item-divider>
+        <div class="categoria-staff-gruppo">
+          <div class="cards-container"  [class.oneColumn]="fotografo.length < 6">
+            @for (staff of fotografo; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
+        </div>
+
+         <ion-item-divider>
+          <ion-label>Altri Servizi e Spettacoli</ion-label>
+        </ion-item-divider>
+        <div class="categoria-staff-gruppo">
+          <div class="cards-container"  [class.oneColumn]="altro.length < 6">
+            @for (staff of altro; track staff.id) {
+              <app-card-crevent [dati]="staff"></app-card-crevent>
+            }@empty{
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+            }
+          </div>
+        </div>
+    }
 </ion-content>

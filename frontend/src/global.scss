@@ -35,3 +35,41 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+@font-face {
+  font-family: 'Celestial';
+  src: url('./assets/fonts/Celestial\ Silence.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.resource-detail-modal {
+  --width: 90%;
+  --height: 88%;
+
+  //--max-width: 900px;
+  //--max-height: 850px;
+
+  --border-radius: 50px;
+
+}
+
+app-tab1, app-tab2, app-tab3 {
+  display: block; 
+  animation: tabFadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* Definiamo i fotogrammi chiave (Keyframes) */
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

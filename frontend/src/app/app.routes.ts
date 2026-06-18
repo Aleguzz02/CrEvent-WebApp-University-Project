@@ -1,20 +1,19 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './services/auth.guards';
 
-
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pag1/pag1.page').then( m => m.Pag1Page)
-    // loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
+    loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
+    canActivate: [authGuard]
   },
   {
-    path: 'pag1',
-    loadComponent: () => import('./pag1/pag1.page').then( m => m.Pag1Page),
+    path: 'resource-detail',
+    loadComponent: () => import('./resource-detail/resource-detail.page').then( m => m.ResourceDetailPage)
   },
-    {
-    path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
-    canActivate: [authGuard],
+  {
+    path: 'create-event',
+    loadComponent: () => import('./create-event/create-event.page').then( m => m.CreateEventPage)
   },
+
 ];

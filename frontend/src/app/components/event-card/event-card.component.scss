@@ -1,0 +1,41 @@
+.card-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch; /* Costringe i due blocchi ad avere la stessa altezza */
+}
+
+.card-info {
+  flex: 1; /* Occupa tutto lo spazio a sinistra */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-immagine {
+  width: 120px; /* Imposta quanto vuoi che sia larga la striscia della foto */
+  flex-shrink: 0; /* Impedisce che la foto si rimpicciolisca su schermi piccoli */
+}
+
+.card-immagine img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mantiene le proporzioni tagliando gli eccessi */
+  display: block;
+}
+
+/* Riduciamo i padding standard di Ionic per un look più pulito */
+ion-card-header {
+  padding-bottom: 4px;
+}
+
+.titolo-evento {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.dettagli-riga p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}

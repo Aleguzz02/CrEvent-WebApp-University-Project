@@ -1,0 +1,209 @@
+.toolbar-grande {
+
+  --min-height: 85px; 
+  
+  ion-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ion-color-primary, #3880ff); 
+  }
+}
+
+// Stile per il titolo grande quando la pagina non è ancora scrollata
+ion-header[collapse="condense"] .toolbar-grande ion-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+}
+
+.contenitore-iniziale{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: clamp(10vw, 10vw, 50vw);
+  box-sizing: border-box;
+  gap: clamp(10px, 20vw, 200px);
+
+  @media (max-width: 480px) {
+    flex-direction: column; 
+    gap: 16px;
+  }
+
+  .bottone-grande {
+  width: 100%;
+  // Definiamo una dimensione base flessibile ed elegante per schermi desktop/web
+  min-width: 180px;
+  max-width: 260px;        
+  aspect-ratio: 1 / 1;     // Rapporto 1:1 fisso (Larghezza = Altezza)
+  
+  margin: 0;               // Elimina i margini nativi di Ionic
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  border-radius: 20px;     // Arrotondamento moderno dei bordi
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  //transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+
+  // Effetto sollevamento al passaggio del mouse (Hover web)
+  &:hover {
+    transform: translateY(-6px); 
+    box-shadow: 0 0ch 40px rgba(255, 255, 255, 0.7);
+
+    @media(prefers-color-scheme: light){
+      box-shadow: 0 0ch 40px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  // Sfondi fotografici provvisori
+  &.location-bg {
+    background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop');
+  }
+
+  &.staff-bg {
+    background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop');
+  }
+  #locationTitleButtonBrowse{
+    color: black;
+  }
+}
+}
+
+.overlay-scuro { //??? da capire cosa fa
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 70%, rgba(0,0,0,0) 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;   // Spinge il testo in basso
+  padding: 20px;
+  box-sizing: border-box;
+
+  ion-card-header {
+    padding: 0;
+    width: 100%;
+  }
+
+  ion-card-title {
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff !important;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 100%;
+  }
+}
+
+// Layout contenitore liste dati dal DB
+.categoria-staff-gruppo {
+  width: 100%;
+  margin: 0px auto 24px auto;
+  padding: 0;
+  max-width: 1200px;        // Dimensione ottimale di lettura sul web desktop
+      // Centra la lista orizzontalmente sulla pagina web
+
+  ion-item-divider {
+  
+    --background: transparent;
+    font-weight: 700;
+    color: var(--ion-color-white);
+    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
+    margin-bottom: 16px;
+    width: 100vw;
+
+    
+    ion-label{
+      text-align: center !important;
+      width: 100%;
+      font-family: 'Celestial', sans-serif;
+      letter-spacing: 2px;
+      font-size: clamp(15px, 3vw, 40px);
+      font-weight: 300;
+    }
+  }
+  .cards-container{
+    max-width: 1200px;
+    margin: 0px auto clamp(0px, 5vh, 100px) auto;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;   // Dispone prima in verticale (riga 1 e riga 2)
+    flex-wrap: wrap;          // Quando finisce l'altezza, crea una nuova colonna a destra
+    height: 900px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
+    
+    overflow-x: auto;         // Abilita lo scorrimento orizzontale quando superano lo schermo
+    overflow-y: hidden;       // Blocca lo scorrimento verticale interno
+    
+    gap: 20px;
+    padding: 10px;
+    
+    // Centra il contenuto se ci sono poche card che non riempiono lo schermo web
+    justify-content: center;  
+    align-content: flex-start;    // Centra le colonne aggregate rispetto all'asse principale
+  }
+
+  .oneColumn{
+    height: 420px;
+  }
+
+  // Configurazione della larghezza delle card del componente figlio
+  app-card-crevent {
+    width: 320px;             // Larghezza fissa ideale per una card leggibile sul web
+    flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
+    max-height: 420px;
+  }
+}
+.cards-container::-webkit-scrollbar{
+  display: none;
+}
+
+.emptyBrowseSection {
+  text-align: center;
+  color: var(--ion-color-medium);
+  font-size: 16px;
+  padding: 32px;
+  width: 100%;
+}
+
+ion-list {
+    width: clamp(200px,60vw,800px);
+    margin: 0px auto 0 auto;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+ion-item-divider {
+  
+    --background: transparent;
+    font-weight: 700;
+    color: var(--ion-color-white);
+    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
+    //border-top: 2px solid rgba(202, 202, 202, 0.626);
+    margin-bottom: 16px;
+    width: 100vw;
+
+    --background: linear-gradient(to bottom, rgba(255, 255, 255, 0.347) 0%, black 60%);
+
+    @media(prefers-color-scheme: light){
+      --background: linear-gradient(to bottom, rgba(0, 0, 0, 0.347) 0%, white 60%);
+    }
+
+    
+    ion-label{
+      text-align: center !important;
+      width: 100%;
+      font-family: 'Celestial', sans-serif;
+      letter-spacing: 2px;
+      font-size: clamp(15px, 3vw, 40px);
+      font-weight: 300;
+    }
+  }
