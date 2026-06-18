@@ -1,17 +1,39 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-title class="titolo-eventi">
+      My Events
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar mode="ios" class="toolbar-mid">
+    <ion-title class="nome-app">
+      CrEvent
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">I Miei Eventi</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  @if(eventiUtente.length > 0){
+    @for(event of eventiUtente; track event.id){
+      <app-event-card [evento]="event"></app-event-card>
+    }
+  }
+  @else{
+    <div class="stato-vuoto">
+      <h2>Nessun evento</h2>
+      <p>Non hai ancora prenotato nessun evento.</p>
+    </div>
+  }
+  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+    <ion-button (click)="creaNuovoEvento()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Nuovo evento
+    </ion-button>
+  </ion-fab>
+
 </ion-content>
