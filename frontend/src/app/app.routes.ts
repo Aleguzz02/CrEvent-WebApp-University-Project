@@ -8,5 +8,9 @@ export const routes: Routes = [
     path: 'resource-detail',
     loadComponent: () => import('./resource-detail/resource-detail.page').then( m => m.ResourceDetailPage)
   },
+  {
+    path: 'create-event',
+    loadComponent: () => import('./create-event/create-event.page').then( m => m.CreateEventPage)
+  },
 
 ];

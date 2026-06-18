@@ -29,8 +29,9 @@ export class CardCreventComponent  implements OnInit {
     this.isLocation = 'capienza' in this.dati;
     this.isStaff = 'tipo' in this.dati;
     this.nomeVisualizzato = this.isStaff ? `${this.dati.nome} ${this.dati.cognome || ''}` : this.dati.nome;
-    this.testoPrezzo = this.isLocation ? 'Costo affitto: ' : 'Prezzo ingaggio: ';
-    this.preparaDettagli();  }
+    this.testoPrezzo = ( this.isLocation ? 'Costo affitto: ' : 'Prezzo ingaggio: ' ) + ( this.dati.tipo === 'catering' ? `${this.dati.costo}€ pp` : `${this.dati.costo}€` );
+    this.preparaDettagli();  
+  }
 
   preparaDettagli() {
     if(this.isLocation){
@@ -43,19 +44,16 @@ export class CardCreventComponent  implements OnInit {
       if(this.dati.genereMusicale) this.dettagliSpecifici.push({label: 'Genere musicale:', valore: `${this.dati.genereMusicale}`});
       if(this.dati.genereFotografico) this.dettagliSpecifici.push({label: 'Stile fotografico:', valore: `${this.dati.genereFotografico}`});
       if(this.dati.mansione) this.dettagliSpecifici.push({label: 'Specialità:', valore: `${this.dati.mansione}`});
-      if(this.dati.tipo === 'catering'){
-        if(this.dati.costo) this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€ pp`;
-      }else{
-        if(this.dati.costo) this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€`;
-      }
     }
   }
 
   async openDetail(){
+
     const modal = await this.modalController.create({
       component: ResourceDetailPage,
       componentProps: {
-        resource: this.dati
+        resource: this.dati,
+        testoPrezzo: this.testoPrezzo
       },
       cssClass: 'resource-detail-modal'
     });

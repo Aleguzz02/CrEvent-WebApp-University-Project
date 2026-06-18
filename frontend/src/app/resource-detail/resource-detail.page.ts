@@ -13,6 +13,7 @@ import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, I
 })
 export class ResourceDetailPage implements OnInit{
   @Input() resource: any;
+  @Input() testoPrezzo: string = '';
 
   constructor(private modalController: ModalController) {}
 

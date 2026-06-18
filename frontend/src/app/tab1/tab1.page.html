@@ -3,7 +3,6 @@
     <ion-title class="titolo-eventi">
       My Events
     </ion-title>
-
   </ion-toolbar>
   <ion-toolbar mode="ios" class="toolbar-mid">
     <ion-title class="nome-app">
@@ -30,5 +29,11 @@
       <p>Non hai ancora prenotato nessun evento.</p>
     </div>
   }
+  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+    <ion-button (click)="creaNuovoEvento()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Nuovo evento
+    </ion-button>
+  </ion-fab>
 
 </ion-content>

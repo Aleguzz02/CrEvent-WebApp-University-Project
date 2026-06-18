@@ -25,21 +25,27 @@
             <h3>{{ resource.tipo }}</h3>
           }
           <div class="ion-padding testo-dettaglio">
-            <p class="descrizione" style="font-size: 16px; line-height: 1.5;">{{ resource.descrizione }}</p>
+            <p class="descrizione">{{ resource.descrizione }}</p>
+          
+            <h2>{{ testoPrezzo }}</h2>
+            @if(resource.capienza){
+              <p><strong>Capienza massima:</strong> {{ resource.capienza }} persone</p>
+            }
+            @if(resource.genereMusicale){
+              <p><strong>Genere:</strong> {{ resource.genereMusicale }}</p>
+            }
+            @if(resource.mansione){
+              <p><strong>Mansione:</strong> {{ resource.mansione }}</p>
+            }
+
+            @if(resource.linkSito){
+              <div class="azione-sito">
+                <ion-button [href]="resource.linkSito" target="_blank">
+                  Visita il sito web
+                </ion-button>
+              </div>
+            }
             
-            <ion-text color="primary">
-              <h2>Rapporto qualità prezzo: {{ resource.costo }} €</h2>
-            </ion-text>
-
-            <p *ngIf="resource.capienza"><strong>Capienza massima:</strong> {{ resource.capienza }} persone</p>
-            <p *ngIf="resource.genereMusicale"><strong>Genere:</strong> {{ resource.genereMusicale }}</p>
-            <p *ngIf="resource.mansione"><strong>Mansione:</strong> {{ resource.mansione }}</p>
-
-            <div class="azione-sito" *ngIf="resource.linkSito" style="margin-top: 32px;">
-              <ion-button expand="block" shape="round" [href]="resource.linkSito" target="_blank">
-                Visita il sito web
-              </ion-button>
-            </div>
             <div class="closeButton">
               <ion-button fill="clear" (click)="chiudi()">Chiudi</ion-button>
             </div>

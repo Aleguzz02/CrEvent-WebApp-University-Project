@@ -35,3 +35,39 @@
     line-height: 1.5;
   }
 }
+
+ion-fab {
+  margin-bottom: 16px;
+  ion-button {
+    // Struttura e Dimensioni
+    min-width: 180px;
+    height: 48px;
+    
+    // Riproduce shape="round" tramite variabile Ionic
+    --border-radius: 24px;
+
+    // Colori presi dalle variabili globali di Ionic (Primary)
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+
+    // Effetto ombra per dare profondità sullo scrolling delle card
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    
+    // Transizione fluida al click (opzionale)
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-icon {
+      // Riproduce slot="start" (Icona a sinistra del testo)
+      order: -1; 
+      margin-right: 8px;
+      font-size: 1.4em;
+    }
+  }
+}
+
+// Opzionale: Se hai paura che il bottone copra l'ultima card quando scrolli fino in fondo, 
+// puoi aggiungere un po' di padding sul fondo del content/lista.

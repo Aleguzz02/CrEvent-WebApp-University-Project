@@ -14,6 +14,11 @@
   display: block;
 }
 
+.descrizione{
+  font-size: 16px ; 
+  line-height: 1.5;
+}
+
 /* Il livello scuro e il testo centrato */
 .overlay-testo {
   position: absolute;
@@ -35,20 +40,26 @@
   /* Testo bianco per contrastare */
   color: #ffffff;
   padding: 20px;
-}
 
-.overlay-testo > h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Ombra per massima leggibilità */
-}
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Ombra per massima leggibilità */
+  }
 
-.overlay-testo > h3 {
-  margin: 8px 0 0 0;
-  font-size: 16px;
-  text-transform: capitalize;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  h3 {
+    margin: 8px 0 0 0;
+    font-size: 16px;
+    text-transform: capitalize;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  }
+
+  h2 {
+    color: rgba(34, 227, 34, 0.913);
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
 }
 
 .toolbar-grande {
@@ -84,4 +95,22 @@
     }
   }
   
+}
+
+.azione-sito {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+
+  ion-button {
+    // expand="block" rende il bottone a larghezza intera (100%) con angoli squadrati di base,
+    // ma dato che è anche "round", gestiamo la larghezza qui:
+    width: 30%;
+
+    // shape="round" in Ionic imposta il border-radius a 28px (o un valore totalmente arrotondato)
+    --border-radius: 28px;
+
+    // Targetting specifico per il link esterno (target="_blank")
+    // Questo selettore si attiva solo se il bottone 
+  }
 }
