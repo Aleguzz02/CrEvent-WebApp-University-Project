@@ -3,12 +3,49 @@
     <ion-title>
       CrEvent
     </ion-title>
+    @if(isAuthenticated == false) {
     <ion-buttons slot="end">
-      <ion-button>Log In</ion-button>
+      <ion-button id="loginButton">Log In</ion-button>
+        <ion-modal #loginModal trigger="loginButton">
+          <ng-template>
+            <ion-header>
+              <ion-toolbar>
+                <ion-buttons slot="start">
+                  <ion-button (click)="loginCancel()">Cancel</ion-button>
+                </ion-buttons>
+                <ion-title>Login</ion-title>
+                <ion-buttons slot="end">
+                  <ion-button (click)="loginConfirm()" [strong]="true">Confirm</ion-button>
+               </ion-buttons>
+              </ion-toolbar>
+            </ion-header>
+            <ion-content class="ion-padding">
+              <app-login-form></app-login-form>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+
+      <ion-button id="signupButton">Sign Up</ion-button>
+      <ion-modal #signupModal trigger="signupButton">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="signupCancel()">Cancel</ion-button>
+              </ion-buttons>
+              <ion-title>Signup</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="signupConfirm()" [strong]="true">Confirm</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <app-signup-form></app-signup-form>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button>Sign Up</ion-button>
-    </ion-buttons>
+    }
   </ion-toolbar>
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">

@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonModal, IonButtons } from '@ionic/angular/standalone';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { SignupFormComponent } from './signup-form/signup-form.component';
+import { LoginFormComponent } from '../components/login-form/login-form.component';
+import { SignupFormComponent } from '../components/signup-form/signup-form.component';
 import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
 
