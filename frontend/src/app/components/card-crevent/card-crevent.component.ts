@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ModalController, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
-import { ResourceDetailPage } from 'src/app/resource-detail/resource-detail.page';
+import { ResourceDetailPage } from '../../resource-detail/resource-detail.page';
 
 @Component({
   selector: 'app-card-crevent',
