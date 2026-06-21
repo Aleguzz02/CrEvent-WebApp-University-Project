@@ -64,7 +64,10 @@ export class Tab2Page implements OnInit {
           // chiude il modal
           this.loginModal.dismiss(loginFormData, 'confirm');
         },
-        error: (err) => console.log('Error: ', err)
+        error: (err) => {
+          console.log('Error: ', err);
+          alert('Credenziali non valide. Per favore riprova.');
+        }
       })
     }
   }

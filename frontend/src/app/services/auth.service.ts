@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';     // Reactive eXtensions for JavaScript per flusso dati async
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,13 @@ export class AuthService {
   }
 
   login(userData: any): Observable<any> {
-    this.authState.next(true);
-    return this.http.post(`${this.apiUrl}/api/login`, userData);
+    return this.http.post(`${this.apiUrl}/api/login`, userData).pipe(
+      tap((res: any) => {
+        if (res && res.token) {
+          this.authState.next(true);
+        }
+      })
+    );
   }
 
   private hasToken(): boolean {
