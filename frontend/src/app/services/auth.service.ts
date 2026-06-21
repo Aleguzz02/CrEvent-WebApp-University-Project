@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';     // Reactive eXtensions for JavaScript per flusso dati async
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000';
+
+  private authState = new BehaviorSubject<boolean>(this.hasToken());
+  isAuthenticated$ = this.authState.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -15,7 +18,12 @@ export class AuthService {
   }
 
   login(userData: any): Observable<any> {
+    this.authState.next(true);
     return this.http.post(`${this.apiUrl}/api/login`, userData);
+  }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem('token');
   }
 
   getToken(): string | null {
@@ -30,6 +38,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userNome');
+    this.authState.next(false);
   }
 
 

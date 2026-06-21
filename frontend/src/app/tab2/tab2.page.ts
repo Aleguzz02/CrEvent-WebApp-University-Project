@@ -25,7 +25,9 @@ export class Tab2Page implements OnInit {
   @ViewChild(LoginFormComponent) loginFormComp!: LoginFormComponent;
 
   sezione: 'iniziale' | 'location' | 'staff' = 'iniziale';
+
   isAuthenticated = false;
+
   listaLocation: any[] = [];
   listaStaff: any[] = [];
 
@@ -37,8 +39,12 @@ export class Tab2Page implements OnInit {
   private authService = inject(AuthService);
 
   constructor(private http: HttpClient) {}
+
   ngOnInit(){
     this.caricaDati();
+    this.authService.isAuthenticated$.subscribe(status => {
+      this.isAuthenticated = status;
+    })
   }
 
   loginCancel() {
@@ -55,9 +61,8 @@ export class Tab2Page implements OnInit {
           localStorage.setItem('userEmail', res.userEmail);
           localStorage.setItem('userNome', res.userNome);
 
-          // chiude il modal e va su Tab2
+          // chiude il modal
           this.loginModal.dismiss(loginFormData, 'confirm');
-
         },
         error: (err) => console.log('Error: ', err)
       })
@@ -77,6 +82,10 @@ export class Tab2Page implements OnInit {
       });
       this.signupModal.dismiss(signupFormData, 'confirm');
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   selezionaSezione(sezione: 'location' | 'staff') {

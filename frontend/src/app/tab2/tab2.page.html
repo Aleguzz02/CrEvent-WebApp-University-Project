@@ -46,6 +46,12 @@
       </ion-modal>
     </ion-buttons>
     }
+
+    @if(isAuthenticated == true) {
+      <ion-buttons slot="end">
+        <ion-button (click)="logout()">Log Out</ion-button>
+      </ion-buttons>
+    }
   </ion-toolbar>
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">
