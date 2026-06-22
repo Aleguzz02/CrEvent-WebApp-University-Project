@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCard, IonCardHeader, 
   IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons, IonModal } from '@ionic/angular/standalone';
 import { CardCreventComponent } from '../components/card-crevent/card-crevent.component';
 import { CommonModule } from '@angular/common';
-import { LoginFormComponent } from '../components/login-form/login-form.component';
-import { SignupFormComponent } from '../components/signup-form/signup-form.component';
 import { AuthService } from '../services/auth.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LoginModalComponent } from '../components/login-modal/login-modal.component';
+import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
+import { ModalController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab2',
@@ -14,15 +15,14 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrls: ['tab2.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, CardCreventComponent, IonLabel, CommonModule, 
     IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider,
-    HttpClientModule, IonButtons, IonModal, SignupFormComponent, LoginFormComponent],
+    HttpClientModule, IonButtons],
   standalone: true
 })
 export class Tab2Page implements OnInit {
 
-  @ViewChild('loginModal') loginModal!: IonModal;
-  @ViewChild('signupModal') signupModal!: IonModal;
-  @ViewChild(SignupFormComponent) signupFormComp!: SignupFormComponent;
-  @ViewChild(LoginFormComponent) loginFormComp!: LoginFormComponent;
+  // Servizi
+  private authService = inject(AuthService);
+  private modalCtrl = inject(ModalController);
 
   sezione: 'iniziale' | 'location' | 'staff' = 'iniziale';
 
@@ -36,8 +36,6 @@ export class Tab2Page implements OnInit {
   fotografo: any[] = [];
   altro: any[] = [];
 
-  private authService = inject(AuthService);
-
   constructor(private http: HttpClient) {}
 
   ngOnInit(){
@@ -47,44 +45,18 @@ export class Tab2Page implements OnInit {
     })
   }
 
-  loginCancel() {
-    this.loginModal.dismiss(null, 'cancel');
+  async openLoginModal() {
+    const modal = await this.modalCtrl.create({
+      component: LoginModalComponent,
+    });
+    await modal.present();
   }
 
-  loginConfirm() {
-    const loginFormData = this.loginFormComp.onSubmit();
-    if (loginFormData) {
-      this.authService.login(loginFormData).subscribe({
-        next: (res) => {
-          // salva token e mail nel localStorage
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('userEmail', res.userEmail);
-          localStorage.setItem('userNome', res.userNome);
-
-          // chiude il modal
-          this.loginModal.dismiss(loginFormData, 'confirm');
-        },
-        error: (err) => {
-          console.log('Error: ', err);
-          alert('Credenziali non valide. Per favore riprova.');
-        }
-      })
-    }
-  }
-
-  signupCancel() {
-    this.signupModal.dismiss(null, 'cancel');
-  }
-
-  signupConfirm() {
-    const signupFormData = this.signupFormComp.onSubmit();
-    if (signupFormData) {
-      this.authService.signup(signupFormData).subscribe({
-        next: (res) => console.log('Server response:', res),
-        error: (err) => console.error('Error:', err)
-      });
-      this.signupModal.dismiss(signupFormData, 'confirm');
-    }
+  async openSignupModal() {
+    const modal = await this.modalCtrl.create({
+      component: SignupModalComponent,
+    });
+    await modal.present();
   }
 
   logout() {

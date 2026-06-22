@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="signupFormRef.resetForm(); closeSignupModal()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Signup</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="signupFormRef.submitForm(); closeSignupModal()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-signup-form #signupFormRef (formSubmit)="handleFormSubmit($event)"></app-signup-form>
+</ion-content>

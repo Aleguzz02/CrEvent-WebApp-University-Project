@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="loginFormRef.resetForm(); closeLoginModal()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Login</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loginFormRef.submitForm(); closeLoginModal()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-login-form #loginFormRef (formSubmit)="handleFormSubmit($event)"></app-login-form>
+</ion-content>

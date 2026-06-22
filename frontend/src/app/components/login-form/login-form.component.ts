@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 
@@ -11,6 +11,8 @@ import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 })
 export class LoginFormComponent  implements OnInit {
   loginForm: FormGroup;
+
+  @Output() formSubmit = new EventEmitter<any>();
 
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
@@ -28,4 +30,16 @@ export class LoginFormComponent  implements OnInit {
     return null;
   }
 
+  submitForm() {
+    if (this.loginForm.valid) {
+      this.formSubmit.emit(this.loginForm.value);
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
+  }
+
+  resetForm() {
+    this.loginForm.reset();
+  }
+  
 }
