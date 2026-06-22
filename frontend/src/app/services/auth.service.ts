@@ -12,6 +12,10 @@ export class AuthService {
   private authState = new BehaviorSubject<boolean>(this.hasToken());
   isAuthenticated$ = this.authState.asObservable();
 
+  get isAuthenticated(): boolean {
+    return this.authState.getValue();
+  }
+
   constructor(private http: HttpClient) { }
 
   signup(userData: any): Observable<any> {
@@ -34,10 +38,6 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
   }
 
   logout(): void {
