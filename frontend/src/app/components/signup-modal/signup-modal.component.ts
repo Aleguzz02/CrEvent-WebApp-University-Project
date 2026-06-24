@@ -1,14 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonModal } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText } from '@ionic/angular/standalone';
 import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { SignupFormComponent } from '../signup-form/signup-form.component';
+import { LoginModalComponent } from '../login-modal/login-modal.component';
 
 @Component({
   selector: 'app-signup-modal',
   templateUrl: './signup-modal.component.html',
   styleUrls: ['./signup-modal.component.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonModal, SignupFormComponent],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText, SignupFormComponent],
   standalone: true,
 })
 export class SignupModalComponent  implements OnInit {
@@ -32,6 +33,16 @@ export class SignupModalComponent  implements OnInit {
       });
       this.modalCtrl.dismiss(formData, 'confirm');
     }
+  }
+
+  async openLoginModal() {
+    // Chiudi il modal ldi login
+    this.closeSignupModal();
+
+    const modal = await this.modalCtrl.create({
+      component: LoginModalComponent,
+    });
+      await modal.present();
   }
 
 }

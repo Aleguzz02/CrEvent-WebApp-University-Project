@@ -12,4 +12,6 @@
 
 <ion-content class="ion-padding">
   <app-signup-form #signupFormRef (formSubmit)="handleFormSubmit($event)"></app-signup-form>
+  <ion-text>Hai già un account?</ion-text>
+  <ion-button (click)="openLoginModal()">Accedi</ion-button>
 </ion-content>
