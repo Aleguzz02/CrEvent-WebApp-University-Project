@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCardHeader, IonFab, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { EventCardComponent } from '../components/event-card/event-card.component';
 import { addOutline } from 'ionicons/icons';
@@ -10,8 +9,7 @@ import { addOutline } from 'ionicons/icons';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent, EventCardComponent,
-    IonCardHeader, IonFab, IonButton, IonIcon
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, EventCardComponent, IonFab, IonButton, IonIcon
   ],
 })
 export class Tab1Page {
