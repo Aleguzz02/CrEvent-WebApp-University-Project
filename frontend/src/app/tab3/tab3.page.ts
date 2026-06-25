@@ -42,8 +42,6 @@ export class Tab3Page implements OnInit{
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
-      backdropDismiss: false,
-      showBackdrop: true
     });
     await modal.present();
   }

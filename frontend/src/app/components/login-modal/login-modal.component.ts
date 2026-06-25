@@ -1,5 +1,5 @@
 import { Component, inject, OnInit} from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText } from '@ionic/angular/standalone';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
@@ -9,7 +9,7 @@ import { SignupModalComponent } from '../signup-modal/signup-modal.component';
   selector: 'app-login-modal',
   templateUrl: './login-modal.component.html',
   styleUrls: ['./login-modal.component.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, LoginFormComponent],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, LoginFormComponent, IonText],
   standalone: true,
 })
 export class LoginModalComponent  implements OnInit {

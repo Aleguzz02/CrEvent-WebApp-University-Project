@@ -1,16 +1,25 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="loginFormRef.resetForm(); closeLoginModal()">Cancel</ion-button>
+      <ion-button (click)="loginFormRef.resetForm(); closeLoginModal()">Annulla</ion-button>
     </ion-buttons>
-    <ion-title>Login</ion-title>
+    <ion-title class="ion-text-center">Accedi</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="loginFormRef.submitForm(); closeLoginModal()" [strong]="true">Confirm</ion-button>
+      <ion-button disabled style="visibility: hidden;">Annulla</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <app-login-form #loginFormRef (formSubmit)="handleFormSubmit($event)"></app-login-form>
-  <ion-button (click)="openSignupModal()">Crea un nuovo account</ion-button>
+  <ion-button expand="block" (click)="loginFormRef.submitForm(); closeLoginModal()" [strong]="true">Conferma</ion-button>
+
+  <div class="ion-padding-top ion-margin-top" style="border-top: 1px solid var(--ion-color-light);">
+    <ion-text color="medium" class="ion-text-center ion-padding-bottom" style="display: block;">
+      Non hai un account?
+    </ion-text>
+    <ion-button expand="block" fill="clear" color="primary" (click)="openSignupModal()">
+      Registrati
+    </ion-button>
+  </div>
 </ion-content>
