@@ -21,18 +21,11 @@ export class SignupFormComponent  implements OnInit {
       dataNascita: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefono: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)]]
     });
   }
 
   ngOnInit() {}
-
-  onSubmit() {
-    if (this.signupForm.valid) {
-      return this.signupForm.value;
-    }
-    return null;
-  }
 
   submitForm() {
     if (this.signupForm.valid) {

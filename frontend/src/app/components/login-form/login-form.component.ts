@@ -23,13 +23,6 @@ export class LoginFormComponent  implements OnInit {
 
   ngOnInit() {}
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      return this.loginForm.value;
-    }
-    return null;
-  }
-
   submitForm() {
     if (this.loginForm.valid) {
       this.formSubmit.emit(this.loginForm.value);

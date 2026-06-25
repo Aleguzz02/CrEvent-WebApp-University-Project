@@ -21,13 +21,19 @@ export class LoginModalComponent  implements OnInit {
 
   ngOnInit() {}
 
-  closeLoginModal() {
-    this.modalCtrl.dismiss(null, "confirm");
+  async closeLoginModal() {
+    try {
+      await this.modalCtrl.dismiss(null, "confirm");
+    } catch (e) {
+      console.warn("Modal already dismissed");
+    }
+    
   }
 
   handleFormSubmit(formData: any) {
     this.authService.login(formData).subscribe({
       next: (res) => {
+        this.closeLoginModal();
         localStorage.setItem('token', res.token);
         localStorage.setItem('userEmail', res.userEmail);
         this.modalCtrl.dismiss(formData, 'confirm');
@@ -40,7 +46,7 @@ export class LoginModalComponent  implements OnInit {
 
   async openSignupModal() {
     // Chiudi il modal di login
-    this.closeLoginModal();
+    await this.closeLoginModal();
 
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
