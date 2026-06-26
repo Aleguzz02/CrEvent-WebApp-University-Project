@@ -1,8 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-title class="titolo-eventi">
-      My Events
+      I miei eventi
     </ion-title>
+    @if(isAuthenticated == true) {
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">Log Out</ion-button>
+    </ion-buttons>
+    }
   </ion-toolbar>
   <ion-toolbar mode="ios" class="toolbar-mid">
     <ion-title class="nome-app">
@@ -18,22 +23,60 @@
     </ion-toolbar>
   </ion-header>
 
-  @if(eventiUtente.length > 0){
-    @for(event of eventiUtente; track event.id){
-      <app-event-card [evento]="event"></app-event-card>
-    }
-  }
-  @else{
-    <div class="stato-vuoto">
-      <h2>Nessun evento</h2>
-      <p>Non hai ancora prenotato nessun evento.</p>
+  @if(isAuthenticated == false) {
+    <div class="centered-container">
+      <ion-card>
+        <ion-card-content>
+          <div class="text-center">
+            <p class="ion-text-muted">
+              Accedi per visualizzare i tuoi eventi.
+            </p>
+
+            <ion-button 
+              (click)="openLoginModal()" 
+              expand="block" 
+              shape="round"
+              color="primary"
+            >
+              <ion-icon slot="start" name="log-in"></ion-icon>
+              Accedi
+            </ion-button>
+
+            <ion-button 
+              (click)="openSignupModal()" 
+              expand="block" 
+              fill="outline"
+              shape="round"
+            >
+              <ion-icon slot="start" name="person-add"></ion-icon>
+              Crea un nuovo account
+            </ion-button>
+            
+          </div>
+        </ion-card-content>
+      </ion-card>
     </div>
   }
-  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
-    <ion-button (click)="creaNuovoEvento()">
-      <ion-icon slot="start" name="add-outline"></ion-icon>
-      Nuovo evento
-    </ion-button>
-  </ion-fab>
+
+
+  @if(isAuthenticated == true) {
+    @if(eventiUtente.length > 0){
+      @for(event of eventiUtente; track event.id){
+        <app-event-card [evento]="event"></app-event-card>
+      }
+    }
+    @else{
+      <div class="stato-vuoto">
+        <h2>Nessun evento</h2>
+        <p>Non hai ancora prenotato nessun evento.</p>
+      </div>
+    }
+    <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+      <ion-button (click)="creaNuovoEvento()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Nuovo evento
+      </ion-button>
+    </ion-fab>
+  }
 
 </ion-content>

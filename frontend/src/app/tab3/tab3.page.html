@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Profile
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-title class="titolo-profilo">
+      Profilo
     </ion-title>
     @if(isAuthenticated == true) {
     <ion-buttons slot="end">
@@ -9,12 +9,17 @@
     </ion-buttons>
     }
   </ion-toolbar>
+  <ion-toolbar mode="ios" class="toolbar-mid">
+    <ion-title class="nome-app">
+      CrEvent
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding"> 
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Profile</ion-title>
+      <ion-title size="large">Profilo</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -23,10 +28,6 @@
       <ion-card>
         <ion-card-content>
           <div class="text-center">
-            <ion-avatar class="avatar-placeholder">
-              <ion-icon name="person-circle" size="large"></ion-icon>
-            </ion-avatar>
-
             <p class="ion-text-muted">
               Accedi per visualizzare il tuo profilo.
             </p>
@@ -55,9 +56,6 @@
         </ion-card-content>
       </ion-card>
     </div>
-
-
-
   }
 
   @if(isAuthenticated == true) {

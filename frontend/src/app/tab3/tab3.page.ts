@@ -1,7 +1,8 @@
-import { Component, OnInit, inject} from '@angular/core';
+import { Component, OnInit, OnDestroy, inject} from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonCard, IonAvatar, IonIcon,
   IonItem, IonLabel, IonList, IonCardContent, IonBadge, IonNote
  } from '@ionic/angular/standalone';
+import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
 import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
@@ -15,27 +16,27 @@ import { ModalController } from '@ionic/angular/standalone';
      IonIcon, IonItem, IonLabel, IonList, IonBadge, IonNote],
   standalone: true
 })
-export class Tab3Page implements OnInit{
+export class Tab3Page implements OnInit, OnDestroy {
 
   // Servizi
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
 
+  // Variabili
   isAuthenticated = false;
-  private modalPresented = false;
+  private destroy$ = new Subject<void>();
 
   constructor() {}
 
   ngOnInit(){
-    this.authService.isAuthenticated$.subscribe(status => {
+    this.authService.isAuthenticated$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(status => {
       this.isAuthenticated = status;
     })
 
     if (!this.isAuthenticated) {
-      this.modalPresented = true;
       this.openLoginModal();
-    } else {
-      this.modalPresented = false;
     }
   }
 
@@ -49,13 +50,17 @@ export class Tab3Page implements OnInit{
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
-      backdropDismiss: false,
     });
     await modal.present();
   }
 
   logout() {
     this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();       // Emette il valore che attiva takeUntil
+    this.destroy$.complete();   // Elimina il subject destroy$
   }
 
 }
