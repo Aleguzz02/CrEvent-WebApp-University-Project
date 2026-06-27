@@ -17,6 +17,8 @@ export class LoginModalComponent  implements OnInit {
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
 
+  showError: boolean = false;
+
   constructor() { }
 
   ngOnInit() {}
@@ -39,7 +41,7 @@ export class LoginModalComponent  implements OnInit {
         this.modalCtrl.dismiss(formData, 'confirm');
       },
       error: (err) => {
-        alert('Credenziali non valide.');
+        this.showError = true;
       }
     });
   }
