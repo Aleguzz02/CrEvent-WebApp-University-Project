@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000';
+
+  private authState = new BehaviorSubject<boolean>(this.hasToken());
+  isAuthenticated$ = this.authState.asObservable();
+
+  get isAuthenticated(): boolean {
+    return this.authState.getValue();
+  }
 
   constructor(private http: HttpClient) { }
 
@@ -15,21 +23,28 @@ export class AuthService {
   }
 
   login(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/login`, userData);
+    return this.http.post(`${this.apiUrl}/api/login`, userData).pipe(
+      tap((res: any) => {
+        if (res && res.token) {
+          this.authState.next(true);
+        }
+      })
+    );
+  }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem('token');
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userNome');
+    this.authState.next(false);
   }
 
 

@@ -1,0 +1,21 @@
+.nome-app{
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(15px, min(3vw, 4vh), 20px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ion-color-primary, #3880ff); 
+}
+.titolo-profilo{
+    font-family: 'Celestial', sans-serif;
+    letter-spacing: 2px;
+    font-size: clamp(35px, min(5vw,7vh), 50px);
+    font-weight: 300;
+}
+
+.toolbar-grande {
+  --min-height: clamp(50px, min(10vw,10vh) , 85px); 
+}
+
+.toolbar-mid{
+   --min-height: clamp(30px, min(10vw,10vh) , 50px); 
+}

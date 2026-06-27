@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="signupFormRef.resetForm(); closeSignupModal()">Annulla</ion-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Registrati</ion-title>
+    <ion-buttons slot="end">
+      <ion-button disabled style="visibility: hidden;">Annulla</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-signup-form #signupFormRef (formSubmit)="handleFormSubmit($event)"></app-signup-form>
+  <ion-button expand="block" (click)="signupFormRef.submitForm()" [strong]="true">Conferma</ion-button>
+
+  <div class="ion-padding-top ion-margin-top" style="border-top: 1px solid var(--ion-color-light);">
+    <ion-text color="medium" class="ion-text-center ion-padding-bottom" style="display: block;">
+      Hai già un account?
+    </ion-text>
+    <ion-button expand="block" fill="clear" color="primary" (click)="openLoginModal()">
+      Accedi
+    </ion-button>
+  </div>
+</ion-content>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 
@@ -12,6 +12,8 @@ import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 export class SignupFormComponent  implements OnInit {
   signupForm: FormGroup;
 
+  @Output() formSubmit = new EventEmitter<any>();
+
   constructor(private fb: FormBuilder) {
     this.signupForm = this.fb.group({
       nome: ['', Validators.required ],
@@ -19,17 +21,22 @@ export class SignupFormComponent  implements OnInit {
       dataNascita: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefono: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)]]
     });
   }
 
   ngOnInit() {}
 
-  onSubmit() {
+  submitForm() {
     if (this.signupForm.valid) {
-      return this.signupForm.value;
+      this.formSubmit.emit(this.signupForm.value);
+    } else {
+      this.signupForm.markAllAsTouched();
     }
-    return null;
+  }
+
+  resetForm() {
+    this.signupForm.reset();
   }
 
 }

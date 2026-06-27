@@ -3,12 +3,18 @@
     <ion-title>
       CrEvent
     </ion-title>
+    @if(isAuthenticated == false) {
     <ion-buttons slot="end">
-      <ion-button>Log In</ion-button>
+      <ion-button (click)="openLoginModal()">Accedi</ion-button>
+      <ion-button (click)="openSignupModal()">Registrati</ion-button> 
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button>Sign Up</ion-button>
-    </ion-buttons>
+    }
+
+    @if(isAuthenticated == true) {
+      <ion-buttons slot="end">
+        <ion-button (click)="logout()">Log Out</ion-button>
+      </ion-buttons>
+    }
   </ion-toolbar>
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">

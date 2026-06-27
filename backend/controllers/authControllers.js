@@ -14,8 +14,7 @@ exports.register = async (req, res) => {
         }
 
         console.log("Registering user: ", email);
-        console.log("Password: ", password);
-
+        
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({ message: "Utente già registrato" });
