@@ -1,17 +1,97 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-title class="titolo-profilo">
+      Profilo
+    </ion-title>
+    @if(isAuthenticated == true) {
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">Log Out</ion-button>
+    </ion-buttons>
+    }
+  </ion-toolbar>
+  <ion-toolbar mode="ios" class="toolbar-mid">
+    <ion-title class="nome-app">
+      CrEvent
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding"> 
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title size="large">Profilo</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  @if(isAuthenticated == false) {
+    <div class="centered-container">
+      <ion-card>
+        <ion-card-content>
+          <div class="text-center">
+            <p class="ion-text-muted">
+              Accedi per visualizzare il tuo profilo.
+            </p>
+
+            <ion-button 
+              (click)="openLoginModal()" 
+              expand="block" 
+              shape="round"
+              color="primary"
+            >
+              <ion-icon slot="start" name="log-in"></ion-icon>
+              Accedi
+            </ion-button>
+
+            <ion-button 
+              (click)="openSignupModal()" 
+              expand="block" 
+              fill="outline"
+              shape="round"
+            >
+              <ion-icon slot="start" name="person-add"></ion-icon>
+              Crea un nuovo account
+            </ion-button>
+            
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
+
+  @if(isAuthenticated == true) {
+        <div class="authenticated-container">
+      <!-- User Profile Header -->
+      <ion-item lines="none" class="profile-header">
+        <ion-avatar slot="start">
+          <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="User Avatar">
+        </ion-avatar>
+        <ion-label>
+          <h2>Welcome, User</h2>
+          <p>user@example.com</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Skeleton list to show "Real" content is coming -->
+      <ion-card>
+        <ion-list lines="full">
+          <ion-item>
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-label>My Profile</ion-label>
+            <ion-note slot="end">Edit</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="bag-outline" slot="start"></ion-icon>
+            <ion-label>My Orders</ion-label>
+            <ion-badge slot="end" color="primary">3</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="settings-outline" slot="start"></ion-icon>
+            <ion-label>Settings</ion-label>
+            <ion-icon name="chevron-forward" slot="end" size="small"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+  }
+
 </ion-content>

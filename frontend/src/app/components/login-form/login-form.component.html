@@ -1,0 +1,13 @@
+<form [formGroup]="loginForm" (ngSubmit)="submitForm()">
+  <ion-list>
+    <ion-item>
+      <ion-input formControlName="email"label="Email" type="email" placeholder="email@domain.com"
+      errorText="Email non valida" required="true"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input formControlName="password" label="Password" type="password" 
+      errorText="Inserisci la password" required="true"></ion-input>
+    </ion-item>
+  </ion-list>
+</form>

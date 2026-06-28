@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCard, IonCardHeader, IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons } from '@ionic/angular/standalone';
+import { Component, OnInit, inject } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCard, IonCardHeader, 
+  IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons, IonModal } from '@ionic/angular/standalone';
 import { CardCreventComponent } from '../components/card-crevent/card-crevent.component';
 import { CommonModule } from '@angular/common';
-
+import { AuthService } from '../services/auth.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LoginModalComponent } from '../components/login-modal/login-modal.component';
+import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
+import { ModalController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab2',
@@ -16,7 +20,14 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 })
 export class Tab2Page implements OnInit {
 
+  // Servizi
+  private authService = inject(AuthService);
+  private modalCtrl = inject(ModalController);
+
   sezione: 'iniziale' | 'location' | 'staff' = 'iniziale';
+
+  isAuthenticated = false;
+
   listaLocation: any[] = [];
   listaStaff: any[] = [];
 
@@ -26,8 +37,30 @@ export class Tab2Page implements OnInit {
   altro: any[] = [];
 
   constructor(private http: HttpClient) {}
+
   ngOnInit(){
     this.caricaDati();
+    this.authService.isAuthenticated$.subscribe(status => {
+      this.isAuthenticated = status;
+    })
+  }
+
+  async openLoginModal() {
+    const modal = await this.modalCtrl.create({
+      component: LoginModalComponent,
+    });
+    await modal.present();
+  }
+
+  async openSignupModal() {
+    const modal = await this.modalCtrl.create({
+      component: SignupModalComponent,
+    });
+    await modal.present();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   selezionaSezione(sezione: 'location' | 'staff') {
