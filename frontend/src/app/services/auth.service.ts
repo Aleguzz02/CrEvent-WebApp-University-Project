@@ -26,6 +26,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/api/login`, userData).pipe(
       tap((res: any) => {
         if (res && res.token) {
+          // Salva token e email nel localStorage
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('userEmail', res.userEmail);
+          // Imposta lo stato a true dopo accesso avvenuto
           this.authState.next(true);
         }
       })
@@ -43,7 +47,6 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
-    localStorage.removeItem('userNome');
     this.authState.next(false);
   }
 

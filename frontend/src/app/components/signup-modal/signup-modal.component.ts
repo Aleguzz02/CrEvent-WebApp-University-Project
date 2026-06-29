@@ -41,9 +41,6 @@ export class SignupModalComponent  implements OnInit {
           this.authService.login(formData).subscribe({
             next: (loginRes) => {
               console.log('Accesso', loginRes);
-              // Salva token e email nel localStorage
-              localStorage.setItem('token', loginRes.token);
-              localStorage.setItem('userEmail', loginRes.userEmail);
               // Chiudi modal
               this.modalCtrl.dismiss(formData, 'confirm');
             },

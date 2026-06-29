@@ -40,8 +40,6 @@ export class LoginModalComponent  implements OnInit {
     this.authService.login(formData).subscribe({
       next: (res) => {
         this.closeLoginModal();
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('userEmail', res.userEmail);
         this.modalCtrl.dismiss(formData, 'confirm');
       },
       error: (err) => {
