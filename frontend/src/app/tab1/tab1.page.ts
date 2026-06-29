@@ -3,6 +3,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonButton, IonIcon
   IonCard, IonCardContent, IonButtons
 } from '@ionic/angular/standalone';
 import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { EventCardComponent } from '../components/event-card/event-card.component';
 import { addOutline } from 'ionicons/icons';
@@ -32,7 +33,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   
   eventiUtente: any[] = [];
   
-  constructor() {
+  constructor(private router: Router) {
     addIcons({ addOutline });
   }
 
@@ -66,7 +67,9 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  creaNuovoEvento(){}
+  creaNuovoEvento(){
+    this.router.navigate(['/create-event']);  
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();       // Emette il valore che attiva takeUntil

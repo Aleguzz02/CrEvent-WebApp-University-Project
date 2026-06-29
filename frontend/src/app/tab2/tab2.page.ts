@@ -95,6 +95,7 @@ export class Tab2Page implements OnInit {
   }
 
   caricaDati(){
+    //this.http.
     this.http.get<any>('http://localhost:3000/api/browse').subscribe({
       next: (risposta) => {
         if(risposta.success) {
