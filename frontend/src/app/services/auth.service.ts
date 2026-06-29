@@ -9,7 +9,7 @@ import { tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript 
 export class AuthService {
   private apiUrl = 'http://localhost:3000';
 
-  private authState = new BehaviorSubject<boolean>(this.hasToken());
+  private authState = new BehaviorSubject<boolean>(this.isTokenValid());
   isAuthenticated$ = this.authState.asObservable();
 
   get isAuthenticated(): boolean {
@@ -36,8 +36,15 @@ export class AuthService {
     );
   }
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem('token');
+  private isTokenValid(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } catch {
+      return false;
+    }
   }
 
   getToken(): string | null {
