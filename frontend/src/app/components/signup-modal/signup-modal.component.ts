@@ -25,25 +25,42 @@ export class SignupModalComponent  implements OnInit {
     try {
       await this.modalCtrl.dismiss(null, "confirm");
     } catch (e) {
-      console.warn("Modal already dismissed");
+      console.warn("Modal già chiuso");
     }
   }
 
 
   handleFormSubmit(formData: any) {
     if (formData) {
+      // Registrazione
       this.authService.signup(formData).subscribe({
-        next: (res) => {
-          console.log('Server response:', res);
+        next: (signupRes) => {
+          console.log('Risposta server:', signupRes);
+
+          // Login immediato dopo registrazione
+          this.authService.login(formData).subscribe({
+            next: (loginRes) => {
+              console.log('Accesso', loginRes);
+              // Salva token e email nel localStorage
+              localStorage.setItem('token', loginRes.token);
+              localStorage.setItem('userEmail', loginRes.userEmail);
+              // Chiudi modal
+              this.modalCtrl.dismiss(formData, 'confirm');
+            },
+            error: (loginErr) => {
+              console.error('Errore accesso dopo registrazione:', loginErr);
+            }
+          })
+
           this.modalCtrl.dismiss(formData, 'confirm')
         },
-        error: (err) => console.error('Error:', err)
+        error: (signupErr) => console.error('Errore:', signupErr)
       });
     }
   }
 
   async openLoginModal() {
-    // Chiudi il modal ldi login
+    // Chiudi il modal di login
     await this.closeSignupModal();
 
     const modal = await this.modalCtrl.create({
