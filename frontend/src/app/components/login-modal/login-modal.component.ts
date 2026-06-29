@@ -17,7 +17,11 @@ export class LoginModalComponent  implements OnInit {
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
 
-  showError: boolean = false;
+  // Oggetto utilizzato da handleFormSubmit() per mostrare errori
+  errorState = {
+    show: false,
+    message: ''
+  }
 
   constructor() { }
 
@@ -41,7 +45,8 @@ export class LoginModalComponent  implements OnInit {
         this.modalCtrl.dismiss(formData, 'confirm');
       },
       error: (err) => {
-        this.showError = true;
+        this.errorState.show = true;  
+        this.errorState.message = err.error?.message;     // Intercetta il messaggio di errore corretto dal backend
       }
     });
   }
