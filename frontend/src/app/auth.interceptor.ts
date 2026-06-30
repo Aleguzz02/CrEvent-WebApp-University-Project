@@ -9,16 +9,17 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get the token from localStorage
+    // Prende il token dal localStorage
     const token = localStorage.getItem('token');
 
-    // Clone the request and add the Authorization header if token exists
+    // Se il token esiste, clona la richiesta e lo aggiunge nell'Authorization header
     if (token) {
       request = request.clone({
         setHeaders: {
@@ -27,12 +28,14 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    // Handle the request
+    // Gestione risposta server
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // If the error is 401 (Unauthorized), redirect to login
+        // Se errore 401 (Unauthorized), redirect a tabs -> tab2
         if (error.status === 401) {
-          this.router.navigate(['/login']);
+          localStorage.removeItem('token');     // Elimina eventuale token scaduto
+          this.authService.logout();            // Effettua logout
+          this.router.navigate(['/tabs']);      // Naviga a tab2 (Homepage)
         }
         return throwError(() => error);
       })
