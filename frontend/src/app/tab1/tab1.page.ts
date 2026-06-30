@@ -31,13 +31,65 @@ export class Tab1Page implements OnInit, OnDestroy {
   isAuthenticated = false;
   private destroy$ = new Subject<void>();
   
-  eventiUtente: any[] = [];
+  eventiUtente: any[] = [
+    {
+      id: 1,
+      nome: 'Matrimonio Rossi-Verdi',
+      data: '2026-09-15',
+      invitati: 150,
+      svolto: 0,
+      url: '/resource/locImg/villaZuccarello.jpg'
+    },
+    {
+      id: 2,
+      nome: 'Compleanno di Laura',
+      data: '2026-07-22',
+      invitati: 45,
+      svolto: 0,
+      url: '/resource/locImg/villaInfinito.jpg'
+    },
+    {
+      id: 3,
+      nome: 'Festa di Laurea Marco',
+      data: '2026-06-05',
+      invitati: 80,
+      svolto: 1,
+      url: '/resource/locImg/baglioCulluzia.jpg'
+    },
+    {
+      id: 4,
+      nome: 'Cena Aziendale TechLab',
+      data: '2026-12-18',
+      invitati: 120,
+      svolto: 0,
+      url: ''
+    }
+  ];
+
+  ordinaEventi() {
+    this.eventiUtente.sort((a, b) => {
+      if (a.svolto !== b.svolto) {
+        return a.svolto - b.svolto;
+      }
+
+      const dataA = new Date(a.data).getTime();
+      const dataB = new Date(b.data).getTime();
+
+      if (a.svolto === 0) {
+        return dataA - dataB;
+      }
+
+      return dataB - dataA;
+    });
+  }
   
   constructor(private router: Router) {
     addIcons({ addOutline });
   }
 
   ngOnInit(){
+    this.ordinaEventi();
+
     this.authService.isAuthenticated$
     .pipe(takeUntil(this.destroy$))
     .subscribe(status => {
