@@ -12,11 +12,12 @@ export const routes: Routes = [
   },
   {
     path: 'create-event',
-    loadComponent: () => import('./create-event/create-event.page').then( m => m.CreateEventPage)
+    loadComponent: () => import('./create-event/create-event.page').then( m => m.CreateEventPage),
+    canActivate: [authGuard]      // Rotta solo utenti autenticati
   },
   {
   path: '',
-  redirectTo: 'tabs/tab2',
+  redirectTo: 'tabs',
   pathMatch: 'full'
   }
 ];

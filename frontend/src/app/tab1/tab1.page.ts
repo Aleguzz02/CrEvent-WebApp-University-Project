@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
 import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
 import { ModalController } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -32,7 +33,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   
   eventiUtente: any[] = [];
   
-  constructor() {
+  constructor(private router: Router) {
     addIcons({ addOutline });
   }
 
@@ -66,7 +67,9 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  creaNuovoEvento(){}
+  creaNuovoEvento(){
+    this.router.navigateByUrl('/create-event');
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();       // Emette il valore che attiva takeUntil
