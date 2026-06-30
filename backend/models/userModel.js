@@ -20,16 +20,6 @@ const User = {
       });
     });
   },
-
-  findById: (id) => {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT * FROM User WHERE id = ?`;
-      db.get(query, [id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-  }
 };
 
 module.exports = User;
