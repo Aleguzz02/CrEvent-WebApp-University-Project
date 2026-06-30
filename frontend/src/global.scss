@@ -36,6 +36,9 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+:root{
+  --ion-color-cash: rgb(24, 187, 24);
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
@@ -73,3 +76,4 @@ app-tab1, app-tab2, app-tab3 {
     transform: scale(1);
   }
 }
+

@@ -78,24 +78,24 @@ ion-datetime {
 
 .toolbar-sottile {
   --min-height: 48px;
-
-
-  ion-segment {
+  .segment-tondo {
+    padding: 2px;
+    border-radius: 999px;
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
-    border-radius: 120px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
-    ion-segment-button{
-        border-radius: 120px;
+  }
 
-    }
+  .segment-tondo ion-segment-button {
+    --border-radius: 999px;
+    --indicator-border-radius: 999px;
   }
 }
 
 .bottone-annulla {
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: clamp(10px, 3vw, 18px);
   font-weight: 600;
   --color: var(--ion-color-medium);
   --border-radius: 18px;
@@ -109,3 +109,24 @@ ion-datetime {
 .bottone-annulla-spazio {
   visibility: hidden;
 }
+
+.contenitore-annulla{
+  width: auto;
+  height: auto;
+  background-color: #323232;
+  border-radius: 1000px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+  transition: ease 0.2s;
+  margin-left: 4px;
+}
+
+.contenitore-annulla:hover{
+  //background-color: #000000;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(209, 209, 209, 0.8);
+}
+
+.contenitore-annulla:active {
+  transform: scale(0.96);
+}
+
