@@ -12,9 +12,9 @@
 
 <ion-content class="ion-padding">
   <app-login-form #loginFormRef (formSubmit)="handleFormSubmit($event)"></app-login-form>
-  @if (showError == true) {
+  @if (errorState.show == true) {
     <ion-text color="danger">
-      Credenziali non valide.
+      {{ errorState.message }}
     </ion-text>
   }
   <ion-button expand="block" (click)="loginFormRef.submitForm()" [strong]="true">Conferma</ion-button>
