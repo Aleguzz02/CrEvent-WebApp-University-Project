@@ -19,7 +19,6 @@ module.exports = (req, res, next) => {
 
     try {
         console.log("Token ricevuto: ", token);
-        console.log("Chiave segreta usata per la verifica: ", SECRET);
         // Verifica token con chiave segreta
         const verified = jwt.verify(token, SECRET);
 

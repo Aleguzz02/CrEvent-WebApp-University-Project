@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef  } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons,
   IonCard, IonIcon, IonCardContent, IonAvatar, IonLabel, IonItem,
@@ -13,6 +13,7 @@ import { LoginModalComponent } from '../components/login-modal/login-modal.compo
 import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { camera, call, pencil, lockClosed, chevronForward, trash, images, close, logIn, personAdd } from 'ionicons/icons';
 import { EditPhoneModalComponent } from '../components/edit-phone-modal/edit-phone-modal.component';
@@ -40,6 +41,8 @@ export class Tab3Page implements OnInit, OnDestroy {
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
   private actionSheetCtrl = inject(ActionSheetController);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   // Variabili pubbliche
   isAuthenticated = false;
@@ -312,6 +315,7 @@ export class Tab3Page implements OnInit, OnDestroy {
         loading.dismiss();
         if (response.success) {
           this.showToast('Foto aggiornata con successo', 'success');
+          this.cdr.detectChanges();
         } else {
           this.showToast(response.error || 'Errore durante il caricamento', 'danger');
         }
@@ -360,6 +364,7 @@ export class Tab3Page implements OnInit, OnDestroy {
         loading.dismiss();
         if (response.success) {
           this.showToast('Foto rimossa con successo', 'success');
+          this.cdr.detectChanges();
         } else {
           this.showToast(response.error || 'Errore durante la rimozione', 'danger');
         }
@@ -452,6 +457,7 @@ export class Tab3Page implements OnInit, OnDestroy {
           // Logout e reset
           this.authService.logout();
           this.profileService.resetProfile();
+          this.router.navigate(['/tabs/tab2']);
         } else {
           this.showToast(response.error || 'Errore durante l\'eliminazione', 'danger');
         }

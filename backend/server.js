@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api', authRoutes);
 app.use('/api', profileRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 //Rotte per immagini pubbliche
 app.use('/resource', express.static(path.join(__dirname, 'public/resource')));

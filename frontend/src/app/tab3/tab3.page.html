@@ -96,7 +96,7 @@
         <div class="avatar-section">
           <ion-avatar class="profile-avatar">
             @if(profile.urlFotoProfilo) {
-              <img [src]="profile.urlFotoProfilo" alt="Foto profilo">
+              <img [src]="'http://localhost:3000' + profile.urlFotoProfilo" alt="Foto profilo">
             } @else {
               <div class="avatar-initials">{{ getInitials() }}</div>
             }
