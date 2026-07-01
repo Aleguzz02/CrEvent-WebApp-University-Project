@@ -1,0 +1,266 @@
+<ion-header [translucent]="true">
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-title class="titolo-profilo">
+      Profilo
+    </ion-title>
+    @if(isAuthenticated) {
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">Log Out</ion-button>
+    </ion-buttons>
+    }
+  </ion-toolbar>
+  <ion-toolbar mode="ios" class="toolbar-mid">
+    <ion-title class="nome-app">
+      CrEvent
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Profilo</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- PULL TO REFRESH -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadProfile($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- NON AUTENTICATO -->
+  @if(!isAuthenticated) {
+    <div class="centered-container">
+      <ion-card>
+        <ion-card-content>
+          <div class="text-center">
+            <p class="ion-text-muted">
+              Accedi per visualizzare il tuo profilo.
+            </p>
+
+            <ion-button 
+              (click)="openLoginModal()" 
+              expand="block" 
+              shape="round"
+              color="primary"
+            >
+              <ion-icon slot="start" name="log-in"></ion-icon>
+              Accedi
+            </ion-button>
+
+            <ion-button 
+              (click)="openSignupModal()" 
+              expand="block" 
+              fill="outline"
+              shape="round"
+            >
+              <ion-icon slot="start" name="person-add"></ion-icon>
+              Crea un nuovo account
+            </ion-button>
+            
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
+
+  <!-- AUTENTICATO -->
+  @if(isAuthenticated) {
+    @if(loading && !profile) {
+      <!-- SKELETON LOADING -->
+      <ion-list>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+          </ion-avatar>
+          <ion-label>
+            <h2><ion-skeleton-text animated style="width: 60%;"></ion-skeleton-text></h2>
+            <p><ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text></p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 40%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 50%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 45%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+      </ion-list>
+    } @else if(profile) {
+      <!-- PROFILO -->
+      <div class="profile-container">
+
+        <!-- AVATAR -->
+        <div class="avatar-section">
+          <ion-avatar class="profile-avatar">
+            @if(profile.urlFotoProfilo) {
+              <img [src]="profile.urlFotoProfilo" alt="Foto profilo">
+            } @else {
+              <div class="avatar-initials">{{ getInitials() }}</div>
+            }
+          </ion-avatar>
+          <ion-fab-button 
+            (click)="openPhotoActionSheet()" 
+            size="small" 
+            class="avatar-fab"
+          >
+            <ion-icon name="camera"></ion-icon>
+          </ion-fab-button>
+          
+          <h2 class="profile-name">{{ profile.nome }} {{ profile.cognome }}</h2>
+          <p class="profile-email">{{ profile.email }}</p>
+        </div>
+
+        <!-- DATI PERSONALI -->
+        <ion-card>
+          <ion-card-content>
+            <ion-list lines="full">
+              <ion-item>
+                <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+                <ion-label>
+                  <h3>Data di nascita</h3>
+                  <p>{{ formatDate(profile.dataNascita) }}</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon name="call" slot="start" color="primary"></ion-icon>
+                <ion-label>
+                  <h3>Telefono</h3>
+                  <p>{{ profile.telefono }}</p>
+                </ion-label>
+                <ion-button 
+                  fill="clear" 
+                  slot="end"
+                  (click)="openEditPhoneModal()"
+                >
+                  <ion-icon name="pencil" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- SICUREZZA -->
+        <ion-card>
+          <ion-card-content>
+            <ion-item button (click)="openPasswordModal()">
+              <ion-icon name="lock-closed" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Cambia password</h3>
+                <p class="ion-text-muted">Modifica la tua password di accesso</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- DANGER ZONE -->
+        <ion-card class="danger-card">
+          <ion-card-content>
+            <ion-item button (click)="startDeleteAccount()" lines="none">
+              <ion-icon name="trash" slot="start" color="danger"></ion-icon>
+              <ion-label color="danger">
+                <h3>Elimina profilo</h3>
+                <p class="ion-text-muted">Cancella permanentemente il tuo account</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+      </div>
+    }
+  }
+
+  <!-- MODAL MODIFICA TELEFONO -->
+  <ion-modal [isOpen]="showPhoneModal" (willDismiss)="showPhoneModal = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modifica telefono</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="showPhoneModal = false">Annulla</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="floating">Numero di telefono</ion-label>
+          <ion-input 
+            [(ngModel)]="editPhoneValue"
+            type="tel"
+            placeholder="Inserisci 10 cifre"
+            maxlength="10"
+          ></ion-input>
+        </ion-item>
+        <p class="ion-text-muted ion-padding-start">
+          <ion-note>Inserisci esattamente 10 cifre</ion-note>
+        </p>
+        <ion-button 
+          expand="block" 
+          (click)="savePhone()"
+        >
+          Salva
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- MODAL MODIFICA PASSWORD -->
+  <ion-modal [isOpen]="showPasswordModal" (willDismiss)="showPasswordModal = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Cambia password</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="showPasswordModal = false">Annulla</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="floating">Password attuale</ion-label>
+          <ion-input 
+            [(ngModel)]="currentPassword"
+            type="password"
+            placeholder="Inserisci la password attuale"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Nuova password</ion-label>
+          <ion-input 
+            [(ngModel)]="newPassword"
+            type="password"
+            placeholder="Min 8 caratteri, 1 maiuscola, 1 minuscola, 1 numero"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Conferma nuova password</ion-label>
+          <ion-input 
+            [(ngModel)]="confirmPassword"
+            type="password"
+            placeholder="Ripeti la nuova password"
+          ></ion-input>
+        </ion-item>
+
+        <p class="ion-text-muted ion-padding-start">
+          <ion-note>Minimo 8 caratteri, almeno 1 maiuscola, 1 minuscola e 1 numero</ion-note>
+        </p>
+
+        <ion-button 
+          expand="block" 
+          (click)="savePassword()"
+          [disabled]="!currentPassword || !newPassword || !confirmPassword"
+        >
+          Salva
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
