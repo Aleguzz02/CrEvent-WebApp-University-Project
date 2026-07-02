@@ -1,4 +1,3 @@
-// Libreria per criptare le informazioni
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
@@ -7,14 +6,16 @@ const SECRET = "secretkey2026";
 
 exports.register = async (req, res) => {
     try {
-        const { email, password, nome, cognome, telefono, dataNascita} = req.body;
+        const { email, password, confermaPassword, nome, cognome, telefono, dataNascita} = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ message : "Sono richiesti email e password"});
+        // Verifica aggiuntiva di controllo campi
+        if (!email || !password || !confermaPassword || !nome || !cognome || !telefono || !dataNascita) {
+            return res.status(400).json({ message : "Sono richiesti tutti i campi"});
         }
-
+        
         console.log("Registering user: ", email);
         
+        // Verifica che la mail inserita sia presente nel DB
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({ message: "Utente già registrato" });
