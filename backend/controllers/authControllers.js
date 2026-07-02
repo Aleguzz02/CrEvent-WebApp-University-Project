@@ -2,6 +2,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const SMTP = require("../config/mailer");
+
 
 const SECRET = "secretkey2026";
 
@@ -56,6 +58,13 @@ exports.login = async (req, res) => {
             SECRET,
             { expiresIn: '1h' }
         );
+
+        await SMTP.sendEmail({
+            to: 'ilcuoco2015@gmail.com',
+            subject: 'Benvenuto su CrEvent!',
+            text: `Ciao  grazie per esserti registrato!`,
+            html: `<h1>Benvenuto !</h1><p>Grazie per esserti registrato sulla nostra piattaforma.</p>`
+        });
 
         res.json({ token, userEmail: user.email, userNome: user.nome });
 
