@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { addIcons } from 'ionicons';
-import { peopleOutline, cashOutline, checkmarkCircle } from 'ionicons/icons';
+import { peopleOutline, cashOutline, checkmarkCircle, people } from 'ionicons/icons';
 import { IonCard, IonCardContent, IonIcon, IonImg, IonText } from '@ionic/angular/standalone';
 
 @Component({
@@ -25,7 +25,7 @@ export class LocationSelectableCardComponent {
 
   constructor() {
     addIcons({
-      peopleOutline,
+      people,
       cashOutline,
       checkmarkCircle
     });

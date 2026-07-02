@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="annulla()">Annulla</ion-button>
+    </ion-buttons>
+
+    <ion-title>Scegli punto</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button [disabled]="lat === null || lng === null" (click)="conferma()">
+        Conferma
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="map-content" [scrollY]="false">
+  <div id="customLocationMap"></div>
+</ion-content>

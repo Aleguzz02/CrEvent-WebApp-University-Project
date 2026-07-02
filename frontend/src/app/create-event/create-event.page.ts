@@ -12,11 +12,14 @@ import {
   IonSegmentButton,
   IonLabel,
   IonList,
-  IonDatetime
+  IonDatetime,
+  ModalController,
+  IonCard,
+  IonCardContent
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { LocationSelectableCardComponent } from '../components/location-selectable-card/location-selectable-card.component';
-
+import { CustomLocationMapModalComponent } from '../components/custom-location-map-modal/custom-location-map-modal.component';
 @Component({
   selector: 'app-create-event',
   templateUrl: './create-event.page.html',
@@ -36,7 +39,8 @@ import { LocationSelectableCardComponent } from '../components/location-selectab
     IonLabel,
     IonList,
     IonDatetime,
-    LocationSelectableCardComponent
+    LocationSelectableCardComponent,
+    IonCard, IonCardContent
   ]
 })
 export class CreateEventPage implements OnInit {
@@ -54,9 +58,10 @@ export class CreateEventPage implements OnInit {
   intervalliDisponibili: any[] = [];
 
   dataOggi: string = new Date().toISOString().substring(0, 10);
+  customLocationSetted: boolean = false;
 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private modalController: ModalController) { }
 
   
 
@@ -208,6 +213,37 @@ export class CreateEventPage implements OnInit {
   selezionaModalita(modalita: string) {
     this.modalita = modalita;
     this.resetScelta();
+  }
+
+  async openMapModal() {
+    const modal = await this.modalController.create({
+    component: CustomLocationMapModalComponent
+    });
+
+    modal.onDidDismiss().then((result) => {
+    if (result.data) {
+      const nuovaLocation = {
+        id: Date.now(),
+        nome: 'Location custom',
+        citta: 'Posizione scelta',
+        indirizzo: `${result.data.lat}, ${result.data.lng}`,
+        capienza: 0,
+        costo: 0,
+        url: '',
+        lat: result.data.lat,
+        lng: result.data.lng,
+        inizio: this.dataOggi,
+        fine: '2026-12-31',
+        dateOccupate: []
+      };
+
+      this.locations.push(nuovaLocation);
+      this.selezionaLocation(nuovaLocation);
+      this.customLocationSetted = true;
+    }
+  });
+
+  await modal.present();
   }
 
 }

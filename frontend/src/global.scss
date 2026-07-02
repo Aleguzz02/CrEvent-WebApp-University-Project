@@ -36,8 +36,9 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+@import "leaflet/dist/leaflet.css";
 :root{
-  --ion-color-cash: rgb(24, 187, 24);
+  --ion-color-cash: rgb(28, 205, 28);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');

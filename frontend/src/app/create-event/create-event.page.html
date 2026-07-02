@@ -38,6 +38,14 @@
             (locationSelezionata)="selezionaLocation($event)">
           </app-location-selectable-card>
         }
+        @if(!customLocationSetted){
+          <ion-card class="add-location-card" (click)="openMapModal()">
+            <ion-card-content>
+              <div class="add-location-plus">+</div>
+              <p>Location custom</p>
+            </ion-card-content>
+          </ion-card>
+        }
       </div>
 
       @if (locationSelezionata && mostraCalendario) {
