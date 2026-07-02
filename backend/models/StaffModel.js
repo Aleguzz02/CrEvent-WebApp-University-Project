@@ -19,7 +19,7 @@ const StaffModel = {
     remStaff: () => {
 
     },
-    getFreeDates: (idStaff) => {
+    getFreeDates: (idStaff, idLocation) => {
 
     }
 }
