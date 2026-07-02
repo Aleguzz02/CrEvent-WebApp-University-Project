@@ -23,6 +23,10 @@ const EventModel = {
                 else resolve(row);
             });
         });
+    },
+
+    addEvent: () => {
+        
     }
 }
 

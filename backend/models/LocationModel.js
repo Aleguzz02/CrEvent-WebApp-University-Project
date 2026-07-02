@@ -12,6 +12,18 @@ const LocationModel = {
                 else resolve(rows);
             });
         });
+    },
+    addLoc: () => {
+
+    },
+    addCustomLoc: () => {
+
+    },
+    remLoc: () => {
+
+    },
+    getFreeDates: (idLocation) => {
+
     }
 }
 module.exports = LocationModel;

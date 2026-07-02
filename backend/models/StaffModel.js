@@ -11,7 +11,16 @@ const StaffModel = {
                 if(err) reject(err);
                 else resolve(rows);
             });
-    });
-}
+        });
+    },
+    addStaff: () => {
+
+    },
+    remStaff: () => {
+
+    },
+    getFreeDates: (idStaff) => {
+
+    }
 }
 module.exports = StaffModel;
