@@ -13,6 +13,7 @@ import * as L from 'leaflet';
 import { Geolocation } from '@capacitor/geolocation';
 
 
+
 @Component({
   selector: 'app-custom-location-map-modal',
   templateUrl: './custom-location-map-modal.component.html',
@@ -60,15 +61,7 @@ export class CustomLocationMapModalComponent implements AfterViewInit {
       this.lat = event.latlng.lat;
       this.lng = event.latlng.lng;
 
-      if (this.marker) {
-        this.marker.setLatLng(event.latlng);
-      }
-      else {
-        this.marker = L.marker(event.latlng, {
-          icon: this.markerIcon,
-          draggable: true
-        }).addTo(this.map);
-      }
+      this.addMarkerAtLocation(event.latlng);
     });
 
     this.map.invalidateSize();
@@ -82,8 +75,8 @@ export class CustomLocationMapModalComponent implements AfterViewInit {
         this.updateMapPosition(position.coords.latitude, position.coords.longitude);
       } else {
         // Usa Capacitor per accedere al GPS nativo su mobile
-        const coordinates = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-        this.updateMapPosition(coordinates.coords.latitude, coordinates.coords.longitude);
+        const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+        this.updateMapPosition(position.coords.latitude, position.coords.longitude);
       }
     } catch (error) {
       console.error('Errore GPS:', error);
@@ -125,13 +118,15 @@ export class CustomLocationMapModalComponent implements AfterViewInit {
       .openPopup();
   
     this.map!.setView(userLatLng, 15);
+    this.lat = lat;
+    this.lng = lng;
   }
 
   private addMarkerAtLocation(latlng: L.LatLng) {
     if (this.marker) {
       this.map!.removeLayer(this.marker);
     }  
-    this.marker = L.marker([latlng.lat, latlng.lng], {
+    this.marker = L.marker(latlng, {
       icon: this.markerIcon,
       draggable: true
     })

@@ -32,11 +32,22 @@
 
       <div class="locations-grid">
         @for (location of locations; track location.id) {
-          <app-location-selectable-card
-            [location]="location"
-            [selezionata]="locationSelezionata?.id === location.id"
-            (locationSelezionata)="selezionaLocation($event)">
-          </app-location-selectable-card>
+          <div class="location-cards">
+            <app-location-selectable-card
+              [location]="location"
+              [selezionata]="locationSelezionata?.id === location.id"
+              (locationSelezionata)="selezionaLocation($event)">
+            </app-location-selectable-card>
+            @if (location.custom) {
+              <ion-button
+                class="delete-custom-location"
+                fill="clear"
+                color="danger"
+                (click)="eliminaLocationCustom($event, location)">
+                Cancella
+              </ion-button>
+            }
+          </div>      
         }
         @if(!customLocationSetted){
           <ion-card class="add-location-card" (click)="openMapModal()">
@@ -70,11 +81,22 @@
       @if (dataSelezionata) {
         <div class="locations-grid">
           @for (location of locationsLibere; track location.id) {
-            <app-location-selectable-card
-              [location]="location"
-              [selezionata]="locationSelezionata?.id === location.id"
-              (locationSelezionata)="selezionaLocation($event)">
-            </app-location-selectable-card>
+            <div class="location-cards">
+              <app-location-selectable-card
+                [location]="location"
+                [selezionata]="locationSelezionata?.id === location.id"
+                (locationSelezionata)="selezionaLocation($event)">
+              </app-location-selectable-card>
+              @if (location.custom) {
+                <ion-button
+                class="delete-custom-location"
+                fill="clear"
+                color="danger"
+                (click)="eliminaLocationCustom($event, location)">
+                Cancella
+                </ion-button>
+              }
+            </div>
           }
         </div>
       }

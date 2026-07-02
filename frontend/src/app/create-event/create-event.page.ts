@@ -20,6 +20,8 @@ import {
 import { Router } from '@angular/router';
 import { LocationSelectableCardComponent } from '../components/location-selectable-card/location-selectable-card.component';
 import { CustomLocationMapModalComponent } from '../components/custom-location-map-modal/custom-location-map-modal.component';
+import { CustomLocationNameModalComponent } from '../components/custom-location-name-modal/custom-location-name-modal.component';
+
 @Component({
   selector: 'app-create-event',
   templateUrl: './create-event.page.html',
@@ -135,9 +137,11 @@ export class CreateEventPage implements OnInit {
 
   selezionaLocation(location: any) {
     this.locationSelezionata = location;
-    this.dataSelezionata = '';
 
-    this.ricaricaCalendario();
+    if (this.modalita === 'location') {
+      this.dataSelezionata = '';
+      this.ricaricaCalendario();
+    }
   }
 
   caricaDateOccupate() {
@@ -216,34 +220,66 @@ export class CreateEventPage implements OnInit {
   }
 
   async openMapModal() {
-    const modal = await this.modalController.create({
-    component: CustomLocationMapModalComponent
+    const mapModal = await this.modalController.create({
+      component: CustomLocationMapModalComponent,
+      cssClass: "create-modals"
     });
 
-    modal.onDidDismiss().then((result) => {
-    if (result.data) {
-      const nuovaLocation = {
+    await mapModal.present();
+    
+    const mapPosition = await mapModal.onDidDismiss();
+    if(!mapPosition.data) {
+      return;
+    }
+    const nameModal = await this.modalController.create({
+      component: CustomLocationNameModalComponent,
+      cssClass: "create-modals"
+    });
+
+    await nameModal.present();
+
+    const nameResult = await nameModal.onDidDismiss();
+
+    if (!nameResult.data) {
+      this.openMapModal();
+      return;
+    }
+    const nuovaLocation = {
         id: Date.now(),
-        nome: 'Location custom',
+        nome: nameResult.data.nome,
         citta: 'Posizione scelta',
-        indirizzo: `${result.data.lat}, ${result.data.lng}`,
+        indirizzo: `${mapPosition.data.lat}, ${mapPosition.data.lng}`,
         capienza: 0,
         costo: 0,
         url: '',
-        lat: result.data.lat,
-        lng: result.data.lng,
+        lat: mapPosition.data.lat,
+        lng: mapPosition.data.lng,
         inizio: this.dataOggi,
         fine: '2026-12-31',
-        dateOccupate: []
+        dateOccupate: [],
+        custom: true
       };
 
       this.locations.push(nuovaLocation);
       this.selezionaLocation(nuovaLocation);
       this.customLocationSetted = true;
-    }
-  });
-
-  await modal.present();
   }
 
+  eliminaLocationCustom(event: Event, location: any) {
+    event.stopPropagation();
+
+    if (!location.custom) {
+      return;
+    }
+
+    this.locations = this.locations.filter(loc => loc.id !== location.id);
+    this.locationsLibere = this.locationsLibere.filter(loc => loc.id !== location.id);
+
+    if (this.locationSelezionata?.id === location.id) {
+      this.locationSelezionata = null;
+      this.dataSelezionata = '';
+    }
+
+    this.customLocationSetted = false;
+  }
 }

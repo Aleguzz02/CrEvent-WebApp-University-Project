@@ -121,9 +121,7 @@ ion-datetime {
 }
 
 .contenitore-annulla:hover{
-  //background-color: #000000;
   transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(209, 209, 209, 0.8);
 }
 
 .contenitore-annulla:active {
@@ -166,4 +164,15 @@ ion-datetime {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
+}
+
+.location-cards {
+  position: relative;
+}
+
+.delete-custom-location {
+  width: 100%;
+  margin-top: 6px;
+  --border-radius: 999px;
+  font-weight: 600;
 }
