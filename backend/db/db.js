@@ -117,12 +117,11 @@ db.serialize(() => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             data TEXT NOT NULL,
             nome TEXT NOT NULL,
-            svolto INTEGER DEFAULT 0 CHECK(svolto IN (0,1)),
             invitati INTEGER NOT NULL,
             emailUtente TEXT NOT NULL,
-            idLocation INTEGER NOT NULL,
+            idLocation INTEGER,
             FOREIGN KEY (emailUtente) REFERENCES User(email) ON DELETE CASCADE,
-            FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
+            FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE SET NULL
         )
             `);
         db.run(`

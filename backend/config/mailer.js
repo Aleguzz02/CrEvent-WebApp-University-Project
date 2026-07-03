@@ -1,8 +1,8 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-console.log("DEBUG EMAIL USER:", process.env.EMAIL_USER);
-console.log("DEBUG EMAIL PASS:", process.env.EMAIL_PASS);
+//console.log("DEBUG EMAIL USER:", process.env.EMAIL_USER);
+//console.log("DEBUG EMAIL PASS:", process.env.EMAIL_PASS);
 
 // Configurazione del trasportatore
 const transporter = nodemailer.createTransport({

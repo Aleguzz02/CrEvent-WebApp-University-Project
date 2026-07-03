@@ -25,6 +25,14 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
 
+        await SMTP.sendEmail({
+            to: email,
+            subject: 'Benvenuto su CrEvent!',
+            text: `Ciao ${nome} ${cognome}, grazie per esserti registrato!`,
+            html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
+                    <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
+        });
+
         res.status(201).json(user);
     } catch (err) {
         console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
@@ -58,13 +66,6 @@ exports.login = async (req, res) => {
             SECRET,
             { expiresIn: '1h' }
         );
-
-        await SMTP.sendEmail({
-            to: 'ilcuoco2015@gmail.com',
-            subject: 'Benvenuto su CrEvent!',
-            text: `Ciao  grazie per esserti registrato!`,
-            html: `<h1>Benvenuto !</h1><p>Grazie per esserti registrato sulla nostra piattaforma.</p>`
-        });
 
         res.json({ token, userEmail: user.email, userNome: user.nome });
 
