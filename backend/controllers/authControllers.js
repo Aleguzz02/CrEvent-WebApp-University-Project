@@ -12,14 +12,18 @@ exports.register = async (req, res) => {
         const { email, password, nome, cognome, telefono, dataNascita} = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ message : "Sono richiesti email e password"});
+            return res.status(400).json({ 
+                success: false,
+                message : "Sono richiesti email e password"});
         }
 
         console.log("Registering user: ", email);
         
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
-            return res.status(400).json({ message: "Utente già registrato" });
+            return res.status(400).json({
+                success: false,
+                message: "Utente già registrato" });
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,8 +39,19 @@ exports.register = async (req, res) => {
 
         res.status(201).json(user);
     } catch (err) {
-        console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
-        res.status(500).json({ error: err.message });
+        if(err.code === "emailError"){
+            console.error(err.message)
+            return res.status(201).json({
+                success: true,
+                message: "Registrazione avvenuta con successo. Email non inviata",
+                emailError: true
+            });
+        }
+        else{
+            console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
+            res.status(500).json({ error: err.message });
+        }
+        
     }
 };
 
