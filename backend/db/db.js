@@ -20,8 +20,8 @@ db.serialize(() => {
         citta TEXT NOT NULL,
         descrizione TEXT NOT NULL,
         capienza INTEGER NOT NULL,
-        coordX REAL,
-        coordY REAL,
+        lat REAL,
+        lng REAL,
         linkSito TEXT,
         costo INTEGER NOT NULL,
         UNIQUE(nome, indirizzo) 
