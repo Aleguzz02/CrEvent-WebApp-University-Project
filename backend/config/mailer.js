@@ -30,7 +30,8 @@ const sendEmail = async ({ to, subject, text, html }) => {
         console.log(`Email inviata: ${result.messageId}`);
         return result;
     } catch (error) {
-        console.error("Errore nell'invio dell'email:", error);
+        console.error("emailError:", error);
+        error.code = "emailError";
         throw error; // Rilanciamo l'errore per gestirlo nel controller/rotta
     }
 };
