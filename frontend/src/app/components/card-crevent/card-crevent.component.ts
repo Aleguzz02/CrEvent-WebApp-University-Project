@@ -36,9 +36,7 @@ export class CardCreventComponent  implements OnInit {
   preparaDettagli() {
     if(this.isLocation){
       if(this.dati.citta) this.dettagliSpecifici.push({label: 'Città:', valore: `${this.dati.citta} (${this.dati.indirizzo || ''})`});
-      if(this.dati.capienza) this.dettagliSpecifici.push({label: 'Capienza:', valore: `${this.dati.capienza} persone`});
-      if(this.dati.costo)  this.testoPrezzo = this.testoPrezzo + `${this.dati.costo}€`;
-    }
+      if(this.dati.capienza) this.dettagliSpecifici.push({label: 'Capienza:', valore: `${this.dati.capienza} persone`});    }
     else if(this.isStaff){
       if(this.dati.tipo) this.dettagliSpecifici.push({label: 'Categoria:', valore: `${this.dati.tipo.toUpperCase()}`});
       if(this.dati.genereMusicale) this.dettagliSpecifici.push({label: 'Genere musicale:', valore: `${this.dati.genereMusicale}`});

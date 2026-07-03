@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonHeader,
   IonToolbar,
@@ -28,10 +28,10 @@ import { Geolocation } from '@capacitor/geolocation';
     IonButton
   ]
 })
-export class CustomLocationMapModalComponent implements AfterViewInit {
+export class CustomLocationMapModalComponent {
 
-  map: any;
-  marker: any;
+  map: L.Map | null = null;
+  marker: L.Marker | null = null;
   lat: number | null = null;
   lng: number | null = null;
 
@@ -42,11 +42,15 @@ export class CustomLocationMapModalComponent implements AfterViewInit {
     iconSize: [32, 32],
   });
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.initMap();
-      this.userCurrentPosition();
-    }, 20);
+  async ionViewDidEnter() {
+    this.initMap();
+
+    try{
+     await this.userCurrentPosition();
+    }catch(e){
+      console.error(e);
+      this.updateMapPosition(38.1156, 13.3614, true);
+    }
   }
 
 
@@ -68,20 +72,13 @@ export class CustomLocationMapModalComponent implements AfterViewInit {
   }
   
   private async userCurrentPosition() {
-    try {
-      // Usa l'API del browser se su web
-      if (this.isRunningInBrowser()) {
-        const position = await this.getBrowserPosition();
-        this.updateMapPosition(position.coords.latitude, position.coords.longitude);
-      } else {
-        // Usa Capacitor per accedere al GPS nativo su mobile
-        const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-        this.updateMapPosition(position.coords.latitude, position.coords.longitude);
-      }
-    } catch (error) {
-      console.error('Errore GPS:', error);
-      // Fallback a una posizione predefinita
-      this.updateMapPosition(38.1156, 13.3614, true);
+    if (this.isRunningInBrowser()) {
+      const position = await this.getBrowserPosition();
+      this.updateMapPosition(position.coords.latitude, position.coords.longitude);
+    } else {
+      // Usa Capacitor per accedere al GPS nativo su mobile
+      const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      this.updateMapPosition(position.coords.latitude, position.coords.longitude);
     }
   }
 

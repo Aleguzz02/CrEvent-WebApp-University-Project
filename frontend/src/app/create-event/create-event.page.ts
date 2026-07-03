@@ -47,25 +47,24 @@ import { CustomLocationNameModalComponent } from '../components/custom-location-
 })
 export class CreateEventPage implements OnInit {
 
-  modalita: string = 'location';
-  mostraCalendario: boolean = true;
+  mode: string = 'location';
+  showCalendar: boolean = true;
 
   locations: any[] = [];
-  locationsLibere: any[] = [];
+  freeLocations: any[] = [];
 
-  locationSelezionata: any = null;
-  dataSelezionata: string = '';
+  selectedLocation: any = null;
+  selectedDate: string = '';
 
   dateOccupate: string[] = [];
   intervalliDisponibili: any[] = [];
 
   dataOggi: string = new Date().toISOString().substring(0, 10);
   customLocationSetted: boolean = false;
+  newCustomLocation: any = null;
 
 
-  constructor(private router: Router, private modalController: ModalController) { }
-
-  
+  constructor(private router: Router, private modalController: ModalController) { }  
 
   ngOnInit() {
     this.caricaLocations();
@@ -129,30 +128,30 @@ export class CreateEventPage implements OnInit {
   }
 
   resetScelta() {
-    this.locationSelezionata = null;
-    this.dataSelezionata = '';
+    this.selectedLocation = null;
+    this.selectedDate = '';
     this.dateOccupate = [];
-    this.locationsLibere = [];
+    this.freeLocations = [];
   }
 
-  selezionaLocation(location: any) {
-    this.locationSelezionata = location;
+  selectLocation(location: any) {
+    this.selectedLocation = location;
 
-    if (this.modalita === 'location') {
-      this.dataSelezionata = '';
-      this.ricaricaCalendario();
+    if (this.mode === 'location') {
+      this.selectedDate = '';
+      this.reloadCalendar();
     }
   }
 
   caricaDateOccupate() {
-    if (!this.locationSelezionata) {
+    if (!this.selectedLocation) {
       return;
     }
 
     // Esempio provvisorio: poi questi dati arrivano dal backend/db.
     // Ogni intervallo usa i campi inizio e fine del DB.
 
-    if (this.locationSelezionata.id === 1) {
+    if (this.selectedLocation.id === 1) {
       this.intervalliDisponibili = [
         { inizio: '2026-07-01', fine: '2026-07-20' },
         { inizio: '2026-08-01', fine: '2026-08-10' }
@@ -160,7 +159,7 @@ export class CreateEventPage implements OnInit {
 
       this.dateOccupate = ['2026-07-05', '2026-07-06'];
     }
-    else if (this.locationSelezionata.id === 2) {
+    else if (this.selectedLocation.id === 2) {
       this.intervalliDisponibili = [
         { inizio: '2026-07-10', fine: '2026-07-30' }
       ];
@@ -177,46 +176,63 @@ export class CreateEventPage implements OnInit {
   }
 
   dataDisponibile = (dateString: string) => {
-    if (!this.locationSelezionata) {
+    if (!this.selectedLocation) {
       return false;
     }
 
     const giorno = dateString.substring(0, 10);
 
-    return this.locationLibera(this.locationSelezionata, giorno);
+    return this.locationLibera(this.selectedLocation, giorno);
   };
 
-  caricaLocationLibere() {
-    if (!this.dataSelezionata) {
+  loadFreeLocations() {
+    if (!this.selectedDate) {
       return;
     }
 
-    const giorno = this.dataSelezionata.substring(0, 10);
+    const giorno = this.selectedDate.substring(0, 10);
 
-    this.locationsLibere = this.locations.filter(location =>
+    this.freeLocations = this.locations.filter(location =>
       this.locationLibera(location, giorno)
     );
   }
 
-  continua() {
-    console.log('Location scelta:', this.locationSelezionata);
-    console.log('Data scelta:', this.dataSelezionata);
+  continue() {
+    console.log('Location scelta:', this.selectedLocation);
+    console.log('Data scelta:', this.selectedDate);
   }
 
-  annulla() {
+  goBack() {
     this.router.navigate(['/tabs/tab1']);
   }
 
-  ricaricaCalendario() {
-    this.mostraCalendario = false;
+  reloadCalendar() {
+    this.showCalendar = false;
 
     setTimeout(() => {
-      this.mostraCalendario = true;
+      this.showCalendar = true;
     }, 0);
   }
-  selezionaModalita(modalita: string) {
-    this.modalita = modalita;
+  selectMode(mode: string) {
+    this.mode = mode;
     this.resetScelta();
+  }
+
+  async openCustomNameModal(mapPosition: any) {
+    const nameModal = await this.modalController.create({
+      component: CustomLocationNameModalComponent,
+      cssClass: "create-modals"
+    });
+
+    await nameModal.present();
+
+    const nameResult = await nameModal.onDidDismiss();
+
+     if (!nameResult.data) {
+      this.openMapModal();
+      return;
+    }
+    this.createLocationCustom(nameResult, mapPosition);
   }
 
   async openMapModal() {
@@ -231,41 +247,32 @@ export class CreateEventPage implements OnInit {
     if(!mapPosition.data) {
       return;
     }
-    const nameModal = await this.modalController.create({
-      component: CustomLocationNameModalComponent,
-      cssClass: "create-modals"
-    });
-
-    await nameModal.present();
-
-    const nameResult = await nameModal.onDidDismiss();
-
-    if (!nameResult.data) {
-      this.openMapModal();
-      return;
-    }
-    const nuovaLocation = {
+    this.openCustomNameModal(mapPosition);
+  }
+  
+  createLocationCustom(name: any, position: any){
+    this.newCustomLocation = {
         id: Date.now(),
-        nome: nameResult.data.nome,
+        nome: name.data.nome,
         citta: 'Posizione scelta',
-        indirizzo: `${mapPosition.data.lat}, ${mapPosition.data.lng}`,
+        indirizzo: `${position.data.lat}, ${position.data.lng}`,
         capienza: 0,
         costo: 0,
         url: '',
-        lat: mapPosition.data.lat,
-        lng: mapPosition.data.lng,
+        lat: position.data.lat,
+        lng: position.data.lng,
         inizio: this.dataOggi,
         fine: '2026-12-31',
         dateOccupate: [],
         custom: true
       };
 
-      this.locations.push(nuovaLocation);
-      this.selezionaLocation(nuovaLocation);
+      this.locations.push(this.newCustomLocation);
+      this.selectLocation(this.newCustomLocation);
       this.customLocationSetted = true;
   }
 
-  eliminaLocationCustom(event: Event, location: any) {
+  deleteLocationCustom(event: Event, location: any) {
     event.stopPropagation();
 
     if (!location.custom) {
@@ -273,13 +280,13 @@ export class CreateEventPage implements OnInit {
     }
 
     this.locations = this.locations.filter(loc => loc.id !== location.id);
-    this.locationsLibere = this.locationsLibere.filter(loc => loc.id !== location.id);
+    this.freeLocations = this.freeLocations.filter(loc => loc.id !== location.id);
 
-    if (this.locationSelezionata?.id === location.id) {
-      this.locationSelezionata = null;
-      this.dataSelezionata = '';
+    if (this.selectedLocation?.id === location.id) {
+      this.selectedLocation = null;
+      this.selectedDate = '';
     }
-
+    this.newCustomLocation = null;
     this.customLocationSetted = false;
   }
 }

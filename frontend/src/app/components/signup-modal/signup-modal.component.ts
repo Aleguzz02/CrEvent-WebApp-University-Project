@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { SignupFormComponent } from '../signup-form/signup-form.component';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-signup-modal',
@@ -16,6 +17,7 @@ export class SignupModalComponent  implements OnInit {
 
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
+  private toastService = inject(ToastService);
 
   constructor() { }
 
@@ -33,8 +35,11 @@ export class SignupModalComponent  implements OnInit {
   handleFormSubmit(formData: any) {
     if (formData) {
       this.authService.signup(formData).subscribe({
-        next: (res) => {
-          console.log('Server response:', res);
+        next: (response) => {
+          if(response?.emailError){
+            this.toastService.warning(response.message);
+          }
+          console.log('Server response:', response);
           this.modalCtrl.dismiss(formData, 'confirm')
         },
         error: (err) => console.error('Error:', err)
@@ -43,7 +48,6 @@ export class SignupModalComponent  implements OnInit {
   }
 
   async openLoginModal() {
-    // Chiudi il modal ldi login
     await this.closeSignupModal();
 
     const modal = await this.modalCtrl.create({

@@ -2,7 +2,7 @@
   <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-buttons slot="start">
       <div class="contenitore-annulla">
-        <ion-button class="bottone-annulla" fill="clear" (click)="annulla()">
+        <ion-button class="bottone-annulla" fill="clear" (click)="goBack()">
           Annulla
         </ion-button>
       </div>
@@ -14,7 +14,7 @@
   </ion-toolbar>
 
   <ion-toolbar mode="ios" class="toolbar-sottile">
-    <ion-segment [value]="modalita" (ionChange)="selezionaModalita($any($event).detail.value)" class="segment-tondo">
+    <ion-segment [value]="mode" (ionChange)="selectMode($any($event).detail.value)" class="segment-tondo">
       <ion-segment-button value="location">
         <ion-label>Location</ion-label>
       </ion-segment-button>
@@ -28,22 +28,22 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <div class="sezione-creazione">
-    @if (modalita === 'location') {
+    @if (mode === 'location') {
 
       <div class="locations-grid">
         @for (location of locations; track location.id) {
           <div class="location-cards">
             <app-location-selectable-card
               [location]="location"
-              [selezionata]="locationSelezionata?.id === location.id"
-              (locationSelezionata)="selezionaLocation($event)">
+              [selezionata]="selectedLocation?.id === location.id"
+              (selectedLocation)="selectLocation($event)">
             </app-location-selectable-card>
             @if (location.custom) {
               <ion-button
                 class="delete-custom-location"
                 fill="clear"
                 color="danger"
-                (click)="eliminaLocationCustom($event, location)">
+                (click)="deleteLocationCustom($event, location)">
                 Cancella
               </ion-button>
             }
@@ -59,10 +59,10 @@
         }
       </div>
 
-      @if (locationSelezionata && mostraCalendario) {
+      @if (selectedLocation && showCalendar) {
         <ion-datetime
           presentation="date"
-          [(ngModel)]="dataSelezionata"
+          [(ngModel)]="selectedDate"
           [isDateEnabled]="dataDisponibile">
         </ion-datetime>
       }
@@ -70,29 +70,29 @@
     }
 
 
-    @if (modalita === 'data') {
+    @if (mode === 'data') {
 
       <ion-datetime
         presentation="date"
-        [(ngModel)]="dataSelezionata"
-        (ionChange)="caricaLocationLibere()">
+        [(ngModel)]="selectedDate"
+        (ionChange)="loadFreeLocations()">
       </ion-datetime>
 
-      @if (dataSelezionata) {
+      @if (selectedDate) {
         <div class="locations-grid">
-          @for (location of locationsLibere; track location.id) {
+          @for (location of freeLocations; track location.id) {
             <div class="location-cards">
               <app-location-selectable-card
                 [location]="location"
-                [selezionata]="locationSelezionata?.id === location.id"
-                (locationSelezionata)="selezionaLocation($event)">
+                [selezionata]="selectedLocation?.id === location.id"
+                (locationSelezionata)="selectLocation($event)">
               </app-location-selectable-card>
               @if (location.custom) {
                 <ion-button
                 class="delete-custom-location"
                 fill="clear"
                 color="danger"
-                (click)="eliminaLocationCustom($event, location)">
+                (click)="deleteLocationCustom($event, location)">
                 Cancella
                 </ion-button>
               }
@@ -107,8 +107,8 @@
     <ion-button
       class="bottone-continua"
       expand="block"
-      [disabled]="!locationSelezionata || !dataSelezionata"
-      (click)="continua()">
+      [disabled]="!selectedLocation || !selectedDate"
+      (click)="continue()">
       Continua
     </ion-button>
   </div>

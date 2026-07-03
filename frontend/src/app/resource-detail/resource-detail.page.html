@@ -1,18 +1,5 @@
-<!-- <ion-header [translucent]="true">
-  <ion-toolbar mode="ios" class="toolbar-grande">
-    <ion-buttons slot="start">
-      <ion-back-button (click)="chiudi()" text="Indietro"></ion-back-button>
-    </ion-buttons>
-    <ion-title>
-      CrEvent
-    </ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
 <ion-content [fullscreen]="true">
   @if(resource){
-
-    
       <div class="hero-banner">
         <img [src]="resource.url ? 'http://localhost:3000' + resource.url : 'https://via.placeholder.com/600x300'" alt="Foto copertina">
         
@@ -47,14 +34,11 @@
             }
             
             <div class="closeButton">
-              <ion-button fill="clear" (click)="chiudi()">Chiudi</ion-button>
+              <ion-button fill="clear" (click)="close()">Chiudi</ion-button>
             </div>
           </div>
         </div>
         
       </div>
-
-      
-
   }
 </ion-content>

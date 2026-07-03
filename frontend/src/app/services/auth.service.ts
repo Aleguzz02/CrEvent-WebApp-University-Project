@@ -47,5 +47,8 @@ export class AuthService {
     this.authState.next(false);
   }
 
+  refreshAuthState(): void {
+    this.authState.next(this.hasToken());
+  }
 
 }
