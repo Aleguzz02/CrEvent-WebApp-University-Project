@@ -395,7 +395,39 @@ async function putData() {
                 [1, 5], 
                 (err) => { if (err) console.error(err); }
             );
-        })
+        });
+        const eventiProva1 = [
+            [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 150, 'prova1@example.com', 1],
+            [2, '2026-02-14', 'Compleanno in Villa', 80, 'prova1@example.com', 2],
+            [3, '2026-05-20', 'Festa di Laurea', 120, 'prova1@example.com', 3],
+            [4, '2026-09-12', 'Anniversario Rossi', 90, 'prova1@example.com', 1],
+            [5, '2027-01-18', 'Evento Aziendale Palermo', 140, 'prova1@example.com', 2],
+            ];
+
+            eventiProva1.forEach((evento) => {
+                db.run(`
+                    INSERT OR IGNORE INTO Evento (id, data, nome, invitati, emailUtente, idLocation)
+                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    evento,
+                    (err) => { if (err) console.error(err); }
+                );
+            });
+            const coinvolgimentiProva1 = [
+                [1, 1], [1, 3], [1, 5],
+                [2, 2], [2, 4], [2, 6],
+                [3, 2], [3, 7], [3, 8],
+                [4, 1], [4, 3], [4, 5],
+                [5, 2], [5, 4], [5, 6],
+                ];
+
+                coinvolgimentiProva1.forEach((coinvolge) => {
+                    db.run(`
+                        INSERT OR IGNORE INTO Coinvolge (idEvento, idStaff)
+                        VALUES (?, ?)`,
+                        coinvolge,
+                        (err) => { if (err) console.error(err); }
+                    );
+                });
     } catch (err) {
         console.error(err);
     }
