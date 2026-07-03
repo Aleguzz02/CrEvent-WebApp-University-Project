@@ -1,16 +1,7 @@
-const db = require('../db/db');
-
-const run = (query, params = []) => {
-        return new Promise((resolve, reject) => {
-            db.run(query, params, function (err) {
-                if (err) reject(err);
-                else resolve({ id: this.lastID, changes: this.changes });
-            });
-        });
-    };
+const { run, get, all } = require('../db/dbAsync');
     
 const LocationModel = {
-    /*addLoc: (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = NULL) => {
+    addLoc: async (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = NULL) => {
         try {
             await run(`BEGIN TRANSACTION`);
 
@@ -40,24 +31,19 @@ const LocationModel = {
             await run(`ROLLBACK`).catch(() => {});
             throw err;
         }
-    },*/
+    },
     getAll: () => {
-        return new Promise((resolve, reject) => {
-            const query = `
-            SELECT L.*, Im.url 
+        return all(
+            `SELECT L.*, Im.url 
             FROM Location L 
-            LEFT JOIN immaginiLocation Im ON L.id = Im.idLocation`;
-            db.all(query, [], (err, rows) => {
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        });
+            LEFT JOIN immaginiLocation Im ON L.id = Im.idLocation`
+        );
     },
 
     addCustomLoc: (lat, lng, nome, idUtente, dataOggi) => {
         return new Promise((resolve,reject) => {
-            const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, coordX, coordY, costo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-            db.run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lng, lat, 0], function (err) {
+            const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, lat, lng, costo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            db.run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lat, lng, 0], function (err) {
                 if(err) reject(err);
                 else resolve({
                     id: this.lastID
@@ -66,56 +52,36 @@ const LocationModel = {
         });
     },
 
-    remLoc: (idLocation) => {
-        const events = new Promise((resolve, reject) =>{
-            const query = `
+    remLoc: async (idLocation) => {
+        const events = await get(`
             SELECT COUNT(*) AS totale
             FROM Evento
             WHERE ? = idLocation 
-            AND DATE(data) >= DATE('now','localtime')`;
-            db.get(query,[idLocation], (err,rows)=>{
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        });
+            AND DATE(data) >= DATE('now','localtime')`,
+            [idLocation]);
+            
         if(events.totale > 0){
             throw new Error("futureEventsForLocation");
         }
-        return new Promise((resolve, reject) => {
-            const query = `
-            DELETE FROM Location WHERE id = ?`;
-            db.run(query,[idLocation], function (err) {
-                if(err) reject(err);
-                else resolve({ id: this.lastID, changes: this.changes});
-            });
-        });
+        return run(
+            `DELETE FROM Location WHERE id = ?`,
+            [idLocation]);
     },
     getFreeDates: (idLocation) => {
-       return new Promise((resolve,reject) => {
-            const query = `SELECT *
+       const query = `SELECT *
             FROM dateLocation
             WHERE ? = idLocation`;
-            db.all(query,[idLocation],(err,rows)=>{
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        }); 
+            return all(query, [idLocation]);
     },
     getCapacity: (people) => {
-        return new Promise((resolve,reject) => {
-            const query = `SELECT Location.*, immaginiLocation.url
+        const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation RIGHT JOIN Location
             ON immaginiLocaiton.idLocation = Location.id
             WHERE ? <= capienza`;
-            db.all(query,[people],(err,rows)=>{
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        });
+            return all(query,[people]);
     },
     getCapacityAndDate: (day, people) => {
-        return new Promise((resolve,reject) => {
-            const query = `SELECT Location.*, immaginiLocation.url
+        const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation
             RIGHT JOIN
             Location JOIN dateLocation ON dateLocation.idLocation = Location.id
@@ -126,11 +92,7 @@ const LocationModel = {
                 SELECT idLocation
                 FROM Evento
                 WHERE data = ?)`;
-            db.all(query,[people,day,day,day],(err,rows)=>{
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        });
+            return all(query,[people,day,day,day]);
     }
 }
 module.exports = LocationModel;

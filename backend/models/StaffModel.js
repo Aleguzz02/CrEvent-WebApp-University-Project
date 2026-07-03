@@ -1,17 +1,12 @@
-const db = require('../db/db');
+const { run, get, all } = require('../db/dbAsync');
 
 const StaffModel = {
     getAll: () => {
-        return new Promise((resolve, reject) => {
-            const query = `
+        const query = `
             SELECT S.*, Im.url 
             FROM Staff S 
             LEFT JOIN immaginiStaff Im ON S.id = Im.idStaff`;
-            db.all(query, [], (err, rows) => {
-                if(err) reject(err);
-                else resolve(rows);
-            });
-        });
+            return all(query);
     },
     addStaff: () => {
 
