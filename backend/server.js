@@ -5,6 +5,7 @@ const cors = require('cors');
 const path = require('path');
 
 const browseRoutes = require('./routes/browseRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -22,7 +23,9 @@ app.use('/api', authRoutes);
 
 //Rotte per immagini pubbliche
 app.use('/resource', express.static(path.join(__dirname, 'public/resource')));
+
 app.use('/api/browse', browseRoutes);
+app.use('/api/event', eventRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server attivo');

@@ -4,17 +4,17 @@ const User = require('../models/userModel');
 
 exports.getEvents = async (request,response) => {
     try{
-        const {email} = request.body;
-        if (!email) {
-            return res.status(400).json({ message : "È richiesta l'email"});
-        }
+        const email = request.user.email;
 
         console.log("event of user: ", email);
         const user = await User.findByEmail(email);
+
         if(!user) 
-            return res.status(404).json({
+            return response.status(404).json({
+                success: false,
                 message: "Utente non registrato"
             });
+            
         const events = await Event.getUserEvents(email);
         
         response.status(200).json({
