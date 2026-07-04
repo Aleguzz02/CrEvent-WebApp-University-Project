@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EventService {
-  private apiUrl = 'http://localhost:3000/api/event';
+  private apiUrl = '/api/event';
 
   constructor(private http: HttpClient) {}
 
@@ -16,5 +16,28 @@ export class EventService {
   }*/
   getUserEvents(): Observable<any> {
     return this.http.get<any>(this.apiUrl+'/myEvents');
+  }
+
+  getLocationsByCapacity(capacity: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/location`, {
+        params: {
+          capacity: capacity
+        }
+    });  
+  }
+  getLocationsByCapacityAndDate(day: string, capacity: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/location`,{
+      params: {
+        day: day,
+        capacity: capacity
+      }
+    });
+  }
+  getFreeDatesByLocation(idLocation: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/location/free-dates`, { 
+      params: { 
+        id:  idLocation
+      }
+    });
   }
 }

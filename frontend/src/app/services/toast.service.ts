@@ -18,7 +18,7 @@ export class ToastService {
       message,
       duration,
       position: 'bottom',
-      color: this.getColor(type)
+      cssClass: `app-toast app-toast-${type}`
     });
 
     await toast.present();
@@ -38,18 +38,5 @@ export class ToastService {
 
   info(message: string) {
     return this.show(message, 'info');
-  }
-
-  private getColor(type: ToastType): string {
-    switch (type) {
-      case 'success':
-        return 'success';
-      case 'error':
-        return 'danger';
-      case 'warning':
-        return 'warning';
-      default:
-        return 'medium';
-    }
   }
 }

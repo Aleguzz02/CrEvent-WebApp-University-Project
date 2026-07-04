@@ -7,8 +7,6 @@ import { tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript 
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000';
-
   private authState = new BehaviorSubject<boolean>(this.hasToken());
   isAuthenticated$ = this.authState.asObservable();
 
@@ -19,11 +17,11 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   signup(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/register`, userData);
+    return this.http.post(`/api/register`, userData);
   }
 
   login(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/login`, userData).pipe(
+    return this.http.post(`/api/login`, userData).pipe(
       tap((res: any) => {
         if (res && res.token) {
           this.authState.next(true);
