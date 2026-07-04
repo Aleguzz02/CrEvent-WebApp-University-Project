@@ -1,4 +1,5 @@
 const Event = require('../models/EventModel');
+const LocationModel = require('../models/LocationModel');
 const User = require('../models/userModel');
 
 
@@ -30,3 +31,52 @@ exports.getEvents = async (request,response) => {
         });
     }
 }
+exports.getLocationFreeDates = async (request,response) => {
+    try{
+        const id = request.query.id;
+        
+        const intervals = await LocationModel.getFreeDates(id);
+        const usedDates = await LocationModel.getUsedDates(id);
+        
+        response.status(200).json({
+            success: true,
+            freeDates: intervals,
+            usedDates: usedDates
+        });
+    }catch(err){
+        response.status(500).json({
+        success: false,
+        message: "Errore nel recupero delle date della location",
+        error: err.message
+    });
+    }
+}
+
+exports.getLocations = async (request, response) => {
+    try {
+        const capacity = Number(request.query.capacity);
+        const day = request.query.day;
+
+        if (!Number.isFinite(capacity) || capacity < 0) {
+            return response.status(400).json({
+                success: false,
+                message: "Capienza non valida"
+            });
+        }// da mettere nel middleware
+
+        const locations = day
+            ? await LocationModel.getCapacityAndDate(day, capacity)
+            : await LocationModel.getCapacity(capacity);
+
+        response.status(200).json({
+            success: true,
+            data: locations
+        });
+  } catch (err) {
+    response.status(500).json({
+      success: false,
+      message: "Errore nel recupero delle location",
+      error: err.message
+    });
+  }
+};

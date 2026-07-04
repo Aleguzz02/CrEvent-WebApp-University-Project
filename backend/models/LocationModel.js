@@ -73,6 +73,13 @@ const LocationModel = {
             WHERE ? = idLocation`;
             return all(query, [idLocation]);
     },
+    getUsedDates: (idLocation) => {
+        const query = `SELECT DISTINCT DATE(data) ad data
+        FROM Evento
+        WHERE idLocation = ?
+        AND data >= DATE('now','localtime')`;
+        return all(query, [idLocation]);
+    },
     getCapacity: (people) => {
         const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation RIGHT JOIN Location
