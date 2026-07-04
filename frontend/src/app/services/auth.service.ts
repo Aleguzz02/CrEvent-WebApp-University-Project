@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,12 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   signup(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/register`, userData);
+    return this.http.post(`${this.apiUrl}/api/register`, userData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = error.error?.message || "";
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   login(userData: any): Observable<any> {
@@ -32,6 +37,10 @@ export class AuthService {
           // Imposta lo stato a true dopo accesso avvenuto
           this.authState.next(true);
         }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = error.error?.message || "";
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
