@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { SignupFormComponent } from '../signup-form/signup-form.component';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
-
+//AGGIUNGI TOAST SERVICE
 @Component({
   selector: 'app-signup-modal',
   templateUrl: './signup-modal.component.html',
@@ -16,6 +16,7 @@ export class SignupModalComponent  implements OnInit {
 
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
+  private toastService = inject(ToastService);
 
   constructor() { }
 
@@ -51,7 +52,11 @@ export class SignupModalComponent  implements OnInit {
 
           this.modalCtrl.dismiss(formData, 'confirm')
         },
-        error: (signupErr) => console.error('Errore:', signupErr)
+        error: (signupErr) => {
+          console.error('Errore:', signupErr);
+          const errorMessage = signupErr.error?.message || signupErr.message || 'Errore';
+          this.toastService.error(errorMessage);
+        }
       });
     }
   }
