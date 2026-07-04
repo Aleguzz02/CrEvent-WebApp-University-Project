@@ -1,41 +1,55 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+const API_URL = 'http://localhost:3000';
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get the token from localStorage
-    const token = localStorage.getItem('token');
+const PUBLIC_ENDPOINTS = [
+  '/api/login',
+  '/api/register',
+  '/api/browse'
+];
 
-    // Clone the request and add the Authorization header if token exists
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
 
-    // Handle the request
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        // If the error is 401 (Unauthorized), redirect to login
-        if (error.status === 401) {
-          this.router.navigate(['/login']);
-        }
-        return throwError(() => error);
-      })
-    );
+  let apiReq = req;
+
+  if (req.url.startsWith('/api/')) {
+    apiReq = req.clone({
+      url: `${API_URL}${req.url}`
+    });
   }
-}
+
+  const isBackendRequest = apiReq.url.startsWith(API_URL);
+  const path = apiReq.url.replace(API_URL, '');
+  const isPublicEndpoint = PUBLIC_ENDPOINTS.some(endpoint =>
+    path.startsWith(endpoint)
+  );
+
+  const token = localStorage.getItem('token');
+
+  if (token && isBackendRequest && !isPublicEndpoint) {
+    apiReq = apiReq.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  return next(apiReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userNome');
+
+        // Nel tuo progetto non esiste /login, quindi meglio una route esistente.
+        router.navigate(['/tabs/tab2']);
+      }
+
+      return throwError(() => error);
+    })
+  );
+};

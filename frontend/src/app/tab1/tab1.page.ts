@@ -13,6 +13,7 @@ import { SignupModalComponent } from '../components/signup-modal/signup-modal.co
 import { ModalController } from '@ionic/angular/standalone';
 import { EventService } from '../services/event.service';
 import { ToastService } from '../services/toast.service';
+import { EventDataModalComponent } from '../components/event-data-modal/event-data-modal.component';
 
 @Component({
   selector: 'app-tab1',
@@ -49,12 +50,16 @@ export class Tab1Page implements OnInit, OnDestroy {
     .subscribe(status => {
       this.isAuthenticated = status;
     })
+  }
+  ionViewWillEnter() {
 
-    if (!this.isAuthenticated) {
+    if (this.isAuthenticated) {
+      this.loadEvents();
+    } else {
       this.openLoginModal();
     }
-    this.loadEvents();
   }
+
 
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
@@ -74,9 +79,29 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  creaNuovoEvento(){
-    this.router.navigate(['/create-event']);  
-  }
+  async creaNuovoEvento(){
+    const modal = await this.modalCtrl.create({
+        component: EventDataModalComponent,
+        cssClass: 'create-modals'
+      });
+
+      await modal.present();
+
+      const result = await modal.onDidDismiss<{
+        nome: string;
+        capienza: number;
+      }>();
+
+      if (result.role !== 'confirm' || !result.data) {
+        return;
+      }
+
+      this.router.navigate(['/create-event'], {
+        state: {
+          eventDraft: result.data
+        }
+      });  
+    }
 
   ngOnDestroy(): void {
     this.destroy$.next();       // Emette il valore che attiva takeUntil
