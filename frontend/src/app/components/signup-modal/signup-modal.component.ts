@@ -1,12 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText,
-  ToastController
- } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText } from '@ionic/angular/standalone';
 import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { SignupFormComponent } from '../signup-form/signup-form.component';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
-
+//AGGIUNGI TOAST SERVICE
 @Component({
   selector: 'app-signup-modal',
   templateUrl: './signup-modal.component.html',
@@ -18,7 +16,7 @@ export class SignupModalComponent  implements OnInit {
 
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
-  private toastCtrl = inject(ToastController);
+  private toastService = inject(ToastService);
 
   constructor() { }
 
@@ -32,21 +30,6 @@ export class SignupModalComponent  implements OnInit {
     }
   }
 
-  async showErrorToast(message: string) {
-    const toast = await this.toastCtrl.create({
-      message: message,
-      duration: 4000,
-      position: 'bottom',
-      color: 'danger',
-      buttons: [
-        {
-          text: 'OK',
-          role: 'cancel'
-        }
-      ]
-    });
-    await toast.present();
-  }
 
   handleFormSubmit(formData: any) {
     if (formData) {
@@ -72,7 +55,7 @@ export class SignupModalComponent  implements OnInit {
         error: (signupErr) => {
           console.error('Errore:', signupErr);
           const errorMessage = signupErr.error?.message || signupErr.message || 'Errore';
-          this.showErrorToast(errorMessage);
+          this.toastService.error(errorMessage);
         }
       });
     }
