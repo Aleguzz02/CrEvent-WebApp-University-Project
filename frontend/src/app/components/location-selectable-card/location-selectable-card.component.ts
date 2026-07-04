@@ -35,7 +35,7 @@ export class LocationSelectableCardComponent {
     this.locationSelezionata.emit(this.location);
   }
 
-  get immagineLocation() {
+  get locationImage() {
     if (this.location?.url) {
       if (
         this.location.url.startsWith('http://') ||

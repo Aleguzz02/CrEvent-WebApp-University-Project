@@ -25,4 +25,23 @@ export class EventCardComponent  implements OnInit {
   }
 
   apriDettagli(){}
+
+  get locationImage() {
+    if (this.evento?.url) {
+      if (
+        this.evento.url.startsWith('http://') ||
+        this.evento.url.startsWith('https://')
+      ) {
+        return this.evento.url;
+      }
+
+      return 'http://localhost:3000' + this.evento.url;
+    }
+
+    if (this.evento?.immagine) {
+      return this.evento.immagine;
+    }
+
+    return 'https://via.placeholder.com/350x180';
+  }
 }

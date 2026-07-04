@@ -1,20 +1,20 @@
 <ion-card class="crevent-card">
-  <img [src]="dati?.url ? 'http://localhost:3000' + dati.url : 'https://via.placeholder.com/350x150'" alt="Immagine Risorsa" />
+  <img [src]="locationImage" alt="Immagine Risorsa" />
   
   <ion-card-header>
     <ion-card-title>
-      {{ dati?.nome }} {{ dati?.cognome ? dati.cognome : '' }}
+      {{ resourceData?.nome }} {{ resourceData?.cognome ? resourceData.cognome : '' }}
     </ion-card-title>
   </ion-card-header>
 
   <ion-card-content>
-    @for(dettaglio of dettagliSpecifici; track dettaglio.label){
-      <p><strong>{{ dettaglio.label }} </strong>{{ dettaglio.valore }}</p>
+    @for(detail of specificDetail; track detail.label){
+      <p><strong>{{ detail.label }} </strong>{{ detail.valore }}</p>
     }
     <div class="card-footer">
 
       <span class="prezzo">
-        <strong>{{ testoPrezzo }}</strong>
+        <strong>{{ priceText }}</strong>
       </span>
       
       <ion-button fill="clear" color="primary" (click)="openDetail()">Info</ion-button>

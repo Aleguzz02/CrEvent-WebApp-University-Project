@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { LocationSelectableCardComponent } from '../components/location-selectable-card/location-selectable-card.component';
 import { CustomLocationMapModalComponent } from '../components/custom-location-map-modal/custom-location-map-modal.component';
 import { CustomLocationNameModalComponent } from '../components/custom-location-name-modal/custom-location-name-modal.component';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-create-event',
@@ -47,6 +48,9 @@ import { CustomLocationNameModalComponent } from '../components/custom-location-
 })
 export class CreateEventPage implements OnInit {
 
+  private eventService = inject(EventService);
+
+  tempEvent: {name: string, capacity: number} | null = null;
   mode: string = 'location';
   showCalendar: boolean = true;
 
@@ -56,7 +60,7 @@ export class CreateEventPage implements OnInit {
   selectedLocation: any = null;
   selectedDate: string = '';
 
-  dateOccupate: string[] = [];
+  usedDates: string[] = [];
   intervalliDisponibili: any[] = [];
 
   dataOggi: string = new Date().toISOString().substring(0, 10);
@@ -64,73 +68,68 @@ export class CreateEventPage implements OnInit {
   newCustomLocation: any = null;
 
 
-  constructor(private router: Router, private modalController: ModalController) { }  
+  constructor(private router: Router, private modalController: ModalController) {
+      this.tempEvent = history.state?.eventDraft ?? null;
+  }  
 
   ngOnInit() {
-    this.caricaLocations();
+    if (!this.tempEvent) {
+    this.router.navigate(['/tabs/tab1']);
+    return;
+  }
+
+  this.caricaLocations();
+  }
+  get eventName(): string {
+    return this.tempEvent?.name ?? '';
+  }
+
+  get eventCapacity(): number {
+    return this.tempEvent?.capacity ?? 0;
   }
 
   caricaLocations() {
-    this.locations = [
-      {
-        id: 1,
-        nome: 'Villa Aurora',
-        citta: 'Milano',
-        indirizzo: 'Via Roma 10',
-        capienza: 120,
-        costo: 2500,
-        url: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600',
-        inizio: '2026-07-01',
-        fine: '2026-07-20',
-        dateOccupate: ['2026-07-05', '2026-07-06']
-      },
-      {
-        id: 2,
-        nome: 'Sala Cristallo',
-        citta: 'Torino',
-        indirizzo: 'Corso Francia 25',
-        capienza: 80,
-        costo: 1600,
-        url: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600',
-        inizio: '2026-07-10',
-        fine: '2026-07-30',
-        dateOccupate: ['2026-07-15']
-      },
-      {
-        id: 3,
-        nome: 'Terrazza Mare',
-        citta: 'Genova',
-        indirizzo: 'Via Porto 4',
-        capienza: 200,
-        costo: 4200,
-        url: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600',
-        inizio: '2026-07-01',
-        fine: '2026-09-01',
-        dateOccupate: ['2026-07-10']
+  this.eventService.getLocationsByCapacity(this.eventCapacity).subscribe({
+    next: (response) => {
+      if (!response.success) {
+        return;
       }
-    ];
-  }
 
-  locationLibera(location: any, giorno: string) {
-    if (giorno < this.dataOggi) {
+      this.locations = response.data;
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
+
+locationLibera(location: any, day: string) {
+    if (day < this.dataOggi) {
       return false;
     }
 
-    if (giorno < location.inizio || giorno > location.fine) {
+    const inFreeIntervall = this.intervalliDisponibili.some(intervallo => {
+      const inizio = intervallo.dataInizio.substring(0, 10);
+      const fine = intervallo.dataFine.substring(0, 10);
+
+      return day >= inizio && day <= fine;
+    });
+
+    if (!inFreeIntervall) {
       return false;
     }
 
-    if (location.dateOccupate.includes(giorno)) {
+    if (this.usedDates.includes(day)) {
       return false;
     }
 
     return true;
-  }
+}
 
   resetScelta() {
     this.selectedLocation = null;
     this.selectedDate = '';
-    this.dateOccupate = [];
+    this.usedDates = [];
     this.freeLocations = [];
   }
 
@@ -139,50 +138,39 @@ export class CreateEventPage implements OnInit {
 
     if (this.mode === 'location') {
       this.selectedDate = '';
+      this.loadUsedDates();
+    }
+  }
+
+  loadUsedDates() {
+  if (!this.selectedLocation?.id) {
+    return;
+  }
+
+  this.eventService.getFreeDatesByLocation(this.selectedLocation.id).subscribe({
+    next: (response) => {
+      if (!response.success) {
+        return;
+      }
+      this.intervalliDisponibili = response.data;
+      this.usedDates = response.usedDates ?? [];
+
       this.reloadCalendar();
+    },
+    error: (err) => {
+      console.error(err);
     }
-  }
-
-  caricaDateOccupate() {
-    if (!this.selectedLocation) {
-      return;
-    }
-
-    // Esempio provvisorio: poi questi dati arrivano dal backend/db.
-    // Ogni intervallo usa i campi inizio e fine del DB.
-
-    if (this.selectedLocation.id === 1) {
-      this.intervalliDisponibili = [
-        { inizio: '2026-07-01', fine: '2026-07-20' },
-        { inizio: '2026-08-01', fine: '2026-08-10' }
-      ];
-
-      this.dateOccupate = ['2026-07-05', '2026-07-06'];
-    }
-    else if (this.selectedLocation.id === 2) {
-      this.intervalliDisponibili = [
-        { inizio: '2026-07-10', fine: '2026-07-30' }
-      ];
-
-      this.dateOccupate = ['2026-07-15'];
-    }
-    else {
-      this.intervalliDisponibili = [
-        { inizio: '2026-07-01', fine: '2026-09-01' }
-      ];
-
-      this.dateOccupate = ['2026-07-10'];
-    }
-  }
+  });
+}
 
   dataDisponibile = (dateString: string) => {
     if (!this.selectedLocation) {
       return false;
     }
 
-    const giorno = dateString.substring(0, 10);
+    const day = dateString.substring(0, 10);
 
-    return this.locationLibera(this.selectedLocation, giorno);
+    return this.locationLibera(this.selectedLocation, day);
   };
 
   loadFreeLocations() {
@@ -190,11 +178,20 @@ export class CreateEventPage implements OnInit {
       return;
     }
 
-    const giorno = this.selectedDate.substring(0, 10);
+    const day = this.selectedDate.substring(0, 10);
 
-    this.freeLocations = this.locations.filter(location =>
-      this.locationLibera(location, giorno)
-    );
+    this.eventService.getLocationsByCapacityAndDate(day, this.eventCapacity).subscribe({
+      next: (response) => {
+        if (!response.success) {
+          return;
+        }
+
+        this.freeLocations = response.data;
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
   continue() {
@@ -256,14 +253,14 @@ export class CreateEventPage implements OnInit {
         nome: name.data.nome,
         citta: 'Posizione scelta',
         indirizzo: `${position.data.lat}, ${position.data.lng}`,
-        capienza: 0,
+        capienza: this.eventCapacity,
         costo: 0,
         url: '',
         lat: position.data.lat,
         lng: position.data.lng,
         inizio: this.dataOggi,
         fine: '2026-12-31',
-        dateOccupate: [],
+        usedDates: [],
         custom: true
       };
 
