@@ -1,12 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 require('./db/db');
 const cors = require('cors');
 const path = require('path');
+
 const app = express();
 const PORT = 3000;
 
 const authRoutes = require('./routes/authRoutes');
 const browseRoutes = require('./routes/browseRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 
 app.use(cors({
@@ -23,7 +26,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 //Rotte per immagini pubbliche
 app.use('/resource', express.static(path.join(__dirname, 'public/resource')));
+
 app.use('/api/browse', browseRoutes);
+app.use('/api/event', eventRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server attivo');

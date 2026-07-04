@@ -1,0 +1,39 @@
+<ion-card
+  class="location-card"
+  [class.location-selezionata]="selezionata"
+  [button]="true"
+  (click)="selezionaLocation()">
+
+  <ion-img [src]="locationImage" alt="Immagine location"></ion-img>
+
+  <ion-card-content>
+    <div class="card-header">
+      <div>
+        <h2>{{ location?.nome }}</h2>
+
+        @if (location?.citta || location?.indirizzo) {
+          <ion-text color="medium">
+            <p>{{ location?.citta }} {{ location?.indirizzo }}</p>
+          </ion-text>
+        }
+      </div>
+
+      @if (selezionata) {
+        <ion-icon name="checkmark-circle" color="primary"></ion-icon>
+      }
+    </div>
+
+    <div class="card-info">
+      <div>
+        <ion-icon name="people"></ion-icon>
+        <span>{{ location?.capienza }} persone</span>
+      </div>
+
+      <div>
+        <ion-icon name="cash-outline"></ion-icon>
+        <span>{{ location?.costo }} euro</span>
+      </div>
+    </div>
+  </ion-card-content>
+
+</ion-card>

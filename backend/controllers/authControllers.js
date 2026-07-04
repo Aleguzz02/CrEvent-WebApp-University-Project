@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const SMTP = require("../config/mailer");
+
 
 const SECRET = "secretkey2026";
 
@@ -18,16 +20,37 @@ exports.register = async (req, res) => {
         // Verifica che la mail inserita sia presente nel DB
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
-            return res.status(400).json({ message: "Utente già registrato" });
+            return res.status(400).json({
+                success: false,
+                message: "Utente già registrato" });
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
+
+        await SMTP.sendEmail({
+            to: email,
+            subject: 'Benvenuto su CrEvent!',
+            text: `Ciao ${nome} ${cognome}, grazie per esserti registrato!`,
+            html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
+                    <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
+        });
         const {hashedPassword, ...safeUser} = user;
         res.status(201).json(safeUser);
     } catch (err) {
-        console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
-        res.status(500).json({ error: err.message });
+        if(err.code === "emailError"){
+            console.error(err.message)
+            return res.status(201).json({
+                success: true,
+                message: "Registrazione avvenuta con successo. Email non inviata",
+                emailError: true
+            });
+        }
+        else{
+            console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
+            res.status(500).json({ error: err.message });
+        }
+        
     }
 };
 

@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla">
+        <ion-button class="bottone-annulla" fill="clear" (click)="back()">
+          Annulla
+        </ion-button>
+      </div>
+    </ion-buttons>
+
+    <ion-title>Dati evento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="event-modal-content">
+    <ion-item class="event-input-item">
+      <ion-label position="stacked">Nome evento</ion-label>
+      <ion-input
+        [(ngModel)]="eventName"
+        placeholder="Es. Compleanno, Laurea..."
+        maxlength="50">
+      </ion-input>
+    </ion-item>
+
+    @if (eventName.length > 0 && !validName) {
+      <ion-text color="danger" class="errore-input">
+        Il nome dell'evento non può essere vuoto.
+      </ion-text>
+    }
+
+    <ion-item class="event-input-item">
+      <ion-label position="stacked">Capienza</ion-label>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        [(ngModel)]="capacity"
+        placeholder="Es. 120">
+      </ion-input>
+    </ion-item>
+
+    @if (capacity !== null && !validCapacity) {
+      <ion-text color="danger" class="errore-input">
+        La capienza deve essere un numero non negativo.
+      </ion-text>
+    }
+
+    <ion-button
+      class="bottone-conferma-evento"
+      expand="block"
+      [disabled]="!validForm"
+      (click)="confirm()">
+      Continua
+    </ion-button>
+  </div>
+</ion-content>

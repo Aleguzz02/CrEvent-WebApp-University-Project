@@ -4,7 +4,8 @@ import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { SignupFormComponent } from '../signup-form/signup-form.component';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
-//AGGIUNGI TOAST SERVICE
+import { ToastService } from '../../services/toast.service';
+
 @Component({
   selector: 'app-signup-modal',
   templateUrl: './signup-modal.component.html',
@@ -37,7 +38,10 @@ export class SignupModalComponent  implements OnInit {
       this.authService.signup(formData).subscribe({
         next: (signupRes) => {
           console.log('Risposta server:', signupRes);
-
+          
+          if(signupRes?.emailError){
+            this.toastService.warning(signupRes.message);
+          }
           // Login immediato dopo registrazione
           this.authService.login(formData).subscribe({
             next: (loginRes) => {
@@ -62,7 +66,6 @@ export class SignupModalComponent  implements OnInit {
   }
 
   async openLoginModal() {
-    // Chiudi il modal di login
     await this.closeSignupModal();
 
     const modal = await this.modalCtrl.create({

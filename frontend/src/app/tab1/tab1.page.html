@@ -60,8 +60,8 @@
 
 
   @if(isAuthenticated == true) {
-    @if(eventiUtente.length > 0){
-      @for(event of eventiUtente; track event.id){
+    @if(userEvents.length > 0){
+      @for(event of userEvents; track event.id){
         <app-event-card [evento]="event"></app-event-card>
       }
     }

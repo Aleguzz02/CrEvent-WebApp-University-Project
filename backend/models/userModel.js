@@ -1,28 +1,16 @@
-const db = require("../db/db");
+const { run, get, all } = require('../db/dbAsync');
 
 const User = {
   // Crea nuovo utente
   create: (email, password, nome, cognome, telefono, dataNascita) => {
-    return new Promise((resolve, reject) => {
-      const query = `INSERT INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      db.run(query, [email, password, nome, cognome, telefono, dataNascita, 0], function (err) {
-        if (err) reject(err);
-        else resolve({ id: this.lastID, email });
-      });
-    });
+    const query = `INSERT INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      return run(query, [email, password, nome, cognome, telefono, dataNascita, 0]);
   },
-
-  // Trova utente per email
+  
   findByEmail: (email) => {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT * FROM User WHERE email = ?`;
-      db.get(query, [email], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const query = `SELECT * FROM User WHERE email = ?`;
+      return get(query, [email]);
   },
-
   // Aggiorna il telefono
   updatePhone: (email, telefono) => {
     return new Promise((resolve, reject) => {

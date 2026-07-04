@@ -1,44 +1,55 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
+import { catchError, throwError } from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router, private authService: AuthService) {}
+const API_URL = 'http://localhost:3000';
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Prende il token dal localStorage
-    const token = localStorage.getItem('token');
+const PUBLIC_ENDPOINTS = [
+  '/api/login',
+  '/api/register',
+  '/api/browse'
+];
 
-    // Se il token esiste, clona la richiesta e lo aggiunge nell'Authorization header
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
 
-    // Gestione risposta server
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        // Se errore 401 (Unauthorized), redirect a tabs -> tab2
-        if (error.status === 401) {
-          localStorage.removeItem('token');     // Elimina eventuale token scaduto
-          this.authService.logout();            // Effettua logout
-          this.router.navigate(['/tabs']);      // Naviga a tab2 (Homepage)
-        }
-        return throwError(() => error);
-      })
-    );
+  let apiReq = req;
+
+  if (req.url.startsWith('/api/')) {
+    apiReq = req.clone({
+      url: `${API_URL}${req.url}`
+    });
   }
-}
+
+  const isBackendRequest = apiReq.url.startsWith(API_URL);
+  const path = apiReq.url.replace(API_URL, '');
+  const isPublicEndpoint = PUBLIC_ENDPOINTS.some(endpoint =>
+    path.startsWith(endpoint)
+  );
+
+  const token = localStorage.getItem('token');
+
+  if (token && isBackendRequest && !isPublicEndpoint) {
+    apiReq = apiReq.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  return next(apiReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userNome');
+
+        // Nel tuo progetto non esiste /login, quindi meglio una route esistente.
+        router.navigate(['/tabs/tab2']);
+      }
+
+      return throwError(() => error);
+    })
+  );
+};

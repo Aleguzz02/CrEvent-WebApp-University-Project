@@ -17,7 +17,7 @@ export class ResourceDetailPage implements OnInit{
 
   constructor(private modalController: ModalController) {}
 
-  chiudi() {
+  close() {
     this.modalController.dismiss();
   }
 

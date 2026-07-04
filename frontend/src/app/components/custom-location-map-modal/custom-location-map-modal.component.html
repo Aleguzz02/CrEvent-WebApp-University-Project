@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla">
+        <ion-button class="bottone-annulla" fill="clear" (click)="annulla()">
+          Annulla
+        </ion-button>
+      </div>    
+    </ion-buttons>
+
+    <ion-title>Scegli punto</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button class="bottone-conferma-mappa"
+        fill="clear"
+        [disabled]="lat === null || lng === null" (click)="conferma()">
+        Conferma
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="map-content" [scrollY]="false" color="medium">
+  <div class="map-wrapper">
+    <div id="customLocationMap"></div>
+  </div>
+</ion-content>

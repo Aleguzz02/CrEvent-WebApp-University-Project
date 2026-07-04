@@ -11,7 +11,10 @@ module.exports = (req, res, next) => {
     const authHeader = req.headers["authorization"];
     // Se non presente -> 401 Unauthorized
     if (!authHeader) {
-        return res.status(401).json({message: "Accesso negato"});
+        return res.status(401).json({
+            success: false, 
+            message: "Accesso negato"
+        });
     }
 
     // Se presente, estraggo il token

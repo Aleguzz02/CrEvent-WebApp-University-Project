@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   login(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/login`, userData).pipe(
+    return this.http.post(`/api/login`, userData).pipe(
       tap((res: any) => {
         if (res && res.token) {
           // Salva token e email nel localStorage
@@ -66,5 +66,8 @@ export class AuthService {
     this.authState.next(false);
   }
 
+  refreshAuthState(): void {
+    this.authState.next(this.isTokenValid());
+  }
 
 }

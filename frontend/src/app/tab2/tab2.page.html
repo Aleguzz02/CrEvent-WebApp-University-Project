@@ -57,7 +57,7 @@
     @if(sezione === 'location'){
       <ion-list>
         @for(loc of listaLocation; track loc.id){
-          <app-card-crevent [dati]="loc"></app-card-crevent>
+          <app-card-crevent [resourceData]="loc"></app-card-crevent>
         }@empty{
           <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
         }
@@ -71,7 +71,7 @@
           
           <div class="cards-container" [class.oneColumn]="catering.length < 6">
             @for (staff of catering; track staff.id) {
-              <app-card-crevent [dati]="staff"></app-card-crevent>
+              <app-card-crevent [resourceData]="staff"></app-card-crevent>
             }@empty{
             <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
             }
@@ -85,7 +85,7 @@
           
           <div class="cards-container"  [class.oneColumn]="dj.length < 6">
             @for (staff of dj; track staff.id) {
-              <app-card-crevent [dati]="staff"></app-card-crevent>
+              <app-card-crevent [resourceData]="staff"></app-card-crevent>
             }@empty{
             <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
             }
@@ -98,7 +98,7 @@
         <div class="categoria-staff-gruppo">
           <div class="cards-container"  [class.oneColumn]="fotografo.length < 6">
             @for (staff of fotografo; track staff.id) {
-              <app-card-crevent [dati]="staff"></app-card-crevent>
+              <app-card-crevent [resourceData]="staff"></app-card-crevent>
             }@empty{
             <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
             }
@@ -111,7 +111,7 @@
         <div class="categoria-staff-gruppo">
           <div class="cards-container"  [class.oneColumn]="altro.length < 6">
             @for (staff of altro; track staff.id) {
-              <app-card-crevent [dati]="staff"></app-card-crevent>
+              <app-card-crevent [resourceData]="staff"></app-card-crevent>
             }@empty{
             <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
             }

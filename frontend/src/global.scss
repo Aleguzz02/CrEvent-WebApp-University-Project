@@ -36,6 +36,10 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+@import "leaflet/dist/leaflet.css";
+:root{
+  --ion-color-cash: rgb(28, 205, 28);
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
@@ -57,6 +61,20 @@
 
 }
 
+.create-modals{
+  --border-radius: 30px;
+  --width: 600px;
+  --height: 600px;
+}
+
+@media(max-width: 600px){
+  .create-modals{
+    --width: 100%;
+    --height: 100%;
+    --border-radius: 0px;
+  }
+}
+
 app-tab1, app-tab2, app-tab3 {
   display: block; 
   animation: tabFadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
@@ -73,3 +91,35 @@ app-tab1, app-tab2, app-tab3 {
     transform: scale(1);
   }
 }
+
+ion-toast.app-toast {
+  --border-radius: 16px;
+  --box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  --color: white;
+  //--max-width: 420px;
+  --width: calc(100% - 32px);
+  --white-space: normal;
+}
+
+ion-toast.app-toast::part(message) {
+  font-weight: 400;
+  font-size: 15px;
+}
+
+ion-toast.app-toast-success {
+  --background: #16a34a;
+}
+
+ion-toast.app-toast-error {
+  --background: #dc2626;
+}
+
+ion-toast.app-toast-warning {
+  --background: #f59e0b;
+  --color: #1f2937;
+}
+
+ion-toast.app-toast-info {
+  --background: #374151;
+}
+

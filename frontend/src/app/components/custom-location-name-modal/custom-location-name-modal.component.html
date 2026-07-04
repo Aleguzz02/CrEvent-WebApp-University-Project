@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla">
+        <ion-button class="bottone-annulla" fill="clear" (click)="back()">
+          Annulla
+        </ion-button>
+      </div>
+    </ion-buttons>
+
+    <ion-title>Nome location</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="name-modal-content">
+    <ion-item class="name-input-item">
+      <ion-label position="stacked">Nome della location</ion-label>
+      <ion-input
+        [(ngModel)]="nomeLocation"
+        placeholder="Es. Casa mia, Giardino privato..."
+        maxlength="40">
+      </ion-input>
+    </ion-item>
+
+    <ion-button
+      class="bottone-conferma-nome"
+      expand="block"
+      [disabled]="!nomeLocation.trim()"
+      (click)="confirm()">
+      Conferma
+    </ion-button>
+  </div>
+</ion-content>
