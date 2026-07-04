@@ -27,22 +27,40 @@ export class SignupModalComponent  implements OnInit {
     try {
       await this.modalCtrl.dismiss(null, "confirm");
     } catch (e) {
-      console.warn("Modal already dismissed");
+      console.warn("Modal già chiuso");
     }
   }
 
 
   handleFormSubmit(formData: any) {
     if (formData) {
+      // Registrazione
       this.authService.signup(formData).subscribe({
-        next: (response) => {
-          if(response?.emailError){
-            this.toastService.warning(response.message);
+        next: (signupRes) => {
+          console.log('Risposta server:', signupRes);
+          
+          if(signupRes?.emailError){
+            this.toastService.warning(signupRes.message);
           }
-          console.log('Server response:', response);
+          // Login immediato dopo registrazione
+          this.authService.login(formData).subscribe({
+            next: (loginRes) => {
+              console.log('Accesso', loginRes);
+              // Chiudi modal
+              this.modalCtrl.dismiss(formData, 'confirm');
+            },
+            error: (loginErr) => {
+              console.error('Errore accesso dopo registrazione:', loginErr);
+            }
+          })
+
           this.modalCtrl.dismiss(formData, 'confirm')
         },
-        error: (err) => console.error('Error:', err)
+        error: (signupErr) => {
+          console.error('Errore:', signupErr);
+          const errorMessage = signupErr.error?.message || signupErr.message || 'Errore';
+          this.toastService.error(errorMessage);
+        }
       });
     }
   }

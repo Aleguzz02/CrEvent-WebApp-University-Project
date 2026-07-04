@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule,
+  AbstractControl, ValidationErrors
+ } from '@angular/forms';
 import { IonItem, IonInput, IonList } from '@ionic/angular/standalone';
 
 @Component({
@@ -16,13 +18,43 @@ export class SignupFormComponent  implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.signupForm = this.fb.group({
-      nome: ['', Validators.required ],
-      cognome: ['', Validators.required],
-      dataNascita: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      telefono: ['', Validators.required],
-      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)]]
+      nome: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
+      ]],
+      cognome: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
+      ]],
+      dataNascita: ['', [
+        Validators.required
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]],
+      telefono: ['', [
+        Validators.required,
+        Validators.pattern(/^[0-9]{10}$/)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
+      ]],
+      confermaPassword: ['', [
+        Validators.required,
+        this.comparePasswords.bind(this)
+      ]]
     });
+  }
+
+  comparePasswords(control: AbstractControl): ValidationErrors | null {
+    if (!this.signupForm) return null;
+    const password = this.signupForm.get('password')?.value;
+    const confirmPassword = control.value;
+    
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   ngOnInit() {}

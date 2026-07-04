@@ -52,6 +52,7 @@ db.serialize(() => {
         cognome TEXT NOT NULL,
         telefono TEXT NOT NULL,
         dataNascita TEXT NOT NULL,
+        urlFotoProfilo TEXT,
         tipoUtente INTEGER NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
         idStaff INTEGER,
         idLocation INTEGER,

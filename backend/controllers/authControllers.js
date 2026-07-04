@@ -1,4 +1,3 @@
-// Libreria per criptare le informazioni
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
@@ -9,16 +8,16 @@ const SECRET = "secretkey2026";
 
 exports.register = async (req, res) => {
     try {
-        const { email, password, nome, cognome, telefono, dataNascita} = req.body;
+        const { email, password, confermaPassword, nome, cognome, telefono, dataNascita} = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ 
-                success: false,
-                message : "Sono richiesti email e password"});
+        // Verifica aggiuntiva di controllo campi
+        if (!email || !password || !confermaPassword || !nome || !cognome || !telefono || !dataNascita) {
+            return res.status(400).json({ message : "Sono richiesti tutti i campi"});
         }
-
+        
         console.log("Registering user: ", email);
         
+        // Verifica che la mail inserita sia presente nel DB
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({
@@ -36,8 +35,8 @@ exports.register = async (req, res) => {
             html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
                     <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
         });
-
-        res.status(201).json(user);
+        const {hashedPassword, ...safeUser} = user;
+        res.status(201).json(safeUser);
     } catch (err) {
         if(err.code === "emailError"){
             console.error(err.message)
