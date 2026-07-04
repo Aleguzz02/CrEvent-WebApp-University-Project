@@ -2,12 +2,12 @@ const express = require('express');
 require('./db/db');
 const cors = require('cors');
 const path = require('path');
-
-const browseRoutes = require('./routes/browseRoutes');
-
 const app = express();
 const PORT = 3000;
+
 const authRoutes = require('./routes/authRoutes');
+const browseRoutes = require('./routes/browseRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 app.use(cors({
   origin: "*", 
@@ -18,6 +18,8 @@ app.use(cors({
 app.use(express.json());
 app.use(cors());
 app.use('/api', authRoutes);
+app.use('/api', profileRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 //Rotte per immagini pubbliche
 app.use('/resource', express.static(path.join(__dirname, 'public/resource')));

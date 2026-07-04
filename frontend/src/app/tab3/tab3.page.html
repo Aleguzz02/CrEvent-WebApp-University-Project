@@ -3,7 +3,7 @@
     <ion-title class="titolo-profilo">
       Profilo
     </ion-title>
-    @if(isAuthenticated == true) {
+    @if(isAuthenticated) {
     <ion-buttons slot="end">
       <ion-button (click)="logout()">Log Out</ion-button>
     </ion-buttons>
@@ -16,14 +16,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding"> 
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Profilo</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  @if(isAuthenticated == false) {
+  <!-- PULL TO REFRESH -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadProfile($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- NON AUTENTICATO -->
+  @if(!isAuthenticated) {
     <div class="centered-container">
       <ion-card>
         <ion-card-content>
@@ -58,40 +64,115 @@
     </div>
   }
 
-  @if(isAuthenticated == true) {
-        <div class="authenticated-container">
-      <!-- User Profile Header -->
-      <ion-item lines="none" class="profile-header">
-        <ion-avatar slot="start">
-          <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="User Avatar">
-        </ion-avatar>
-        <ion-label>
-          <h2>Welcome, User</h2>
-          <p>user@example.com</p>
-        </ion-label>
-      </ion-item>
+  <!-- AUTENTICATO -->
+  @if(isAuthenticated) {
+    @if(loading && !profile) {
+      <!-- SKELETON LOADING -->
+      <ion-list>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+          </ion-avatar>
+          <ion-label>
+            <h2><ion-skeleton-text animated style="width: 60%;"></ion-skeleton-text></h2>
+            <p><ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text></p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 40%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 50%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label><ion-skeleton-text animated style="width: 45%;"></ion-skeleton-text></ion-label>
+        </ion-item>
+      </ion-list>
+    } @else if(profile) {
+      <!-- PROFILO -->
+      <div class="profile-container">
 
-      <!-- Skeleton list to show "Real" content is coming -->
-      <ion-card>
-        <ion-list lines="full">
-          <ion-item>
-            <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-label>My Profile</ion-label>
-            <ion-note slot="end">Edit</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="bag-outline" slot="start"></ion-icon>
-            <ion-label>My Orders</ion-label>
-            <ion-badge slot="end" color="primary">3</ion-badge>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="settings-outline" slot="start"></ion-icon>
-            <ion-label>Settings</ion-label>
-            <ion-icon name="chevron-forward" slot="end" size="small"></ion-icon>
-          </ion-item>
-        </ion-list>
-      </ion-card>
-    </div>
+        <!-- AVATAR -->
+        <div class="avatar-section">
+          <ion-avatar class="profile-avatar">
+            @if(profile.urlFotoProfilo) {
+              <img [src]="'http://localhost:3000' + profile.urlFotoProfilo" alt="Foto profilo">
+            } @else {
+              <div class="avatar-initials">{{ getInitials() }}</div>
+            }
+          </ion-avatar>
+          <ion-fab-button 
+            (click)="openPhotoActionSheet()" 
+            size="small" 
+            class="avatar-fab"
+          >
+            <ion-icon name="camera"></ion-icon>
+          </ion-fab-button>
+          
+          <h2 class="profile-name">{{ profile.nome }} {{ profile.cognome }}</h2>
+          <p class="profile-email">{{ profile.email }}</p>
+        </div>
+
+        <!-- DATI PERSONALI -->
+        <ion-card>
+          <ion-card-content>
+            <ion-list lines="full">
+              <ion-item>
+                <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+                <ion-label>
+                  <h3>Data di nascita</h3>
+                  <p>{{ formatDate(profile.dataNascita) }}</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon name="call" slot="start" color="primary"></ion-icon>
+                <ion-label>
+                  <h3>Telefono</h3>
+                  <p>{{ profile.telefono }}</p>
+                </ion-label>
+                <ion-button 
+                  fill="clear" 
+                  slot="end"
+                  (click)="openEditPhoneModal()"
+                >
+                  <ion-icon name="pencil" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- SICUREZZA -->
+        <ion-card>
+          <ion-card-content>
+            <ion-item button (click)="openPasswordModal()">
+              <ion-icon name="lock-closed" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Cambia password</h3>
+                <p class="ion-text-muted">Modifica la tua password di accesso</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- DANGER ZONE -->
+        <ion-card class="danger-card">
+          <ion-card-content>
+            <ion-item button (click)="startDeleteAccount()" lines="none">
+              <ion-icon name="trash" slot="start" color="danger"></ion-icon>
+              <ion-label color="danger">
+                <h3>Elimina profilo</h3>
+                <p class="ion-text-muted">Cancella permanentemente il tuo account</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+      </div>
+    }
   }
 
 </ion-content>

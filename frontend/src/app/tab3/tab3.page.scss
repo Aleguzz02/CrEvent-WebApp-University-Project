@@ -19,3 +19,85 @@
 .toolbar-mid{
    --min-height: clamp(30px, min(10vw,10vh) , 50px); 
 }
+
+.centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-primary);
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    border-radius: 50%;
+  }
+}
+
+.avatar-fab {
+  margin-top: -30px;
+  margin-left: 80px;
+  width: 40px;
+  height: 40px;
+  --border-radius: 50%;
+}
+
+.profile-name {
+  margin: 5px 0 0 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.profile-email {
+  margin: 5px 0 0 0;
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
+
+.danger-card {
+  border-left: 4px solid var(--ion-color-danger);
+  margin-top: 20px;
+}
+
+ion-item {
+  --min-height: 50px;
+}
+
+ion-modal {
+  --height: auto;
+}
