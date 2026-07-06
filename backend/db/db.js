@@ -118,6 +118,7 @@ db.serialize(() => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             data TEXT NOT NULL,
             nome TEXT NOT NULL,
+            prezzoTotale INTEGER NOT NULL,
             invitati INTEGER NOT NULL,
             emailUtente TEXT NOT NULL,
             idLocation INTEGER,
@@ -360,9 +361,9 @@ async function putData() {
                 }
             );
             db.run(`
-                INSERT OR IGNORE INTO Evento (id, data, nome, invitati, emailUtente, idLocation) 
-                VALUES (?, ?, ?, ?, ?, ?)`,
-                [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 150, 'prova1@example.com', 1],
+                INSERT OR IGNORE INTO Evento (id, data, nome, prezzoTotale, invitati, emailUtente, idLocation)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 16200, 150, 'prova1@example.com', 1],
                 (err) => {
                     if (err) console.error(err);
                 }
@@ -397,17 +398,17 @@ async function putData() {
                 (err) => { if (err) console.error(err); }
             );
             const eventiProva1 = [
-                [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 150, 'prova1@example.com', 1],
-                [2, '2026-02-14', 'Compleanno in Villa', 80, 'prova1@example.com', 2],
-                [3, '2026-05-20', 'Festa di Laurea', 120, 'prova1@example.com', 3],
-                [4, '2026-09-12', 'Anniversario Rossi', 90, 'prova1@example.com', 1],
-                [5, '2027-01-18', 'Evento Aziendale Palermo', 140, 'prova1@example.com', 2],
+                [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 16200, 150, 'prova1@example.com', 1],
+                [2, '2026-02-14', 'Compleanno in Villa', 11050, 80, 'prova1@example.com', 2],
+                [3, '2026-05-20', 'Festa di Laurea', 16350, 120, 'prova1@example.com', 3],
+                [4, '2026-09-12', 'Anniversario Rossi', 11400, 90, 'prova1@example.com', 1],
+                [5, '2027-01-18', 'Evento Aziendale Palermo', 16750, 140, 'prova1@example.com', 2],
             ];
 
             eventiProva1.forEach((evento) => {
                 db.run(`
-                    INSERT OR IGNORE INTO Evento (id, data, nome, invitati, emailUtente, idLocation)
-                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    INSERT OR IGNORE INTO Evento (id, data, nome, prezzoTotale, invitati, emailUtente, idLocation)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
                     evento,
                     (err) => { if (err) console.error(err); }
                 );

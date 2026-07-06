@@ -31,6 +31,7 @@ exports.getEvents = async (request,response) => {
         });
     }
 }
+
 exports.getLocationFreeDates = async (request,response) => {
     try{
         const id = request.query.id;
@@ -79,4 +80,20 @@ exports.getLocations = async (request, response) => {
       error: err.message
     });
   }
+};
+
+exports.getEventDetail = async (req, res) => {
+  const event = req.event;
+
+  const location = await LocationModel.getByEventId(event.id);
+  const staff = await StaffModel.getByEventId(event.id);
+
+  res.json({
+    success: true,
+    data: {
+      ...event,
+      location,
+      staff
+    }
+  });
 };

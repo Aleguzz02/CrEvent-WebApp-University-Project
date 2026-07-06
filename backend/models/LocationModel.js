@@ -41,15 +41,8 @@ const LocationModel = {
     },
 
     addCustomLoc: (lat, lng, nome, idUtente, dataOggi) => {
-        return new Promise((resolve,reject) => {
             const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, lat, lng, costo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-            db.run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lat, lng, 0], function (err) {
-                if(err) reject(err);
-                else resolve({
-                    id: this.lastID
-                });
-            });
-        });
+            return run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lat, lng, 0]);
     },
 
     remLoc: async (idLocation) => {
@@ -100,6 +93,16 @@ const LocationModel = {
                 FROM Evento
                 WHERE data = ?)`;
             return all(query,[people,day,day,day]);
+    },
+
+    getByEventId: (idEvento) => {
+        return get(`
+            SELECT Location.*, immaginiLocation.url
+            FROM Evento
+            JOIN Location ON Location.id = Evento.idLocation
+            LEFT JOIN immaginiLocation ON immaginiLocation.idLocation = Location.id
+            WHERE Evento.id = ?
+        `, [idEvento]);
     }
 }
 module.exports = LocationModel;

@@ -17,39 +17,46 @@ const EventModel = {
             CASE
                 WHEN Evento.svolto = 1 THEN Evento.data
             END DESC;`;
-            const query = 
-  `SELECT 
-      Evento.*,
-      CASE 
-        WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN 1 
-        ELSE 0 
-      END AS svolto,
-      immaginiLocation.url,
-      Location.nome AS nomeLocazione,
-      Location.citta,
-      Location.lat,
-      Location.lng
-    FROM Evento 
-    JOIN 
-      (Location LEFT JOIN immaginiLocation ON immaginiLocation.idLocation = Location.id) 
-    ON Evento.idLocation = Location.id
-    WHERE emailUtente = ?
-    ORDER BY
-      CASE 
-        WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN 1 
-        ELSE 0 
-      END ASC,
-      CASE
-        WHEN DATE(Evento.data) >= DATE('now', 'localtime') THEN DATE(Evento.data)
-      END ASC,
-      CASE
-        WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN DATE(Evento.data)
-      END DESC;`;
+            const query = `
+  SELECT 
+    Evento.*,
+    CASE 
+      WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN 1 
+      ELSE 0 
+    END AS svolto,
+    immaginiLocation.url,
+    Location.nome AS nomeLocazione,
+    Location.citta,
+    Location.lat,
+    Location.lng
+  FROM Evento 
+  JOIN Location ON Evento.idLocation = Location.id
+  LEFT JOIN immaginiLocation ON immaginiLocation.idLocation = Location.id
+  WHERE Evento.emailUtente = ?
+  ORDER BY
+    CASE 
+      WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN 1 
+      ELSE 0 
+    END ASC,
+    CASE
+      WHEN DATE(Evento.data) >= DATE('now', 'localtime') THEN DATE(Evento.data)
+    END ASC,
+    CASE
+      WHEN DATE(Evento.data) < DATE('now', 'localtime') THEN DATE(Evento.data)
+    END DESC;`;
             return all(query,[email]);
     },
 
     addEvent: () => {
         
+    },
+    getEventById: (idEvento, email) => {
+      return get(`
+        SELECT *
+        FROM Evento
+        WHERE id = ?
+        AND emailUtente = ?
+      `, [idEvento, email]);
     }
 }
 
