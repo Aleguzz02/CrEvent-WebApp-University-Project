@@ -1,4 +1,5 @@
 const { run, get, all } = require('../db/dbAsync');
+const db = require("../db/db");
 
 const User = {
   // Crea nuovo utente
