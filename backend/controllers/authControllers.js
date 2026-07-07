@@ -27,14 +27,6 @@ exports.register = async (req, res) => {
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
-
-        await SMTP.sendEmail({
-            to: email,
-            subject: 'Benvenuto su CrEvent!',
-            text: `Ciao ${nome} ${cognome}, grazie per esserti registrato!`,
-            html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
-                    <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
-        });
         const {hashedPassword, ...safeUser} = user;
         res.status(201).json(safeUser);
     } catch (err) {

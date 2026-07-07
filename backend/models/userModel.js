@@ -50,7 +50,7 @@ const User = {
       const query = `UPDATE User SET urlFotoProfilo = NULL WHERE email = ?`;
       db.run(query, [email], function(err) {
         if (err) reject(err);
-        else resolve({ changes: this.changes });
+        else resolve({ id: this.lastID, email });
       });
     });
   },
