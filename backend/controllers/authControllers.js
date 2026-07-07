@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
+        const newUser = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
 
         await SMTP.sendEmail({
             to: email,
@@ -35,8 +35,8 @@ exports.register = async (req, res) => {
             html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
                     <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
         });
-        const {hashedPassword, ...safeUser} = user;
-        res.status(201).json(safeUser);
+
+        res.status(201).json(newUser);
     } catch (err) {
         if(err.code === "emailError"){
             console.error(err.message)
