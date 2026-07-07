@@ -6,7 +6,7 @@ const User = {
       const query = `INSERT INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) VALUES (?, ?, ?, ?, ?, ?, ?)`;
       db.run(query, [email, password, nome, cognome, telefono, dataNascita, 0], function (err) {
         if (err) reject(err);
-        else resolve({ id: this.lastID, email });
+        else resolve({ email });
       });
     });
   },

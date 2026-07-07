@@ -22,9 +22,8 @@ exports.register = async (req, res) => {
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);
-        const {hashedPassword, ...safeUser} = user;
-        res.status(201).json(safeUser);
+        const newUser = await User.create(email, hashedPassword, nome, cognome, telefono, dataNascita);;
+        res.status(201).json(newUser);
     } catch (err) {
         console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
         res.status(500).json({ error: err.message });
