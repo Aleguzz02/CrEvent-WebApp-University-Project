@@ -1,5 +1,7 @@
 import { Component, inject, OnInit} from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText,
+  ToastController
+ } from '@ionic/angular/standalone';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { AuthService } from '../../services/auth.service';
 import { ModalController } from '@ionic/angular/standalone';
@@ -16,12 +18,7 @@ export class LoginModalComponent  implements OnInit {
 
   private authService = inject(AuthService);
   private modalCtrl = inject(ModalController);
-
-  // Oggetto utilizzato da handleFormSubmit() per mostrare errori
-  errorState = {
-    show: false,
-    message: ''
-  }
+  private toastCtrl = inject(ToastController);
 
   constructor() { }
 
@@ -33,18 +30,34 @@ export class LoginModalComponent  implements OnInit {
     } catch (e) {
       console.warn("Modal already dismissed");
     }
-    
+  }
+
+  async showErrorToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message: message,
+      duration: 4000,
+      position: 'bottom',
+      color: 'danger',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel'
+        }
+      ]
+    });
+    await toast.present();
   }
 
   handleFormSubmit(formData: any) {
     this.authService.login(formData).subscribe({
       next: (res) => {
+        console.log('Risposta server:', res);
         this.closeLoginModal();
         this.modalCtrl.dismiss(formData, 'confirm');
       },
       error: (err) => {
-        this.errorState.show = true;  
-        this.errorState.message = err.error?.message;     // Intercetta il messaggio di errore corretto dal backend
+        const errorMessage = err.message || 'Errore';
+        this.showErrorToast(errorMessage);
       }
     });
   }

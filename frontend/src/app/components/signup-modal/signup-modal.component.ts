@@ -64,14 +64,13 @@ export class SignupModalComponent  implements OnInit {
             },
             error: (loginErr) => {
               console.error('Errore accesso dopo registrazione:', loginErr);
+              this.showErrorToast('Login automatico fallito, riprova manualmente');
             }
           })
-
-          this.modalCtrl.dismiss(formData, 'confirm')
         },
         error: (signupErr) => {
           console.error('Errore:', signupErr);
-          const errorMessage = signupErr.error?.message || signupErr.message || 'Errore';
+          const errorMessage = signupErr.message || 'Errore';
           this.showErrorToast(errorMessage);
         }
       });
