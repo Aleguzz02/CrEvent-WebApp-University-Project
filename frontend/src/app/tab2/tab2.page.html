@@ -18,6 +18,10 @@
   </ion-toolbar>
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">
+    <ion-buttons slot="start">
+      <ion-button (click)="sezione = 'iniziale'">Indietro</ion-button>
+    </ion-buttons>
+
     <ion-segment [value]="sezione" (ionChange)="selezionaSezione($any($event).detail.value)">
       <ion-segment-button value="location">
         <ion-label>Location</ion-label>

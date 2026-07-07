@@ -11,7 +11,6 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
-  IonList,
   IonDatetime,
   ModalController,
   IonCard,
@@ -40,7 +39,6 @@ import { EventService } from '../services/event.service';
     IonSegment,
     IonSegmentButton,
     IonLabel,
-    IonList,
     IonDatetime,
     LocationSelectableCardComponent,
     IonCard, IonCardContent
