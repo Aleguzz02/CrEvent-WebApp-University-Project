@@ -106,6 +106,7 @@
     // expand="block" rende il bottone a larghezza intera (100%) con angoli squadrati di base,
     // ma dato che è anche "round", gestiamo la larghezza qui:
     width: 30%;
+    min-width: 220px;
 
     // shape="round" in Ionic imposta il border-radius a 28px (o un valore totalmente arrotondato)
     --border-radius: 28px;

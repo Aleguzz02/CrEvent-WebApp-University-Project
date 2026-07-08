@@ -3,6 +3,9 @@ const Event = require("../models/EventModel");
 const Location = require("../models/LocationModel");
 const Staff = require("../models/StaffModel");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const SMTP = require("../config/mailer");
+const { get, run, all } = require('../db/dbAsync');
 
 const isValidDate = (value) => {
   if (!value || typeof value !== "string") return false;
@@ -23,6 +26,20 @@ const normalizeOptionalText = (value) => {
 
 const isValidEmail = (value) => {
   return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
+
+const generateTemporaryPassword = () => {
+  return crypto.randomBytes(9).toString("base64url");
+};
+
+const isPastDate = (value) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const date = new Date(value);
+  date.setHours(0, 0, 0, 0);
+
+  return date < today;
 };
 
 exports.getUsers = async (req, res) => {
@@ -61,14 +78,26 @@ exports.deleteUser = async (req, res) => {
       });
     }
 
-    const result = await User.deleteUser(email);
+    const result = user.tipoUtente === 2 && user.idStaff
+      ? await Staff.remStaff(user.idStaff)
+      : await User.deleteUser(email);
 
     res.status(200).json({
       success: true,
-      message: "Utente eliminato con successo",
-      changes: result.changes
+      message: user.tipoUtente === 2 && user.idStaff
+        ? "Utente staff e staff collegato eliminati con successo"
+        : "Utente eliminato con successo",
+      changes: result.changes,
+      deletedUsers: result.deletedUsers
     });
   } catch (err) {
+    if (err.message === "futureEventsForStaff") {
+      return res.status(409).json({
+        success: false,
+        message: "Non puoi eliminare un utente staff collegato a uno staff coinvolto in eventi futuri"
+      });
+    }
+
     console.error("Errore in deleteUser admin:", err);
     res.status(500).json({
       success: false,
@@ -164,6 +193,13 @@ exports.createLocation = async (req, res) => {
       });
     }
 
+    if (isPastDate(dataInizio)) {
+      return res.status(400).json({
+        success: false,
+        message: "La data di inizio non può essere nel passato"
+      });
+    }
+
     if ((parsedLat !== null && !Number.isFinite(parsedLat)) || (parsedLng !== null && !Number.isFinite(parsedLng))) {
       return res.status(400).json({
         success: false,
@@ -256,10 +292,7 @@ exports.createStaff = async (req, res) => {
       dataInizio,
       dataFine,
       urlImg,
-      accountEmail,
-      accountPassword,
-      accountTelefono,
-      accountDataNascita
+      accountEmail
     } = req.body;
 
     const parsedCosto = toPositiveNumber(costo);
@@ -286,19 +319,22 @@ exports.createStaff = async (req, res) => {
       });
     }
 
-    if (!isValidEmail(accountEmail) || !accountPassword || !accountTelefono || !isValidDate(accountDataNascita)) {
+    if (isPastDate(dataInizio)) {
       return res.status(400).json({
         success: false,
-        message: "Sono richiesti email, password temporanea, telefono e data di nascita validi per l'account staff"
+        message: "La data di inizio non può essere nel passato"
       });
     }
 
-    if (String(accountPassword).length < 8) {
+    if (!isValidEmail(accountEmail)) {
       return res.status(400).json({
         success: false,
-        message: "La password temporanea deve avere almeno 8 caratteri"
+        message: "Email account staff non valida"
       });
     }
+
+    console.log('dataInizio ricevuta:', dataInizio);
+    console.log('isPastDate(dataInizio):', isPastDate(dataInizio));
 
     const existingUser = await User.findByEmail(accountEmail.trim());
     if (existingUser) {
@@ -308,7 +344,8 @@ exports.createStaff = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(accountPassword, 10);
+    const temporaryPassword = generateTemporaryPassword();
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
 
     const result = await Staff.addStaff(
       nome.trim(),
@@ -328,10 +365,33 @@ exports.createStaff = async (req, res) => {
         password: hashedPassword,
         nome: nome.trim(),
         cognome: cognome.trim(),
-        telefono: String(accountTelefono).trim(),
-        dataNascita: accountDataNascita
+        telefono: "0000000000",
+        dataNascita: "2000-01-01"
       }
     );
+
+    try {
+      await SMTP.sendEmail({
+        to: accountEmail.trim(),
+        subject: "Account staff CrEvent",
+        text: `Ciao ${nome.trim()} ${cognome.trim()}, il tuo account staff CrEvent e' stato creato.\n\nEmail: ${accountEmail.trim()}\nPassword temporanea: ${temporaryPassword}\n\nAccedi e modifica la password dal tuo profilo.`,
+        html: `<h1>Account staff CrEvent</h1>
+          <p>Ciao ${nome.trim()} ${cognome.trim()}, il tuo account staff CrEvent e' stato creato.</p>
+          <p><strong>Email:</strong> ${accountEmail.trim()}</p>
+          <p><strong>Password temporanea:</strong> ${temporaryPassword}</p>
+          <p>Accedi e modifica la password dal tuo profilo.</p>`
+      });
+    } catch (emailErr) {
+      if (emailErr.code === "emailError") {
+        return res.status(201).json({
+          success: true,
+          message: "Staff creato con successo. Email con password temporanea non inviata",
+          emailError: true,
+          data: result
+        });
+      }
+      throw emailErr;
+    }
 
     res.status(201).json({
       success: true,
@@ -384,6 +444,39 @@ exports.deleteStaff = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Errore durante l'eliminazione dello staff"
+    });
+  }
+};
+
+exports.getUserEventsCount = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email richiesta"
+      });
+    }
+
+    // Conta gli eventi futuri (data >= oggi) associati a questo utente
+    const result = await get(
+      `SELECT COUNT(*) AS count
+       FROM Evento
+       WHERE emailUtente = ?
+         AND DATE(data) >= DATE('now', 'localtime')`,
+      [email]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: { count: result.count || 0 }
+    });
+  } catch (err) {
+    console.error("Errore in getUserEventsCount:", err);
+    res.status(500).json({
+      success: false,
+      message: "Errore nel conteggio degli eventi"
     });
   }
 };

@@ -3,7 +3,6 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCa
   IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons, IonModal } from '@ionic/angular/standalone';
 import { CardCreventComponent } from '../components/card-crevent/card-crevent.component';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
 import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
@@ -12,19 +11,17 @@ import { BrowseService } from '../services/browse.service';
 import { ToastService } from '../services/toast.service';
 import { LocationResource } from '../interfaces/location.interface';
 import { StaffResource } from '../interfaces/staff.interface';
-
-
-
-
 import { AdminService, CreateLocationRequest, CreateStaffRequest } from '../services/admin.service';
 import { Subject, takeUntil } from 'rxjs';
+import { AddLocationModalComponent } from '../components/add-location-modal/add-location-modal.component';
+import { AddStaffModalComponent } from '../components/add-staff-modal/add-staff-modal.component';
 
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, CardCreventComponent, IonLabel, CommonModule, 
-    FormsModule, IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider, IonButtons],
+    IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider, IonButtons],
   standalone: true
 })
 export class Tab2Page implements OnInit, OnDestroy {
@@ -41,8 +38,6 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   isAuthenticated = false;
   isAdmin = false;
-  showLocationForm = false;
-  showStaffForm = false;
   isSaving = false;
 
   listaLocation: LocationResource[] = [];  
@@ -53,9 +48,6 @@ export class Tab2Page implements OnInit, OnDestroy {
   fotografo: StaffResource[] = [];
   altro: StaffResource[] = [];
 
-
-  newLocation: CreateLocationRequest = this.getEmptyLocationForm();
-  newStaff: CreateStaffRequest = this.getEmptyStaffForm();
 
   constructor() {}
 
@@ -70,10 +62,6 @@ export class Tab2Page implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroy$))
     .subscribe(status => {
       this.isAdmin = status;
-      if (!status) {
-        this.showLocationForm = false;
-        this.showStaffForm = false;
-      }
     });
   }
   ionViewWillEnter(){
@@ -96,14 +84,10 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.showLocationForm = false;
-    this.showStaffForm = false;
   }
 
   selezionaSezione(sezione: 'location' | 'staff') {
     this.sezione = sezione;
-    this.showLocationForm = false;
-    this.showStaffForm = false;
   }
 
   caricaDatiFinti() {}
@@ -131,20 +115,24 @@ export class Tab2Page implements OnInit, OnDestroy {
     });
   }
 
-  toggleLocationForm() {
-    this.showLocationForm = !this.showLocationForm;
-    this.showStaffForm = false;
+  async openCreateLocationModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddLocationModalComponent,
+    });
+    await modal.present();
+
+    const result = await modal.onDidDismiss<CreateLocationRequest>();
+    if (result.role !== 'confirm' || !result.data) {
+      return;
+    }
+
+    this.createLocation(result.data);
   }
 
-  toggleStaffForm() {
-    this.showStaffForm = !this.showStaffForm;
-    this.showLocationForm = false;
-  }
-
-  createLocation() {
+  createLocation(locationData: CreateLocationRequest) {
     this.isSaving = true;
 
-    this.adminService.createLocation(this.newLocation).subscribe({
+    this.adminService.createLocation(locationData).subscribe({
       next: (response) => {
         this.isSaving = false;
         if (!response.success) {
@@ -153,8 +141,6 @@ export class Tab2Page implements OnInit, OnDestroy {
         }
 
         this.toast.success('Location creata');
-        this.newLocation = this.getEmptyLocationForm();
-        this.showLocationForm = false;
         this.loadData();
       },
       error: (err) => {
@@ -188,10 +174,24 @@ export class Tab2Page implements OnInit, OnDestroy {
     });
   }
 
-  createStaff() {
+  async openCreateStaffModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddStaffModalComponent,
+    });
+    await modal.present();
+
+    const result = await modal.onDidDismiss<CreateStaffRequest>();
+    if (result.role !== 'confirm' || !result.data) {
+      return;
+    }
+
+    this.createStaff(result.data);
+  }
+
+  createStaff(staffData: CreateStaffRequest) {
     this.isSaving = true;
 
-    this.adminService.createStaff(this.newStaff).subscribe({
+    this.adminService.createStaff(staffData).subscribe({
       next: (response) => {
         this.isSaving = false;
         if (!response.success) {
@@ -200,8 +200,6 @@ export class Tab2Page implements OnInit, OnDestroy {
         }
 
         this.toast.success('Staff creato');
-        this.newStaff = this.getEmptyStaffForm();
-        this.showStaffForm = false;
         this.loadData();
       },
       error: (err) => {
@@ -238,43 +236,5 @@ export class Tab2Page implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private getEmptyLocationForm(): CreateLocationRequest {
-    return {
-      nome: '',
-      indirizzo: '',
-      citta: '',
-      descrizione: '',
-      capienza: null,
-      costo: null,
-      dataInizio: '',
-      dataFine: '',
-      urlImg: '',
-      linkSito: '',
-      lat: null,
-      lng: null
-    };
-  }
-
-  private getEmptyStaffForm(): CreateStaffRequest {
-    return {
-      nome: '',
-      cognome: '',
-      tipo: 'catering',
-      costo: null,
-      descrizione: '',
-      linkSito: '',
-      genereMusicale: '',
-      genereFotografico: '',
-      mansione: '',
-      dataInizio: '',
-      dataFine: '',
-      urlImg: '',
-      accountEmail: '',
-      accountPassword: '',
-      accountTelefono: '',
-      accountDataNascita: ''
-    };
   }
 }
