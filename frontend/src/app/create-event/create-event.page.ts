@@ -75,7 +75,7 @@ export class CreateEventPage implements OnInit {
   selectedDate: string = '';
 
   selectedLocation: LocationResource | null = null;
-  intervalliDisponibili: DateLocation | null = null;
+  intervalliDisponibili: DateLocation[] = [];
 
   usedDates: string[] = [];
 
@@ -140,23 +140,17 @@ locationLibera(location: LocationResource, day: string) {
       return false;
     }
 
-    /*const inFreeIntervall = this.intervalliDisponibili.some(intervallo => {
+    const inFreeIntervall = this.intervalliDisponibili.some(intervallo => {
       const inizio = intervallo.dataInizio.substring(0, 10);
       const fine = intervallo.dataFine.substring(0, 10);
 
       return day >= inizio && day <= fine;
-    });*/
-
-    if(this.intervalliDisponibili){
-      const inFreeIntervall = day >= this.intervalliDisponibili.dataInizio
-      &&
-      day <= this.intervalliDisponibili.dataFine;
-    
+    });
 
     if (!inFreeIntervall) {
       return false;
     }
-  }
+  
 
     if (this.usedDates.includes(day)) {
       return false;
@@ -170,6 +164,8 @@ locationLibera(location: LocationResource, day: string) {
     this.selectedDate = '';
     this.usedDates = [];
     this.freeLocations = [];
+
+    this.resetStaffSelection();
   }
 
   selectLocation(location: LocationResource) {
@@ -197,6 +193,8 @@ locationLibera(location: LocationResource, day: string) {
           this.usedDates = (response.usedDates ?? []).map(usedDate =>
             usedDate.data.substring(0, 10)
           );
+
+          this.reloadCalendar();
         },
         error: (err) => {
           console.error(err);
@@ -209,10 +207,13 @@ locationLibera(location: LocationResource, day: string) {
         dataInizio: this.newCustomLocation?.inizio ?? '',
         dataFine: this.newCustomLocation?.fine ?? '',
       }
-      this.intervalliDisponibili = interval;
-    }
-    this.reloadCalendar();
 
+      this.intervalliDisponibili = [];
+      this.intervalliDisponibili.push(interval);
+      this.usedDates = []
+      this.reloadCalendar();
+
+    }
   }
 
   dataDisponibile = (dateString: string) => {
@@ -278,6 +279,7 @@ locationLibera(location: LocationResource, day: string) {
   goBackStep() {
     if (this.step === 'staff') {
       this.step = 'locationDate';
+      this.resetStaffSelection();
       return;
     }
 
@@ -414,6 +416,21 @@ locationLibera(location: LocationResource, day: string) {
       this.selectedStaffByCategory.fotografo,
       ...this.selectedStaffByCategory.altro
     ].filter((staff): staff is StaffResource => staff !== null);
+  }
+
+  resetStaffSelection() {
+    this.staffDisponibile = [];
+    this.catering = [];
+    this.intrattenimento = [];
+    this.fotografo = [];
+    this.altro = [];
+
+    this.selectedStaffByCategory = {
+      catering: null,
+      intrattenimento: null,
+      fotografo: null,
+      altro: []
+    };
   }
 
 }

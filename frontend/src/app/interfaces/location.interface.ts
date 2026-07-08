@@ -34,7 +34,7 @@ export type LocationsResponse = ApiResponse<LocationResource[]>;
 
 export interface LocationFreeDatesResponse {
   success: boolean;
-  freeDates?: DateLocation;
+  freeDates?: DateLocation[];
   usedDates?: UsedDate[];
   message?: string;
   error?: string;

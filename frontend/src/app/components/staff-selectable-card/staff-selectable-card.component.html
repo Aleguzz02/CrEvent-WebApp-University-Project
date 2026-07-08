@@ -1,6 +1,6 @@
 <ion-card
   class="staff-card"
-  [class.staff-selezionato]="selectedStaff"
+  [class.staff-selezionato]="selected"
   [button]="true"
   (click)="selectStaff()">
 
@@ -15,7 +15,7 @@
         </ion-text>
       </div>
 
-      @if (selectedStaff) {
+      @if (selected) {
         <ion-icon name="checkmark-circle" color="primary"></ion-icon>
       }
     </div>
