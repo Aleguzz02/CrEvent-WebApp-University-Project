@@ -1,6 +1,7 @@
 const Event = require('../models/EventModel');
 const LocationModel = require('../models/LocationModel');
 const User = require('../models/userModel');
+const StaffModel = require('../models/StaffModel');
 
 
 exports.getEvents = async (request,response) => {
@@ -96,4 +97,31 @@ exports.getEventDetail = async (req, res) => {
       staff
     }
   });
+};
+
+exports.getAvailableStaff = async (request, response) => {
+  try {
+    const idLocation = Number(request.query.idLocation);
+    const day = request.query.day;
+
+    if (!Number.isFinite(idLocation) || !day) {
+      return response.status(400).json({
+        success: false,
+        message: 'Parametri non validi'
+      });
+    }
+
+    const staff = await StaffModel.getAvailableByLocationAndDate(idLocation, day);
+
+    response.status(200).json({
+      success: true,
+      data: staff
+    });
+  } catch (err) {
+    response.status(500).json({
+      success: false,
+      message: 'Errore nel recupero dello staff disponibile',
+      error: err.message
+    });
+  }
 };

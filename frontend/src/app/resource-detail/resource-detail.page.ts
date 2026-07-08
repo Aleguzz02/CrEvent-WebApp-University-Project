@@ -13,7 +13,7 @@ import { IonButton, IonContent, ModalController } from '@ionic/angular/standalon
 })
 export class ResourceDetailPage implements OnInit{
   @Input() resource: any;
-  @Input() testoPrezzo: string = '';
+  @Input() priceText: string = '';
 
   constructor(private modalController: ModalController) {}
 

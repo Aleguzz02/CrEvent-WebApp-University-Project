@@ -2,6 +2,8 @@ import { Component, OnInit, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HttpClient} from "@angular/common/http";
 import {IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle} from "@ionic/angular/standalone";
+import { Evento } from '../../interfaces/event.interface';
+
 
 
 @Component({
@@ -12,8 +14,8 @@ import {IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitl
   imports: [CommonModule, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonButton] 
 })
 export class EventCardComponent  implements OnInit {
-  @Input() evento: any;
-
+  @Input({ required: true }) evento!: Evento;
+   
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -36,10 +38,6 @@ export class EventCardComponent  implements OnInit {
       }
 
       return 'http://localhost:3000' + this.evento.url;
-    }
-
-    if (this.evento?.immagine) {
-      return this.evento.immagine;
     }
 
     return 'https://via.placeholder.com/350x180';

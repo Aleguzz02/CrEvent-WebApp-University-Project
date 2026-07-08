@@ -35,7 +35,9 @@ exports.register = async (req, res) => {
             html: `<h1>Benvenuto!</h1><p>Grazie per esserti registrato su CrEvent.</p>
                     <p>Entra subito nel nostro sito per prenotare il tuo primo evento!!</p>`
         });
-        const {hashedPassword, ...safeUser} = user;
+
+        const {hashedPassword: _, ...safeUser} = user;
+
         res.status(201).json(safeUser);
     } catch (err) {
         if(err.code === "emailError"){

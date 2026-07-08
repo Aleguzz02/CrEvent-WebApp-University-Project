@@ -14,6 +14,7 @@ import { ModalController } from '@ionic/angular/standalone';
 import { EventService } from '../services/event.service';
 import { ToastService } from '../services/toast.service';
 import { EventDataModalComponent } from '../components/event-data-modal/event-data-modal.component';
+import { Evento, EventDraft } from '../interfaces/event.interface';
 
 @Component({
   selector: 'app-tab1',
@@ -36,7 +37,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   isAuthenticated = false;
   private destroy$ = new Subject<void>();
   
-  userEvents: any[] = [];
+  userEvents: Evento[] = [];
   isLoading: boolean = false;
 
   
@@ -87,10 +88,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
       await modal.present();
 
-      const result = await modal.onDidDismiss<{
-        nome: string;
-        capienza: number;
-      }>();
+      const result = await modal.onDidDismiss<EventDraft>();
 
       if (result.role !== 'confirm' || !result.data) {
         return;
@@ -104,21 +102,21 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
 
   ngOnDestroy(): void {
-    this.destroy$.next();       // Emette il valore che attiva takeUntil
-    this.destroy$.complete();   // Elimina il subject destroy$
+    this.destroy$.next();      
+    this.destroy$.complete();
   }
 
   loadEvents(){
     this.isLoading = true;
     
     this.eventService.getUserEvents().subscribe({
-      next: (response) => {
+      next: (risposta) => {
         this.isLoading = false;
-        if(!response.success){
-          this.toastService.error(response.message);
+        if(!risposta.success){
+          this.toastService.error(risposta.message ?? 'Errore durante il caricamento');
           return; 
         }
-        this.userEvents = response.data;
+        this.userEvents = risposta.data ?? [];
       },
       error: (err) => { 
         this.isLoading = false;

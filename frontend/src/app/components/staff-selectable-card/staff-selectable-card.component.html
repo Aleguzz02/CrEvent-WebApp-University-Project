@@ -1,0 +1,35 @@
+<ion-card
+  class="staff-card"
+  [class.staff-selezionato]="selectedStaff"
+  [button]="true"
+  (click)="selectStaff()">
+
+  <ion-img [src]="staffImage" alt="Immagine staff"></ion-img>
+
+  <ion-card-content>
+    <div class="card-header">
+      <div>
+        <h2>{{ nomeCompleto }}</h2>
+        <ion-text color="medium">
+          <p>{{ staff?.tipo }}</p>
+        </ion-text>
+      </div>
+
+      @if (selectedStaff) {
+        <ion-icon name="checkmark-circle" color="primary"></ion-icon>
+      }
+    </div>
+
+    <div class="card-info">
+      <div>
+        <ion-icon name="briefcase-outline"></ion-icon>
+        <span>{{ dettaglioStaff }}</span>
+      </div>
+
+      <div>
+        <ion-icon name="cash-outline"></ion-icon>
+        <span>{{ staff?.tipo === 'catering' ? staff?.costo + ' euro pp' : staff?.costo + ' euro' }}</span>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -1,43 +1,62 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-//import { ApiResponse, Evento } from '../models/evento.model';
+import { ApiResponse } from '../interfaces/profile.interface';
+import { Evento } from '../interfaces/event.interface';
+import { UserEventsResponse, EventDetailResponse } from '../interfaces/event.interface';
+import { LocationsResponse, LocationFreeDatesResponse, LocationResource } from '../interfaces/location.interface';
+import { StaffResource } from '../interfaces/staff.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
+  
   private apiUrl = '/api/event';
 
   constructor(private http: HttpClient) {}
 
-  /*getEventiUtente(): Observable<ApiResponse<Evento[]>> {
-    return this.http.get<ApiResponse<Evento[]>>(this.apiUrl);
-  }*/
-  getUserEvents(): Observable<any> {
-    return this.http.get<any>(this.apiUrl+'/myEvents');
+  
+  getUserEvents(): Observable<ApiResponse<Evento[]>> {
+    return this.http.get<ApiResponse<Evento[]>>(this.apiUrl+'/myEvents');
   }
 
-  getLocationsByCapacity(capacity: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/location`, {
+  getAvailableStaff(idLocation: number, day: string): Observable<ApiResponse<StaffResource[]>> {
+    return this.http.get<ApiResponse<StaffResource[]>>(`${this.apiUrl}/staff`, {
+    params: {
+      idLocation,
+      day
+    }
+  });
+  }
+
+  getLocationsByCapacity(capacity: number): Observable<LocationsResponse> {
+    return this.http.get<LocationsResponse>(`${this.apiUrl}/location`, {
         params: {
           capacity: capacity
         }
     });  
   }
-  getLocationsByCapacityAndDate(day: string, capacity: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/location`,{
+  getLocationsByCapacityAndDate(day: string, capacity: number): Observable<ApiResponse<LocationResource[]>> {
+    return this.http.get<ApiResponse<LocationResource[]>>(`${this.apiUrl}/location`,{
       params: {
         day: day,
         capacity: capacity
       }
     });
   }
-  getFreeDatesByLocation(idLocation: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/location/free-dates`, { 
+  getFreeDatesByLocation(idLocation: number): Observable<LocationFreeDatesResponse> {
+    return this.http.get<LocationFreeDatesResponse>(`${this.apiUrl}/location/free-dates`, { 
       params: { 
         id:  idLocation
       }
+    });
+  }
+  getEventDetail(idEvento: number): Observable<EventDetailResponse> {
+    return this.http.get<EventDetailResponse>(`${this.apiUrl}`, {
+     params: {
+      id: idEvento
+     }      
     });
   }
 }

@@ -9,6 +9,12 @@ import { SignupModalComponent } from '../components/signup-modal/signup-modal.co
 import { ModalController } from '@ionic/angular/standalone';
 import { BrowseService } from '../services/browse.service';
 import { ToastService } from '../services/toast.service';
+import { LocationResource } from '../interfaces/location.interface';
+import { StaffResource } from '../interfaces/staff.interface';
+
+
+
+
 
 @Component({
   selector: 'app-tab2',
@@ -30,13 +36,14 @@ export class Tab2Page implements OnInit {
 
   isAuthenticated = false;
 
-  listaLocation: any[] = [];
-  listaStaff: any[] = [];
+  listaLocation: LocationResource[] = [];  
+  listaStaff: StaffResource[] = [];
 
-  dj: any[] = [];
-  catering: any[] = [];
-  fotografo: any[] = [];
-  altro: any[] = [];
+  dj: StaffResource[] = [];
+  catering: StaffResource[] = [];
+  fotografo: StaffResource[] = [];
+  altro: StaffResource[] = [];
+
 
   constructor() {}
 
@@ -84,8 +91,8 @@ export class Tab2Page implements OnInit {
     this.browseService.getBrowseData().subscribe({
       next: (risposta) => {
         if(risposta.success) {
-          this.listaLocation = risposta.data.location;
-          this.listaStaff = risposta.data.staff;
+          this.listaLocation = risposta.data?.location ?? [];
+          this.listaStaff = risposta.data?.staff ?? [];
           this.filterData();
         }
       },

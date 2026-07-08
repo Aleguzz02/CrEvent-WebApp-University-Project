@@ -176,3 +176,42 @@ ion-datetime {
   --border-radius: 999px;
   font-weight: 600;
 }
+
+.staff-section {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 24px auto;
+}
+
+.staff-section h2 {
+  margin: 28px auto 12px auto;
+  max-width: 980px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-color-primary, #3880ff);
+}
+
+.staff-section .locations-grid {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.bottone-continua {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  --box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+@media (max-width: 480px) {
+  .staff-section h2 {
+    font-size: 18px;
+    margin-top: 22px;
+  }
+
+  .staff-section .locations-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+  }
+}

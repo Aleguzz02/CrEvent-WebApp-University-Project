@@ -2,114 +2,175 @@
   <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-buttons slot="start">
       <div class="contenitore-annulla">
-        <ion-button class="bottone-annulla" fill="clear" (click)="goBack()">
-          Annulla
+        <ion-button class="bottone-annulla" fill="clear" (click)="goBackStep()">
+          {{ step === 'staff' ? 'Indietro' : 'Annulla' }}
         </ion-button>
       </div>
     </ion-buttons>
 
     <ion-title class="titolo-nuovo-evento">
-      Nuovo evento
-    </ion-title>    
+      {{ step === 'staff' ? 'Seleziona staff' : 'Nuovo evento' }}
+    </ion-title>
   </ion-toolbar>
 
-  <ion-toolbar mode="ios" class="toolbar-sottile">
-    <ion-segment [value]="mode" (ionChange)="selectMode($any($event).detail.value)" class="segment-tondo">
-      <ion-segment-button value="location">
-        <ion-label>Location</ion-label>
-      </ion-segment-button>
+  @if (step === 'locationDate') {
+    <ion-toolbar mode="ios" class="toolbar-sottile">
+      <ion-segment [value]="mode" (ionChange)="selectMode($any($event).detail.value)" class="segment-tondo">
+        <ion-segment-button value="location">
+          <ion-label>Location</ion-label>
+        </ion-segment-button>
 
-      <ion-segment-button value="data">
-        <ion-label>Data</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
+        <ion-segment-button value="data">
+          <ion-label>Data</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <div class="sezione-creazione">
-    @if (mode === 'location') {
+    @if (step === 'locationDate') {
 
-      <div class="locations-grid">
-        @for (location of locations; track location.id) {
-          <div class="location-cards">
-            <app-location-selectable-card
-              [location]="location"
-              [selezionata]="selectedLocation?.id === location.id"
-              (selectedLocation)="selectLocation($event)">
-            </app-location-selectable-card>
-            @if (location.custom) {
-              <ion-button
-                class="delete-custom-location"
-                fill="clear"
-                color="danger"
-                (click)="deleteLocationCustom($event, location)">
-                Cancella
-              </ion-button>
-            }
-          </div>      
-        }
-        @if(!customLocationSetted){
-          <ion-card class="add-location-card" (click)="openMapModal()">
-            <ion-card-content>
-              <div class="add-location-plus">+</div>
-              <p>Location custom</p>
-            </ion-card-content>
-          </ion-card>
-        }
-      </div>
+      @if (mode === 'location') {
 
-      @if (selectedLocation && showCalendar) {
-        <ion-datetime
-          presentation="date"
-          [(ngModel)]="selectedDate"
-          [isDateEnabled]="dataDisponibile">
-        </ion-datetime>
-      }
-
-    }
-
-
-    @if (mode === 'data') {
-
-      <ion-datetime
-        presentation="date"
-        [(ngModel)]="selectedDate"
-        (ionChange)="loadFreeLocations()">
-      </ion-datetime>
-
-      @if (selectedDate) {
         <div class="locations-grid">
-          @for (location of freeLocations; track location.id) {
+          @for (location of locations; track location.id) {
             <div class="location-cards">
               <app-location-selectable-card
                 [location]="location"
                 [selezionata]="selectedLocation?.id === location.id"
-                (locationSelezionata)="selectLocation($event)">
+                (selectedLocation)="selectLocation($event)">
               </app-location-selectable-card>
               @if (location.custom) {
                 <ion-button
-                class="delete-custom-location"
-                fill="clear"
-                color="danger"
-                (click)="deleteLocationCustom($event, location)">
-                Cancella
+                  class="delete-custom-location"
+                  fill="clear"
+                  color="danger"
+                  (click)="deleteLocationCustom($event, location)">
+                  Cancella
                 </ion-button>
               }
-            </div>
+            </div>      
+          }
+          @if(!customLocationSetted){
+            <ion-card class="add-location-card" (click)="openMapModal()">
+              <ion-card-content>
+                <div class="add-location-plus">+</div>
+                <p>Location custom</p>
+              </ion-card-content>
+            </ion-card>
           }
         </div>
+
+        @if (selectedLocation && showCalendar) {
+          <ion-datetime
+            presentation="date"
+            [(ngModel)]="selectedDate"
+            [isDateEnabled]="dataDisponibile">
+          </ion-datetime>
+        }
+
       }
 
+
+      @if (mode === 'data') {
+
+        <ion-datetime
+          presentation="date"
+          [(ngModel)]="selectedDate"
+          (ionChange)="loadFreeLocations()">
+        </ion-datetime>
+
+        @if (selectedDate) {
+          <div class="locations-grid">
+            @for (location of freeLocations; track location.id) {
+              <div class="location-cards">
+                <app-location-selectable-card
+                  [location]="location"
+                  [selezionata]="selectedLocation?.id === location.id"
+                  (selectedLocation)="selectLocation($event)">
+                </app-location-selectable-card>
+                @if (location.custom) {
+                  <ion-button
+                  class="delete-custom-location"
+                  fill="clear"
+                  color="danger"
+                  (click)="deleteLocationCustom($event, location)">
+                  Cancella
+                  </ion-button>
+                }
+              </div>
+            }
+          </div>
+        }
+
+      }
+    }
+
+    @if (step === 'staff') {
+      <div class="staff-section">
+        @if (catering.length > 0) {
+          <h2>Catering</h2>
+          <div class="locations-grid">
+            @for (staff of catering; track staff.id) {
+              <app-staff-selectable-card
+                [staff]="staff"
+                [selected]="isStaffSelected(staff)"
+                (selectedStaff)="toggleStaff($event)">
+              </app-staff-selectable-card>
+            }
+          </div>
+        }
+
+        @if (intrattenimento.length > 0) {
+          <h2>Intrattenimento</h2>
+          <div class="locations-grid">
+            @for (staff of intrattenimento; track staff.id) {
+              <app-staff-selectable-card
+                [staff]="staff"
+                [selected]="isStaffSelected(staff)"
+                (selectedStaff)="toggleStaff($event)">
+              </app-staff-selectable-card>
+            }
+          </div>
+        }
+
+        @if (fotografo.length > 0) {
+          <h2>Fotografo</h2>
+          <div class="locations-grid">
+            @for (staff of fotografo; track staff.id) {
+              <app-staff-selectable-card
+                [staff]="staff"
+                [selected]="isStaffSelected(staff)"
+                (selectedStaff)="toggleStaff($event)">
+              </app-staff-selectable-card>
+            }
+          </div>
+        }
+
+        @if (altro.length > 0) {
+          <h2>Altro</h2>
+          <div class="locations-grid">
+            @for (staff of altro; track staff.id) {
+              <app-staff-selectable-card
+                [staff]="staff"
+                [selected]="isStaffSelected(staff)"
+                (selectedStaff)="toggleStaff($event)">
+              </app-staff-selectable-card>
+            }
+          </div>
+        }
+      </div>
     }
 
 
     <ion-button
       class="bottone-continua"
       expand="block"
-      [disabled]="!selectedLocation || !selectedDate"
+      [disabled]="step === 'locationDate' && (!selectedLocation || !selectedDate)"
       (click)="continue()">
-      Continua
+      {{ step === 'staff' ? 'Crea evento' : 'Continua' }}
     </ion-button>
   </div>
 </ion-content>

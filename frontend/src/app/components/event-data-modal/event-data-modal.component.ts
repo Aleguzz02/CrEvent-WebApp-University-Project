@@ -66,7 +66,7 @@ export class EventDataModalComponent {
     }
 
     this.modalController.dismiss({
-      nome: this.name,
+      name: this.name,
       capacity: Number(this.capacity)
     }, 'confirm');
   }
