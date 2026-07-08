@@ -429,6 +429,39 @@ async function putData() {
                     (err) => { if (err) console.error(err); }
                 );
             });
+            const dateLocation = [
+                [1, '2026-01-01', '2027-12-31'],
+                [2, '2026-01-01', '2027-12-31'],
+                [3, '2026-01-01', '2027-12-31'],
+                ];
+
+                dateLocation.forEach((date) => {
+                db.run(`
+                    INSERT INTO dateLocation (idLocation, dataInizio, dataFine)
+                    VALUES (?, ?, ?)`,
+                    date,
+                    (err) => { if (err) console.error(err); }
+                );
+            });
+            const dateStaff = [
+                [1, '2026-01-01', '2027-12-31'],
+                [2, '2026-01-01', '2027-12-31'],
+                [3, '2026-01-01', '2027-12-31'],
+                [4, '2026-01-01', '2027-12-31'],
+                [5, '2026-01-01', '2027-12-31'],
+                [6, '2026-01-01', '2027-12-31'],
+                [7, '2026-01-01', '2027-12-31'],
+                [8, '2026-01-01', '2027-12-31'],
+                ];
+
+                dateStaff.forEach((date) => {
+                db.run(`
+                    INSERT INTO dateStaff (idStaff, dataInizio, dataFine)
+                    VALUES (?, ?, ?)`,
+                    date,
+                    (err) => { if (err) console.error(err); }
+                );
+                });
         });
     } catch (err) {
         console.error(err);

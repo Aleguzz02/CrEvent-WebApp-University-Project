@@ -19,5 +19,9 @@ export const routes: Routes = [
   path: '',
   redirectTo: 'tabs',
   pathMatch: 'full'
+  },  {
+    path: 'event-summary',
+    loadComponent: () => import('./event-summary/event-summary.page').then( m => m.EventSummaryPage)
   }
+
 ];

@@ -134,6 +134,31 @@ const StaffModel = {
             )
         `;
         return all(query, [idLocation, day, day]);
-        }
+    },
+    getAvailableForCustomLocation: (day) => {
+        const query = `
+            SELECT Staff.*, immaginiStaff.url
+            FROM Staff
+            LEFT JOIN immaginiStaff ON immaginiStaff.idStaff = Staff.id
+            WHERE NOT EXISTS (
+            SELECT 1
+            FROM Lavora
+            WHERE Lavora.idStaff = Staff.id
+            )
+            AND EXISTS (
+            SELECT 1
+            FROM dateStaff
+            WHERE dateStaff.idStaff = Staff.id
+            AND DATE(?) BETWEEN DATE(dateStaff.dataInizio) AND DATE(dateStaff.dataFine)
+            )
+            AND Staff.id NOT IN (
+            SELECT Coinvolge.idStaff
+            FROM Coinvolge
+            JOIN Evento ON Evento.id = Coinvolge.idEvento
+            WHERE DATE(Evento.data) = DATE(?)
+            )
+        `;
+        return all(query, [day, day]);
+    }
 }
 module.exports = StaffModel;

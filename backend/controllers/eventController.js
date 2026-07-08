@@ -111,7 +111,12 @@ exports.getAvailableStaff = async (request, response) => {
       });
     }
 
-    const staff = await StaffModel.getAvailableByLocationAndDate(idLocation, day);
+    const customLocation = request.query.customLocation === 'true';
+
+    const staff = customLocation
+      ? await StaffModel.getAvailableForCustomLocation(day)
+      : await StaffModel.getAvailableByLocationAndDate(idLocation, day);
+
 
     response.status(200).json({
       success: true,
