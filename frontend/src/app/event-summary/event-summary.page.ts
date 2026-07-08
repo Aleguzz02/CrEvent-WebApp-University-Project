@@ -67,6 +67,6 @@ export class EventSummaryPage {
   }
 
   paymentPrice() {
-    return this.totalPrice*0.4;
+    //return this.totalPrice*0.4;
   }
 }
