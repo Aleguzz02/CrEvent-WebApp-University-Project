@@ -75,7 +75,7 @@ export class CreateEventPage implements OnInit {
   selectedDate: string = '';
 
   selectedLocation: LocationResource | null = null;
-  intervalliDisponibili: DateLocation[] = [];
+  intervalliDisponibili: DateLocation | null = null;
 
   usedDates: string[] = [];
 
@@ -108,8 +108,10 @@ export class CreateEventPage implements OnInit {
     return;
   }
 
-  this.caricaLocations();
   }
+   ionViewWillEnter(){
+    this.caricaLocations();
+   }
   get eventName(): string {
     return this.tempEvent?.name ?? '';
   }
@@ -138,16 +140,23 @@ locationLibera(location: LocationResource, day: string) {
       return false;
     }
 
-    const inFreeIntervall = this.intervalliDisponibili.some(intervallo => {
+    /*const inFreeIntervall = this.intervalliDisponibili.some(intervallo => {
       const inizio = intervallo.dataInizio.substring(0, 10);
       const fine = intervallo.dataFine.substring(0, 10);
 
       return day >= inizio && day <= fine;
-    });
+    });*/
+
+    if(this.intervalliDisponibili){
+      const inFreeIntervall = day >= this.intervalliDisponibili.dataInizio
+      &&
+      day <= this.intervalliDisponibili.dataFine;
+    
 
     if (!inFreeIntervall) {
       return false;
     }
+  }
 
     if (this.usedDates.includes(day)) {
       return false;
@@ -173,27 +182,37 @@ locationLibera(location: LocationResource, day: string) {
   }
 
   loadUsedDates() {
-  if (!this.selectedLocation?.id) {
-    return;
-  }
-
-  this.eventService.getFreeDatesByLocation(this.selectedLocation.id).subscribe({
-    next: (response) => {
-      if (!response.success || !response.freeDates) {
-        return;
-      }
-
-      this.intervalliDisponibili = response.freeDates;
-      this.usedDates = (response.usedDates ?? []).map(usedDate =>
-        usedDate.data.substring(0, 10)
-      );
-
-      this.reloadCalendar();
-    },
-    error: (err) => {
-      console.error(err);
+    if (!this.selectedLocation?.id) {
+      return;
     }
-  });
+
+    if(!this.customLocationSetted){
+      this.eventService.getFreeDatesByLocation(this.selectedLocation.id).subscribe({
+        next: (response) => {
+          if (!response.success || !response.freeDates) {
+            return;
+          }
+
+          this.intervalliDisponibili = response.freeDates;
+          this.usedDates = (response.usedDates ?? []).map(usedDate =>
+            usedDate.data.substring(0, 10)
+          );
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
+    }else{
+      const interval: DateLocation = {
+        id: 0,
+        idLocation: this.newCustomLocation?.id ?? Number.NEGATIVE_INFINITY,
+        dataInizio: this.newCustomLocation?.inizio ?? '',
+        dataFine: this.newCustomLocation?.fine ?? '',
+      }
+      this.intervalliDisponibili = interval;
+    }
+    this.reloadCalendar();
+
   }
 
   dataDisponibile = (dateString: string) => {
@@ -336,8 +355,8 @@ locationLibera(location: LocationResource, day: string) {
 
       this.newCustomLocation = customLocation;
       this.locations.push(this.newCustomLocation);
-      this.selectLocation(this.newCustomLocation);
       this.customLocationSetted = true;
+      this.selectLocation(this.newCustomLocation);
   }
 
   deleteLocationCustom(event: Event, location: LocationResource) {

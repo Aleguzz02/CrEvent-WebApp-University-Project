@@ -67,16 +67,16 @@ const LocationModel = {
             return all(query, [idLocation]);
     },
     getUsedDates: (idLocation) => {
-        const query = `SELECT DISTINCT DATE(data) ad data
+        const query = `SELECT DISTINCT data
         FROM Evento
         WHERE idLocation = ?
-        AND data >= DATE('now','localtime')`;
+        AND DATE(data) >= DATE('now','localtime')`;
         return all(query, [idLocation]);
     },
     getCapacity: (people) => {
         const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation RIGHT JOIN Location
-            ON immaginiLocaiton.idLocation = Location.id
+            ON immaginiLocation.idLocation = Location.id
             WHERE ? <= capienza`;
             return all(query,[people]);
     },
@@ -84,8 +84,8 @@ const LocationModel = {
         const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation
             RIGHT JOIN
-            Location JOIN dateLocation ON dateLocation.idLocation = Location.id
-            ON immaginiLocaiton.idLocation = Location.id
+            (Location JOIN dateLocation ON dateLocation.idLocation = Location.id)
+            ON immaginiLocation.idLocation = Location.id
             WHERE ? <= capienza
             AND ? <= dateLocation.dataFine AND ? >= dateLocation.dataInizio
             AND Location.id NOT IN (
