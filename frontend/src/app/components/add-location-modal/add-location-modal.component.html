@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Aggiungi location</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Chiudi</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form class="admin-modal-form" (ngSubmit)="save()">
+    <input name="locNome" [(ngModel)]="location.nome" placeholder="Nome" required>
+    <input name="locIndirizzo" [(ngModel)]="location.indirizzo" placeholder="Indirizzo" required>
+    <input name="locCitta" [(ngModel)]="location.citta" placeholder="Citta" required>
+    <textarea name="locDescrizione" [(ngModel)]="location.descrizione" placeholder="Descrizione" required></textarea>
+    <input name="locCapienza" [(ngModel)]="location.capienza" type="number" placeholder="Capienza" required>
+    <input name="locCosto" [(ngModel)]="location.costo" type="number" placeholder="Costo" required>
+    <input name="locUrlImg" [(ngModel)]="location.urlImg" placeholder="URL immagine" required>
+    <input name="locLinkSito" [(ngModel)]="location.linkSito" placeholder="Link sito">
+    <input name="locLat" [(ngModel)]="location.lat" type="number" step="any" placeholder="Latitudine">
+    <input name="locLng" [(ngModel)]="location.lng" type="number" step="any" placeholder="Longitudine">
+    <label>Disponibile da</label>
+    <input name="locDataInizio" [(ngModel)]="location.dataInizio" type="date" required>
+    <label>Disponibile fino a</label>
+    <input name="locDataFine" [(ngModel)]="location.dataFine" type="date" required>
+
+    <ion-button type="submit" expand="block">Salva location</ion-button>
+  </form>
+</ion-content>

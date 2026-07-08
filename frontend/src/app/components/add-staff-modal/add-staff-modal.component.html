@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Aggiungi staff</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Chiudi</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form class="admin-modal-form" (ngSubmit)="save()">
+    <input name="staffNome" [(ngModel)]="staff.nome" placeholder="Nome" required>
+    <input name="staffCognome" [(ngModel)]="staff.cognome" placeholder="Cognome" required>
+    <select name="staffTipo" [(ngModel)]="staff.tipo" required>
+      <option value="catering">Catering</option>
+      <option value="intrattenimento">Intrattenimento</option>
+      <option value="fotografo">Fotografo</option>
+      <option value="altro">Altro</option>
+    </select>
+    <input name="staffCosto" [(ngModel)]="staff.costo" type="number" placeholder="Costo" required>
+    <textarea name="staffDescrizione" [(ngModel)]="staff.descrizione" placeholder="Descrizione" required></textarea>
+    <input name="staffUrlImg" [(ngModel)]="staff.urlImg" placeholder="URL immagine" required>
+    <input name="staffLinkSito" [(ngModel)]="staff.linkSito" placeholder="Link sito">
+    <input name="staffGenereMusicale" [(ngModel)]="staff.genereMusicale" placeholder="Genere musicale">
+    <input name="staffGenereFotografico" [(ngModel)]="staff.genereFotografico" placeholder="Genere fotografico">
+    <input name="staffMansione" [(ngModel)]="staff.mansione" placeholder="Mansione">
+    <label>Disponibile da</label>
+    <input name="staffDataInizio" [(ngModel)]="staff.dataInizio" type="date" required>
+    <label>Disponibile fino a</label>
+    <input name="staffDataFine" [(ngModel)]="staff.dataFine" type="date" required>
+    <label>Account staff</label>
+    <input name="staffAccountEmail" [(ngModel)]="staff.accountEmail" type="email" placeholder="Email account" required>
+
+    <ion-button type="submit" expand="block">Salva staff</ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,20 @@
+.admin-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 4px;
+    background: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+
+  textarea {
+    min-height: 90px;
+  }
+}

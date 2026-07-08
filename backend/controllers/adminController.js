@@ -3,6 +3,8 @@ const Event = require("../models/EventModel");
 const Location = require("../models/LocationModel");
 const Staff = require("../models/StaffModel");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const SMTP = require("../config/mailer");
 
 const isValidDate = (value) => {
   if (!value || typeof value !== "string") return false;
@@ -23,6 +25,10 @@ const normalizeOptionalText = (value) => {
 
 const isValidEmail = (value) => {
   return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
+
+const generateTemporaryPassword = () => {
+  return crypto.randomBytes(9).toString("base64url");
 };
 
 exports.getUsers = async (req, res) => {
@@ -268,10 +274,7 @@ exports.createStaff = async (req, res) => {
       dataInizio,
       dataFine,
       urlImg,
-      accountEmail,
-      accountPassword,
-      accountTelefono,
-      accountDataNascita
+      accountEmail
     } = req.body;
 
     const parsedCosto = toPositiveNumber(costo);
@@ -298,17 +301,10 @@ exports.createStaff = async (req, res) => {
       });
     }
 
-    if (!isValidEmail(accountEmail) || !accountPassword || !accountTelefono || !isValidDate(accountDataNascita)) {
+    if (!isValidEmail(accountEmail)) {
       return res.status(400).json({
         success: false,
-        message: "Sono richiesti email, password temporanea, telefono e data di nascita validi per l'account staff"
-      });
-    }
-
-    if (String(accountPassword).length < 8) {
-      return res.status(400).json({
-        success: false,
-        message: "La password temporanea deve avere almeno 8 caratteri"
+        message: "Email account staff non valida"
       });
     }
 
@@ -320,7 +316,8 @@ exports.createStaff = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(accountPassword, 10);
+    const temporaryPassword = generateTemporaryPassword();
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
 
     const result = await Staff.addStaff(
       nome.trim(),
@@ -340,10 +337,33 @@ exports.createStaff = async (req, res) => {
         password: hashedPassword,
         nome: nome.trim(),
         cognome: cognome.trim(),
-        telefono: String(accountTelefono).trim(),
-        dataNascita: accountDataNascita
+        telefono: "0000000000",
+        dataNascita: "2000-01-01"
       }
     );
+
+    try {
+      await SMTP.sendEmail({
+        to: accountEmail.trim(),
+        subject: "Account staff CrEvent",
+        text: `Ciao ${nome.trim()} ${cognome.trim()}, il tuo account staff CrEvent e' stato creato.\n\nEmail: ${accountEmail.trim()}\nPassword temporanea: ${temporaryPassword}\n\nAccedi e modifica la password dal tuo profilo.`,
+        html: `<h1>Account staff CrEvent</h1>
+          <p>Ciao ${nome.trim()} ${cognome.trim()}, il tuo account staff CrEvent e' stato creato.</p>
+          <p><strong>Email:</strong> ${accountEmail.trim()}</p>
+          <p><strong>Password temporanea:</strong> ${temporaryPassword}</p>
+          <p>Accedi e modifica la password dal tuo profilo.</p>`
+      });
+    } catch (emailErr) {
+      if (emailErr.code === "emailError") {
+        return res.status(201).json({
+          success: true,
+          message: "Staff creato con successo. Email con password temporanea non inviata",
+          emailError: true,
+          data: result
+        });
+      }
+      throw emailErr;
+    }
 
     res.status(201).json({
       success: true,

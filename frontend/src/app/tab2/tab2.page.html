@@ -61,33 +61,10 @@
     @if(sezione === 'location'){
       @if(isAdmin) {
         <div class="admin-actions">
-          <ion-button size="small" (click)="toggleLocationForm()">
-            {{ showLocationForm ? 'Annulla' : 'Aggiungi location' }}
+          <ion-button size="small" (click)="openCreateLocationModal()">
+            Aggiungi location
           </ion-button>
         </div>
-
-        @if(showLocationForm) {
-          <form class="admin-form" (ngSubmit)="createLocation()">
-            <input name="locNome" [(ngModel)]="newLocation.nome" placeholder="Nome" required>
-            <input name="locIndirizzo" [(ngModel)]="newLocation.indirizzo" placeholder="Indirizzo" required>
-            <input name="locCitta" [(ngModel)]="newLocation.citta" placeholder="Citta" required>
-            <textarea name="locDescrizione" [(ngModel)]="newLocation.descrizione" placeholder="Descrizione" required></textarea>
-            <input name="locCapienza" [(ngModel)]="newLocation.capienza" type="number" placeholder="Capienza" required>
-            <input name="locCosto" [(ngModel)]="newLocation.costo" type="number" placeholder="Costo" required>
-            <input name="locUrlImg" [(ngModel)]="newLocation.urlImg" placeholder="URL immagine" required>
-            <input name="locLinkSito" [(ngModel)]="newLocation.linkSito" placeholder="Link sito">
-            <input name="locLat" [(ngModel)]="newLocation.lat" type="number" step="any" placeholder="Latitudine">
-            <input name="locLng" [(ngModel)]="newLocation.lng" type="number" step="any" placeholder="Longitudine">
-            <label>Disponibile da</label>
-            <input name="locDataInizio" [(ngModel)]="newLocation.dataInizio" type="date" required>
-            <label>Disponibile fino a</label>
-            <input name="locDataFine" [(ngModel)]="newLocation.dataFine" type="date" required>
-
-            <ion-button type="submit" size="small" [disabled]="isSaving">
-              Salva location
-            </ion-button>
-          </form>
-        }
       }
 
       <ion-list>
@@ -110,43 +87,10 @@
     @if(sezione === 'staff'){
       @if(isAdmin) {
         <div class="admin-actions">
-          <ion-button size="small" (click)="toggleStaffForm()">
-            {{ showStaffForm ? 'Annulla' : 'Aggiungi staff' }}
+          <ion-button size="small" (click)="openCreateStaffModal()">
+            Aggiungi staff
           </ion-button>
         </div>
-
-        @if(showStaffForm) {
-          <form class="admin-form" (ngSubmit)="createStaff()">
-            <input name="staffNome" [(ngModel)]="newStaff.nome" placeholder="Nome" required>
-            <input name="staffCognome" [(ngModel)]="newStaff.cognome" placeholder="Cognome" required>
-            <select name="staffTipo" [(ngModel)]="newStaff.tipo" required>
-              <option value="catering">Catering</option>
-              <option value="intrattenimento">Intrattenimento</option>
-              <option value="fotografo">Fotografo</option>
-              <option value="altro">Altro</option>
-            </select>
-            <input name="staffCosto" [(ngModel)]="newStaff.costo" type="number" placeholder="Costo" required>
-            <textarea name="staffDescrizione" [(ngModel)]="newStaff.descrizione" placeholder="Descrizione" required></textarea>
-            <input name="staffUrlImg" [(ngModel)]="newStaff.urlImg" placeholder="URL immagine" required>
-            <input name="staffLinkSito" [(ngModel)]="newStaff.linkSito" placeholder="Link sito">
-            <input name="staffGenereMusicale" [(ngModel)]="newStaff.genereMusicale" placeholder="Genere musicale">
-            <input name="staffGenereFotografico" [(ngModel)]="newStaff.genereFotografico" placeholder="Genere fotografico">
-            <input name="staffMansione" [(ngModel)]="newStaff.mansione" placeholder="Mansione">
-            <label>Disponibile da</label>
-            <input name="staffDataInizio" [(ngModel)]="newStaff.dataInizio" type="date" required>
-            <label>Disponibile fino a</label>
-            <input name="staffDataFine" [(ngModel)]="newStaff.dataFine" type="date" required>
-            <label>Account staff</label>
-            <input name="staffAccountEmail" [(ngModel)]="newStaff.accountEmail" type="email" placeholder="Email account" required>
-            <input name="staffAccountPassword" [(ngModel)]="newStaff.accountPassword" type="text" placeholder="Password temporanea" required>
-            <input name="staffAccountTelefono" [(ngModel)]="newStaff.accountTelefono" placeholder="Telefono account" required>
-            <input name="staffAccountDataNascita" [(ngModel)]="newStaff.accountDataNascita" type="date" required>
-
-            <ion-button type="submit" size="small" [disabled]="isSaving">
-              Salva staff
-            </ion-button>
-          </form>
-        }
       }
 
       <ion-item-divider>
