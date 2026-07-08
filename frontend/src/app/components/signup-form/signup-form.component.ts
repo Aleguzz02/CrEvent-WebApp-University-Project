@@ -16,6 +16,32 @@ export class SignupFormComponent  implements OnInit {
 
   @Output() formSubmit = new EventEmitter<any>();
 
+  // Validatore personalizzato per la data di nascita
+  validateBirthDate(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+  
+    const birthDate = new Date(control.value);
+    const today = new Date();
+  
+    // Controllo data futura
+    if (birthDate > today) {
+      return { futureDate: true };
+    }
+  
+    // Controllo età minima 18 anni
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    if (age < 18) {
+      return { underage: true };
+    }
+  
+    return null;
+  }
+
   constructor(private fb: FormBuilder) {
     this.signupForm = this.fb.group({
       nome: ['', [
@@ -27,7 +53,8 @@ export class SignupFormComponent  implements OnInit {
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
       ]],
       dataNascita: ['', [
-        Validators.required
+        Validators.required,
+        this.validateBirthDate.bind(this)
       ]],
       email: ['', [
         Validators.required,
