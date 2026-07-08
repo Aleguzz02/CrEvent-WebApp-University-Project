@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ModalController, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
 import { ResourceDetailPage } from '../../resource-detail/resource-detail.page';
+import { LocationResource } from '../../interfaces/location.interface';
+import { StaffResource } from '../../interfaces/staff.interface';
+
+type ResourceData = LocationResource | StaffResource;
 
 @Component({
   selector: 'app-card-crevent',
@@ -13,7 +17,7 @@ import { ResourceDetailPage } from '../../resource-detail/resource-detail.page';
 })
 export class CardCreventComponent  implements OnInit {
 
-  @Input() resourceData: any;
+@Input({ required: true }) resourceData!: ResourceData;
 
   isLocation: boolean = false;
   isStaff: boolean = false;
@@ -24,24 +28,79 @@ export class CardCreventComponent  implements OnInit {
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    if(!this.resourceData) return;
+    const resource = this.resourceData;
 
-    this.isLocation = 'capienza' in this.resourceData;
-    this.isStaff = 'tipo' in this.resourceData;
-    this.nomeVisualizzato = this.isStaff ? `${this.resourceData.nome} ${this.resourceData.cognome || ''}` : this.resourceData.nome;
-    this.priceText = ( this.isLocation ? 'Costo affitto: ' : 'Prezzo ingaggio: ' ) + ( this.resourceData.tipo === 'catering' ? `${this.resourceData.costo}€ pp` : `${this.resourceData.costo}€` );
-    this.preparaDettagli();  
+    this.isLocation = this.isLocationResource(resource);
+    this.isStaff = this.isStaffResource(resource);
+
+    this.nomeVisualizzato = this.isStaffResource(resource)
+      ? `${resource.nome} ${resource.cognome || ''}`
+      : resource.nome;
+
+    this.priceText =
+      (this.isLocation ? 'Costo affitto: ' : 'Prezzo ingaggio: ') +
+      (this.isStaffResource(resource) && resource.tipo === 'catering'
+        ? `${resource.costo}€ pp`
+        : `${resource.costo}€`);
+
+    this.preparaDettagli();
+  }
+
+  private isLocationResource(resource: ResourceData): resource is LocationResource {
+    return 'capienza' in resource;
+  }
+
+  private isStaffResource(resource: ResourceData): resource is StaffResource {
+    return 'tipo' in resource;
   }
 
   preparaDettagli() {
-    if(this.isLocation){
-      if(this.resourceData.citta) this.specificDetail.push({label: 'Città:', valore: `${this.resourceData.citta} (${this.resourceData.indirizzo || ''})`});
-      if(this.resourceData.capienza) this.specificDetail.push({label: 'Capienza:', valore: `${this.resourceData.capienza} persone`});    }
-    else if(this.isStaff){
-      if(this.resourceData.tipo) this.specificDetail.push({label: 'Categoria:', valore: `${this.resourceData.tipo.toUpperCase()}`});
-      if(this.resourceData.genereMusicale) this.specificDetail.push({label: 'Genere musicale:', valore: `${this.resourceData.genereMusicale}`});
-      if(this.resourceData.genereFotografico) this.specificDetail.push({label: 'Stile fotografico:', valore: `${this.resourceData.genereFotografico}`});
-      if(this.resourceData.mansione) this.specificDetail.push({label: 'Specialità:', valore: `${this.resourceData.mansione}`});
+    const resource = this.resourceData;
+
+    if (this.isLocationResource(resource)) {
+      if (resource.citta) {
+        this.specificDetail.push({
+          label: 'Città:',
+          valore: `${resource.citta} (${resource.indirizzo || ''})`
+        });
+      }
+
+      if (resource.capienza) {
+        this.specificDetail.push({
+          label: 'Capienza:',
+          valore: `${resource.capienza} persone`
+        });
+      }
+    }
+
+    if (this.isStaffResource(resource)) {
+      if (resource.tipo) {
+        this.specificDetail.push({
+          label: 'Categoria:',
+          valore: resource.tipo.toUpperCase()
+        });
+      }
+
+      if (resource.genereMusicale) {
+        this.specificDetail.push({
+          label: 'Genere musicale:',
+          valore: resource.genereMusicale
+        });
+      }
+
+      if (resource.genereFotografico) {
+        this.specificDetail.push({
+          label: 'Stile fotografico:',
+          valore: resource.genereFotografico
+        });
+      }
+
+      if (resource.mansione) {
+        this.specificDetail.push({
+          label: 'Specialità:',
+          valore: resource.mansione
+        });
+      }
     }
   }
 
@@ -68,10 +127,6 @@ export class CardCreventComponent  implements OnInit {
       }
 
       return 'http://localhost:3000' + this.resourceData.url;
-    }
-
-    if (this.resourceData?.immagine) {
-      return this.resourceData.immagine;
     }
 
     return 'https://via.placeholder.com/350x180';

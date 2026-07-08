@@ -21,6 +21,19 @@ import { LocationSelectableCardComponent } from '../components/location-selectab
 import { CustomLocationMapModalComponent } from '../components/custom-location-map-modal/custom-location-map-modal.component';
 import { CustomLocationNameModalComponent } from '../components/custom-location-name-modal/custom-location-name-modal.component';
 import { EventService } from '../services/event.service';
+import { EventDraft } from '../interfaces/event.interface';
+import { DateLocation, LocationResource } from '../interfaces/location.interface';
+import { StaffSelectableCardComponent } from '../components/staff-selectable-card/staff-selectable-card.component';
+import { StaffResource, TipoStaff } from '../interfaces/staff.interface';
+
+type SingleStaffCategory = Exclude<TipoStaff, 'altro'>;
+type SelectedStaffByCategory = {
+  catering: StaffResource | null;
+  intrattenimento: StaffResource | null;
+  fotografo: StaffResource | null;
+  altro: StaffResource[];
+};
+
 
 @Component({
   selector: 'app-create-event',
@@ -41,29 +54,48 @@ import { EventService } from '../services/event.service';
     IonLabel,
     IonDatetime,
     LocationSelectableCardComponent,
-    IonCard, IonCardContent
+    IonCard, IonCardContent,
+    StaffSelectableCardComponent
   ]
 })
+
 export class CreateEventPage implements OnInit {
 
   private eventService = inject(EventService);
+  staffDisponibile: StaffResource[] = [];
 
-  tempEvent: {name: string, capacity: number} | null = null;
-  mode: string = 'location';
+
+  tempEvent: EventDraft | null = null;  
+  mode: 'location' | 'data' = 'location';
   showCalendar: boolean = true;
 
-  locations: any[] = [];
-  freeLocations: any[] = [];
+  locations: LocationResource[] = [];
+  freeLocations: LocationResource[] = [];
 
-  selectedLocation: any = null;
   selectedDate: string = '';
 
+  selectedLocation: LocationResource | null = null;
+  intervalliDisponibili: DateLocation[] = [];
+
   usedDates: string[] = [];
-  intervalliDisponibili: any[] = [];
 
   dataOggi: string = new Date().toISOString().substring(0, 10);
   customLocationSetted: boolean = false;
-  newCustomLocation: any = null;
+  newCustomLocation: LocationResource | null = null;
+  step: 'locationDate' | 'staff' = 'locationDate';
+
+  listaStaff: StaffResource[] = [];
+  catering: StaffResource[] = [];
+  intrattenimento: StaffResource[] = [];
+  fotografo: StaffResource[] = [];
+  altro: StaffResource[] = [];
+
+  selectedStaffByCategory: SelectedStaffByCategory = {
+    catering: null,
+    intrattenimento: null,
+    fotografo: null,
+    altro: []
+  };
 
 
   constructor(private router: Router, private modalController: ModalController) {
@@ -89,7 +121,7 @@ export class CreateEventPage implements OnInit {
   caricaLocations() {
   this.eventService.getLocationsByCapacity(this.eventCapacity).subscribe({
     next: (response) => {
-      if (!response.success) {
+      if (!response.success || !response.data) {
         return;
       }
 
@@ -101,7 +133,7 @@ export class CreateEventPage implements OnInit {
   });
 }
 
-locationLibera(location: any, day: string) {
+locationLibera(location: LocationResource, day: string) {
     if (day < this.dataOggi) {
       return false;
     }
@@ -131,7 +163,7 @@ locationLibera(location: any, day: string) {
     this.freeLocations = [];
   }
 
-  selectLocation(location: any) {
+  selectLocation(location: LocationResource) {
     this.selectedLocation = location;
 
     if (this.mode === 'location') {
@@ -147,11 +179,14 @@ locationLibera(location: any, day: string) {
 
   this.eventService.getFreeDatesByLocation(this.selectedLocation.id).subscribe({
     next: (response) => {
-      if (!response.success) {
+      if (!response.success || !response.freeDates) {
         return;
       }
-      this.intervalliDisponibili = response.data;
-      this.usedDates = response.usedDates ?? [];
+
+      this.intervalliDisponibili = response.freeDates;
+      this.usedDates = (response.usedDates ?? []).map(usedDate =>
+        usedDate.data.substring(0, 10)
+      );
 
       this.reloadCalendar();
     },
@@ -159,7 +194,7 @@ locationLibera(location: any, day: string) {
       console.error(err);
     }
   });
-}
+  }
 
   dataDisponibile = (dateString: string) => {
     if (!this.selectedLocation) {
@@ -180,7 +215,7 @@ locationLibera(location: any, day: string) {
 
     this.eventService.getLocationsByCapacityAndDate(day, this.eventCapacity).subscribe({
       next: (response) => {
-        if (!response.success) {
+        if (!response.success || !response.data) {
           return;
         }
 
@@ -193,8 +228,41 @@ locationLibera(location: any, day: string) {
   }
 
   continue() {
-    console.log('Location scelta:', this.selectedLocation);
-    console.log('Data scelta:', this.selectedDate);
+  if (this.step === 'locationDate') {
+    this.step = 'staff';
+    this.loadAvaiableStaff();
+    return;
+  }
+
+  //this.createEvent();
+}
+  loadAvaiableStaff() {
+    if (!this.selectedLocation || !this.selectedDate) return;
+
+      const day = this.selectedDate.substring(0, 10);
+
+      this.eventService.getAvailableStaff(this.selectedLocation.id, day).subscribe({
+        next: (response) => {
+          if (!response.success || !response.data) return;
+
+          this.staffDisponibile = response.data;
+
+          this.catering = this.staffDisponibile.filter(s => s.tipo === 'catering');
+          this.intrattenimento = this.staffDisponibile.filter(s => s.tipo === 'intrattenimento');
+          this.fotografo = this.staffDisponibile.filter(s => s.tipo === 'fotografo');
+          this.altro = this.staffDisponibile.filter(s => s.tipo === 'altro');
+        },
+        error: err => console.error(err)
+      });  
+    }
+
+  goBackStep() {
+    if (this.step === 'staff') {
+      this.step = 'locationDate';
+      return;
+    }
+
+    this.goBack();
   }
 
   goBack() {
@@ -208,7 +276,7 @@ locationLibera(location: any, day: string) {
       this.showCalendar = true;
     }, 0);
   }
-  selectMode(mode: string) {
+  selectMode(mode: 'data' | 'location') {
     this.mode = mode;
     this.resetScelta();
   }
@@ -246,28 +314,33 @@ locationLibera(location: any, day: string) {
   }
   
   createLocationCustom(name: any, position: any){
-    this.newCustomLocation = {
+    
+      const customLocation: LocationResource = {
         id: Date.now(),
         nome: name.data.nome,
+        indirizzo: `Location personale`,
         citta: 'Posizione scelta',
-        indirizzo: `${position.data.lat}, ${position.data.lng}`,
+        descrizione: 'Location personalizzata scelta sulla mappa',
         capienza: this.eventCapacity,
-        costo: 0,
-        url: '',
         lat: position.data.lat,
         lng: position.data.lng,
+        linkSito: null,
+        costo: 0,
+        url: null,
+
         inizio: this.dataOggi,
         fine: '2026-12-31',
         usedDates: [],
         custom: true
       };
 
+      this.newCustomLocation = customLocation;
       this.locations.push(this.newCustomLocation);
       this.selectLocation(this.newCustomLocation);
       this.customLocationSetted = true;
   }
 
-  deleteLocationCustom(event: Event, location: any) {
+  deleteLocationCustom(event: Event, location: LocationResource) {
     event.stopPropagation();
 
     if (!location.custom) {
@@ -284,4 +357,44 @@ locationLibera(location: any, day: string) {
     this.newCustomLocation = null;
     this.customLocationSetted = false;
   }
+
+  toggleStaff(staff: StaffResource) {
+    if (staff.tipo === 'altro') {
+      const giaSelezionato = this.selectedStaffByCategory.altro
+        .some(s => s.id === staff.id);
+
+      this.selectedStaffByCategory.altro = giaSelezionato
+        ? this.selectedStaffByCategory.altro.filter(s => s.id !== staff.id)
+        : [...this.selectedStaffByCategory.altro, staff];
+
+      return;
+    }
+
+    const tipo: SingleStaffCategory = staff.tipo;
+
+    this.selectedStaffByCategory[tipo] =
+      this.selectedStaffByCategory[tipo]?.id === staff.id
+        ? null
+        : staff;
+  }
+
+  isStaffSelected(staff: StaffResource): boolean {
+    if (staff.tipo === 'altro') {
+      return this.selectedStaffByCategory.altro.some(s => s.id === staff.id);
+    }
+
+    const tipo: SingleStaffCategory = staff.tipo;
+
+    return this.selectedStaffByCategory[tipo]?.id === staff.id;
+  }
+
+  get selectedStaff(): StaffResource[] {
+    return [
+      this.selectedStaffByCategory.catering,
+      this.selectedStaffByCategory.intrattenimento,
+      this.selectedStaffByCategory.fotografo,
+      ...this.selectedStaffByCategory.altro
+    ].filter((staff): staff is StaffResource => staff !== null);
+  }
+
 }

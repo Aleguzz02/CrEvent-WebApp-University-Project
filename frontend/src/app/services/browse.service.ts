@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { BrowseResponse } from '../interfaces/browse.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ export class BrowseService {
 
   constructor(private http: HttpClient) {}
 
-  getBrowseData(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getBrowseData(): Observable<BrowseResponse> {
+    return this.http.get<BrowseResponse>(this.apiUrl);
   }
 }

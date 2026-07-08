@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { peopleOutline, cashOutline, checkmarkCircle, people } from 'ionicons/icons';
 import { IonCard, IonCardContent, IonIcon, IonImg, IonText } from '@ionic/angular/standalone';
+import { LocationResource } from '../../interfaces/location.interface';
+
+
 
 @Component({
   selector: 'app-location-selectable-card',
@@ -18,10 +21,10 @@ import { IonCard, IonCardContent, IonIcon, IonImg, IonText } from '@ionic/angula
 })
 export class LocationSelectableCardComponent {
 
-  @Input() location: any;
   @Input() selezionata: boolean = false;
 
-  @Output() locationSelezionata = new EventEmitter<any>();
+  @Input() location!: LocationResource;
+  @Output() selectedLocation = new EventEmitter<LocationResource>();
 
   constructor() {
     addIcons({
@@ -32,7 +35,7 @@ export class LocationSelectableCardComponent {
   }
 
   selezionaLocation() {
-    this.locationSelezionata.emit(this.location);
+    this.selectedLocation.emit(this.location);
   }
 
   get locationImage() {
@@ -47,8 +50,8 @@ export class LocationSelectableCardComponent {
       return 'http://localhost:3000' + this.location.url;
     }
 
-    if (this.location?.immagine) {
-      return this.location.immagine;
+    if (this.location?.url) {
+      return this.location.url;
     }
 
     return 'https://via.placeholder.com/350x180';
