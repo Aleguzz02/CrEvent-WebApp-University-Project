@@ -50,12 +50,20 @@ export class Tab1Page implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroy$))
     .subscribe(status => {
       this.isAuthenticated = status;
-    })
+    });
+
+    this.authService.isAdmin$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(status => {
+      this.isAdmin = status;
+    });
   }
 
   ionViewWillEnter() {
     if (this.isAuthenticated) {
-      this.loadEvents();
+      if (!this.isAdmin) {
+        this.loadEvents();
+      }
     } else {
       this.openLoginModal();
     }
@@ -78,6 +86,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
+    this.userEvents = [];
   }
 
   async creaNuovoEvento(){

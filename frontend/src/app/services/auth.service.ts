@@ -1,7 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
+import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
+import { catchError, switchMap, map, tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
+
+export interface CurrentUser {
+  email: string;
+  nome: string;
+  cognome: string;
+  telefono: string;
+  dataNascita: string;
+  urlFotoProfilo: string | null;
+  tipoUtente: number;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +29,31 @@ export class AuthService {
   private authState = new BehaviorSubject<boolean>(this.isTokenValid());
   isAuthenticated$ = this.authState.asObservable();
 
+  private currentUserState = new BehaviorSubject<CurrentUser | null>(null);
+  currentUser$ = this.currentUserState.asObservable();
+
+  private adminState = new BehaviorSubject<boolean>(false);
+  isAdmin$ = this.adminState.asObservable();
+
   get isAuthenticated(): boolean {
     return this.authState.getValue();
   }
 
-  constructor(private http: HttpClient) { }
+  get currentUser(): CurrentUser | null {
+    return this.currentUserState.getValue();
+  }
+
+  get isAdmin(): boolean {
+    return this.adminState.getValue();
+  }
+
+  constructor(private http: HttpClient) {
+    if (this.isTokenValid()) {
+      this.loadCurrentUser().subscribe();
+    } else {
+      this.clearAuthData();
+    }
+  }
 
   signup(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/register`, userData).pipe(
@@ -29,14 +66,21 @@ export class AuthService {
 
   login(userData: any): Observable<any> {
     return this.http.post(`/api/login`, userData).pipe(
-      tap((res: any) => {
+      switchMap((res: any) => {
         if (res && res.token) {
           // Salva token e email nel localStorage
           localStorage.setItem('token', res.token);
           localStorage.setItem('userEmail', res.userEmail);
-          // Imposta lo stato a true dopo accesso avvenuto
-          this.authState.next(true);
+          if (res.userNome) {
+            localStorage.setItem('userNome', res.userNome);
+          }
+
+          return this.loadCurrentUser().pipe(
+            map(() => res)
+          );
         }
+
+        return of(res);
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = error.error?.message || "";
@@ -60,14 +104,53 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  loadCurrentUser(): Observable<CurrentUser | null> {
+    if (!this.isTokenValid()) {
+      this.clearAuthData();
+      return of(null);
+    }
+
+    return this.http.get<ApiResponse<CurrentUser>>('/api/me').pipe(
+      map(response => response.data ?? null),
+      tap(user => {
+        if (user) {
+          this.setCurrentUser(user);
+        } else {
+          this.clearAuthData();
+        }
+      }),
+      catchError(() => {
+        this.clearAuthData();
+        return of(null);
+      })
+    );
+  }
+
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userEmail');
-    this.authState.next(false);
+    this.clearAuthData();
   }
 
   refreshAuthState(): void {
-    this.authState.next(this.isTokenValid());
+    if (this.isTokenValid()) {
+      this.loadCurrentUser().subscribe();
+    } else {
+      this.clearAuthData();
+    }
+  }
+
+  private setCurrentUser(user: CurrentUser): void {
+    this.currentUserState.next(user);
+    this.adminState.next(user.tipoUtente === 1);
+    this.authState.next(true);
+  }
+
+  private clearAuthData(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userNome');
+    this.currentUserState.next(null);
+    this.adminState.next(false);
+    this.authState.next(false);
   }
 
 }
