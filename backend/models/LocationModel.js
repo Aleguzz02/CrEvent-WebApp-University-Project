@@ -1,15 +1,15 @@
 const { run, get, all } = require('../db/dbAsync');
     
 const LocationModel = {
-    addLoc: async (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = NULL) => {
+    addLoc: async (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = null, lat = null, lng = null) => {
         try {
             await run(`BEGIN TRANSACTION`);
 
             const result = await run(
                 `INSERT INTO Location 
-                (nome, indirizzo, citta, descrizione, capienza, linkSito, costo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [nome, indirizzo, citta, descrizione, capienza, linkSito, costo]
+                (nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo]
             );
 
             const idLocation = result.id;
@@ -56,7 +56,7 @@ const LocationModel = {
         const events = await get(`
             SELECT COUNT(*) AS totale
             FROM Evento
-            WHERE ? = idLocation 
+            WHERE idLocation = ?
             AND DATE(data) >= DATE('now','localtime')`,
             [idLocation]);
             
