@@ -64,6 +64,10 @@ export interface CreateStaffRequest {
   dataInizio: string;
   dataFine: string;
   urlImg: string;
+  accountEmail: string;
+  accountPassword: string;
+  accountTelefono: string;
+  accountDataNascita: string;
 }
 
 export interface ApiResponse<T = any> {

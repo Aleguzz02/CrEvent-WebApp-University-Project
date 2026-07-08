@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Event = require("../models/EventModel");
 const Location = require("../models/LocationModel");
 const Staff = require("../models/StaffModel");
+const bcrypt = require("bcrypt");
 
 const isValidDate = (value) => {
   if (!value || typeof value !== "string") return false;
@@ -18,6 +19,10 @@ const normalizeOptionalText = (value) => {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+};
+
+const isValidEmail = (value) => {
+  return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
 exports.getUsers = async (req, res) => {
@@ -250,7 +255,11 @@ exports.createStaff = async (req, res) => {
       mansione,
       dataInizio,
       dataFine,
-      urlImg
+      urlImg,
+      accountEmail,
+      accountPassword,
+      accountTelefono,
+      accountDataNascita
     } = req.body;
 
     const parsedCosto = toPositiveNumber(costo);
@@ -277,6 +286,30 @@ exports.createStaff = async (req, res) => {
       });
     }
 
+    if (!isValidEmail(accountEmail) || !accountPassword || !accountTelefono || !isValidDate(accountDataNascita)) {
+      return res.status(400).json({
+        success: false,
+        message: "Sono richiesti email, password temporanea, telefono e data di nascita validi per l'account staff"
+      });
+    }
+
+    if (String(accountPassword).length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "La password temporanea deve avere almeno 8 caratteri"
+      });
+    }
+
+    const existingUser = await User.findByEmail(accountEmail.trim());
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Esiste già un utente con questa email"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(accountPassword, 10);
+
     const result = await Staff.addStaff(
       nome.trim(),
       cognome.trim(),
@@ -289,7 +322,15 @@ exports.createStaff = async (req, res) => {
       normalizeOptionalText(mansione),
       dataInizio,
       dataFine,
-      urlImg.trim()
+      urlImg.trim(),
+      {
+        email: accountEmail.trim(),
+        password: hashedPassword,
+        nome: nome.trim(),
+        cognome: cognome.trim(),
+        telefono: String(accountTelefono).trim(),
+        dataNascita: accountDataNascita
+      }
     );
 
     res.status(201).json({

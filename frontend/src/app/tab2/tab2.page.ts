@@ -263,7 +263,11 @@ export class Tab2Page implements OnInit, OnDestroy {
       mansione: '',
       dataInizio: '',
       dataFine: '',
-      urlImg: ''
+      urlImg: '',
+      accountEmail: '',
+      accountPassword: '',
+      accountTelefono: '',
+      accountDataNascita: ''
     };
   }
 }

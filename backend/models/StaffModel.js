@@ -20,7 +20,8 @@ const StaffModel = {
         mansione,
         dataInizio,
         dataFine,
-        urlImg
+        urlImg,
+        account = null
     ) => {
         try {
             await run(`BEGIN TRANSACTION`);
@@ -43,6 +44,24 @@ const StaffModel = {
                 `INSERT INTO dateStaff (idStaff, dataInizio, dataFine) VALUES (?, ?, ?)`,
                 [idStaff, dataInizio, dataFine]
             );
+
+            if (account) {
+                await run(
+                    `INSERT INTO User
+                    (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idStaff)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        account.email,
+                        account.password,
+                        account.nome,
+                        account.cognome,
+                        account.telefono,
+                        account.dataNascita,
+                        2,
+                        idStaff
+                    ]
+                );
+            }
 
             await run(`COMMIT`);
 

@@ -136,6 +136,11 @@
             <input name="staffDataInizio" [(ngModel)]="newStaff.dataInizio" type="date" required>
             <label>Disponibile fino a</label>
             <input name="staffDataFine" [(ngModel)]="newStaff.dataFine" type="date" required>
+            <label>Account staff</label>
+            <input name="staffAccountEmail" [(ngModel)]="newStaff.accountEmail" type="email" placeholder="Email account" required>
+            <input name="staffAccountPassword" [(ngModel)]="newStaff.accountPassword" type="text" placeholder="Password temporanea" required>
+            <input name="staffAccountTelefono" [(ngModel)]="newStaff.accountTelefono" placeholder="Telefono account" required>
+            <input name="staffAccountDataNascita" [(ngModel)]="newStaff.accountDataNascita" type="date" required>
 
             <ion-button type="submit" size="small" [disabled]="isSaving">
               Salva staff
