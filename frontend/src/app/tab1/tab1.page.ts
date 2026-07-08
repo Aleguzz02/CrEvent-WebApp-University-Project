@@ -71,6 +71,11 @@ export class Tab1Page implements OnInit, OnDestroy {
         this.adminEvents = [];
       }
     });
+
+    // Se non autenticato all'avvio, apri il login
+    if (!this.isAuthenticated) {
+      this.openLoginModal();
+    }
   }
 
   ionViewWillEnter() {
@@ -78,8 +83,6 @@ export class Tab1Page implements OnInit, OnDestroy {
       if (!this.isAdmin) {
         this.loadEvents();
       }
-    } else {
-      this.openLoginModal();
     }
   }
 
