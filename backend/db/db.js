@@ -4,12 +4,10 @@ const bcrypt = require("bcrypt");
 const db = new sql.Database("./db/database.sqlite", (err) => {
     if(err) console.error(err.message);
     else console.log("Connected to SQLite DB of CrEvent");
-}); //connessione con il db usando una funzione di callback per gestire eventuali errori
+}); 
 
 db.run("PRAGMA foreign_keys = ON");
-//abilitazione delle chiavi esterne
 
-//serializzazione delle operazioni per farle eseguire in ordine e mantenere l'integrità della base di dati
 db.serialize(() => {
 
     db.run(`
@@ -37,9 +35,9 @@ db.serialize(() => {
         tipo TEXT NOT NULL CHECK(tipo IN ('catering', 'intrattenimento', 'fotografo', 'altro')),
         costo INTEGER NOT NULL,
         descrizione TEXT NOT NULL,
-        genereMusicale TEXT, -- Specifiche dei Staff specifici
+        genereMusicale TEXT, 
         genereFotografico TEXT,
-        mansione TEXT, -- Per tutti gli Staff che non ricadono nelle 3 categorie principali
+        mansione TEXT, 
         UNIQUE(nome, cognome)
         )
         `);
@@ -56,9 +54,18 @@ db.serialize(() => {
         tipoUtente INTEGER NOT NULL CHECK(tipoUtente IN (0,1,2)) DEFAULT 0, -- 0 per utenti normali, 1 per amministratori, 2 per staff o location
         idStaff INTEGER,
         idLocation INTEGER,
-        FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE SET NULL, -- chiave esterna per gli account dei Staff collegati ai loro eventi
-        FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE SET NULL -- chiave esterna per gli account delle location collegati ai loro eventi
-        ) -- le chiavi sono necessariamente nulle per gli utenti normali, e nulle alternandosi per Staff o location
+        FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE SET NULL, 
+        FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE SET NULL 
+        )
+        `);
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Otp (
+            email TEXT PRIMARY KEY,
+            otp TEXT,
+            dataOra TEXT,
+            FOREIGN KEY (email) REFERENCES User(email) ON DELETE CASCADE
+        )
         `);
 
     db.run(`
@@ -95,11 +102,6 @@ db.serialize(() => {
         )
     `); 
 
-        /*Per semplicità e necessità di implementazione le date vengono considerate completamente contigue
-        tra gli intervalli inseriti inizialmente, permettendo anche di velocizzare le ricerche, gli inserimenti ed evitare migliaia
-        di tuple per tutte le date per tutte le risorse presenti
-        Inoltre per immagini e disponibilità si utilizzano tabelle differenti per velocizzare le ricerche e ridurre la duplicazione dei dati*/
-
     
         db.run(`
             CREATE TABLE IF NOT EXISTS Lavora(
@@ -110,8 +112,7 @@ db.serialize(() => {
             FOREIGN KEY (idLocation) REFERENCES Location(id) ON DELETE CASCADE
         )
         `);
-        //Se non compare qui un Staff, si assume che abbia una disponibilità indipendnente, e che possa lavorare in qualsiasi location, altrimenti si assume che possa lavorare solo nelle location specificate.
-        //*****VALUTARE SE INSERIRE RAPPORTI DI LAVORO DETERMINATI*****//
+        
 
         db.run(`
             CREATE TABLE IF NOT EXISTS Evento(
