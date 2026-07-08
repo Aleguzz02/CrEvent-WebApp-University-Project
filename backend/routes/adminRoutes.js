@@ -13,5 +13,6 @@ router.post("/locations", authMiddleware, requireAdmin, adminController.createLo
 router.delete("/locations/:id", authMiddleware, requireAdmin, adminController.deleteLocation);
 router.post("/staff", authMiddleware, requireAdmin, adminController.createStaff);
 router.delete("/staff/:id", authMiddleware, requireAdmin, adminController.deleteStaff);
+router.get('/users/:email/events-count', authMiddleware, requireAdmin, adminController.getUserEventsCount);
 
 module.exports = router;

@@ -114,4 +114,8 @@ export class AdminService {
   deleteStaff(id: number): Observable<ApiResponse> {
     return this.http.delete<ApiResponse>(`${this.apiUrl}/staff/${id}`);
   }
+
+  getUserEventsCount(email: string): Observable<ApiResponse<{ count: number }>> {
+    return this.http.get<ApiResponse<{ count: number }>>(`${this.apiUrl}/users/${encodeURIComponent(email)}/events-count`);
+  }
 }

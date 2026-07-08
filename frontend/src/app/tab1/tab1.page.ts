@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonButton, IonIcon, 
-  IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader
+  IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader, AlertController 
 } from '@ionic/angular/standalone';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ type AdminView = 'home' | 'users' | 'events';
   styleUrls: ['tab1.page.scss'],
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, EventCardComponent, IonFab, IonButton, 
-    IonIcon, IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader
+    IonIcon, IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader,
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -36,6 +36,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
   private modalCtrl = inject(ModalController);
   private toastService = inject(ToastService);
+  private alertCtrl = inject(AlertController);
 
   // Variabili
   isAuthenticated = false;
@@ -186,31 +187,90 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   deleteAdminUser(user: AdminUser) {
-    if (user.tipoUtente === 1) {
-      this.toastService.warning('Non puoi eliminare un amministratore');
-      return;
-    }
-
-    const confirmed = confirm(`Eliminare l'utente ${user.email}?`);
-    if (!confirmed) {
-      return;
-    }
-
-    this.adminService.deleteUser(user.email).subscribe({
-      next: (response) => {
-        if (!response.success) {
-          this.toastService.error(response.message || "Errore durante l'eliminazione dell'utente");
-          return;
-        }
-        this.adminUsers = this.adminUsers.filter(item => item.email !== user.email);
-        this.toastService.success('Utente eliminato');
-      },
-      error: (err) => {
-        console.error(err);
-        this.toastService.error(err.error?.message || err.message || "Errore durante l'eliminazione dell'utente");
-      }
-    });
+  if (user.tipoUtente === 1) {
+    this.toastService.warning('Non puoi eliminare un amministratore');
+    return;
   }
+
+  // Se è staff (tipo 2), conferma semplice
+  if (user.tipoUtente === 2) {
+    this.alertCtrl.create({
+      header: 'Conferma eliminazione staff',
+      message: `Stai per eliminare lo staff "${user.nome} ${user.cognome}". Sei sicuro?`,
+      buttons: [
+        { text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Elimina',
+          cssClass: 'danger',
+          handler: () => {
+            this.proceedDeleteUser(user);
+          }
+        }
+      ]
+    }).then(alert => alert.present());
+    return;
+  }
+
+  // Utente normale (tipo 0): recupera conteggio eventi
+  this.adminService.getUserEventsCount(user.email).subscribe({
+    next: (countResponse) => {
+      const count = countResponse.success ? countResponse.data?.count ?? 0 : 0;
+      const eventiText = count === 1 ? 'evento attivo' : 'eventi attivi';
+      const message = `L'utente selezionato ha ${count} ${eventiText}. Se lo elimini, verranno cancellati tutti i suoi eventi. Confermi?`;
+
+      this.alertCtrl.create({
+        header: 'Conferma eliminazione utente',
+        message: message,
+        buttons: [
+          { text: 'Annulla', role: 'cancel' },
+          {
+            text: 'Elimina',
+            cssClass: 'danger',
+            handler: () => {
+              this.proceedDeleteUser(user);
+            }
+          }
+        ]
+      }).then(alert => alert.present());
+    },
+    error: (err) => {
+      console.error('Errore nel conteggio eventi', err);
+      // Fallback: chiedi comunque
+      this.alertCtrl.create({
+        header: 'Attenzione',
+        message: "Impossibile recuperare il conteggio degli eventi. Eliminare comunque l'utente? Verranno cancellati tutti i suoi eventi.",
+        buttons: [
+          { text: 'Annulla', role: 'cancel' },
+          {
+            text: 'Elimina',
+            cssClass: 'danger',
+            handler: () => {
+              this.proceedDeleteUser(user);
+            }
+          }
+        ]
+      }).then(alert => alert.present());
+    }
+  });
+}
+
+// Metodo ausiliario per eseguire l'eliminazione effettiva
+private proceedDeleteUser(user: AdminUser) {
+  this.adminService.deleteUser(user.email).subscribe({
+    next: (response) => {
+      if (!response.success) {
+        this.toastService.error(response.message || "Errore durante l'eliminazione");
+        return;
+      }
+      this.adminUsers = this.adminUsers.filter(item => item.email !== user.email);
+      this.toastService.success('Utente eliminato');
+    },
+    error: (err) => {
+      console.error(err);
+      this.toastService.error(err.error?.message || err.message || "Errore durante l'eliminazione");
+    }
+  });
+}
 
   loadAdminEvents() {
     this.isLoading = true;

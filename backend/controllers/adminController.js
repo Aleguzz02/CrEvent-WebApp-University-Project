@@ -5,6 +5,7 @@ const Staff = require("../models/StaffModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const SMTP = require("../config/mailer");
+const { get, run, all } = require('../db/dbAsync');
 
 const isValidDate = (value) => {
   if (!value || typeof value !== "string") return false;
@@ -416,6 +417,39 @@ exports.deleteStaff = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Errore durante l'eliminazione dello staff"
+    });
+  }
+};
+
+exports.getUserEventsCount = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email richiesta"
+      });
+    }
+
+    // Conta gli eventi futuri (data >= oggi) associati a questo utente
+    const result = await get(
+      `SELECT COUNT(*) AS count
+       FROM Evento
+       WHERE emailUtente = ?
+         AND DATE(data) >= DATE('now', 'localtime')`,
+      [email]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: { count: result.count || 0 }
+    });
+  } catch (err) {
+    console.error("Errore in getUserEventsCount:", err);
+    res.status(500).json({
+      success: false,
+      message: "Errore nel conteggio degli eventi"
     });
   }
 };
