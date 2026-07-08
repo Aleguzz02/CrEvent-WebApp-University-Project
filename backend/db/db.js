@@ -22,6 +22,7 @@ db.serialize(() => {
         lng REAL,
         linkSito TEXT,
         costo INTEGER NOT NULL,
+        custom INTEGER NOT NULL CHECK(custom IN (0,1)) DEFAULT 0,
         UNIQUE(nome, indirizzo) 
         )
         `);
@@ -452,7 +453,7 @@ async function putData() {
                 [5, '2026-01-01', '2027-12-31'],
                 [6, '2026-01-01', '2027-12-31'],
                 [7, '2026-01-01', '2027-12-31'],
-                [8, '2026-01-01', '2027-12-31'],
+                [8, '2025-01-01', '2025-12-31'],
                 ];
 
                 dateStaff.forEach((date) => {

@@ -3,8 +3,8 @@ const StaffModel = require('../models/StaffModel');
 
 exports.getBrowseData = async (richiesta, risposta) => {
     try {
-        const locationData = await LocationModel.getAll();
-        const staffData = await StaffModel.getAll();
+        const locationData = await LocationModel.getAllAvaiable();
+        const staffData = await StaffModel.getAllAvaiable();
 
         risposta.status(200).json({
         success: true,

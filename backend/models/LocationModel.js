@@ -8,7 +8,7 @@ const LocationModel = {
             const result = await run(
                 `INSERT INTO Location 
                 (nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo]
             );
 
@@ -32,16 +32,19 @@ const LocationModel = {
             throw err;
         }
     },
-    getAll: () => {
+    getAllAvaiable: () => {
         return all(
             `SELECT L.*, Im.url 
             FROM Location L 
-            LEFT JOIN immaginiLocation Im ON L.id = Im.idLocation`
+            LEFT JOIN immaginiLocation Im ON L.id = Im.idLocation
+            LEFT JOIN dateLocation ON L.id = dateLocation.idLocation
+            WHERE DATE('now','localtime') <= dataFine
+            AND custom = 0`
         );
     },
 
     addCustomLoc: (lat, lng, nome, idUtente, dataOggi) => {
-            const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, lat, lng, costo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, lat, lng, costo, custom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`;
             return run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lat, lng, 0]);
     },
 
@@ -77,7 +80,8 @@ const LocationModel = {
         const query = `SELECT Location.*, immaginiLocation.url
             FROM immaginiLocation RIGHT JOIN Location
             ON immaginiLocation.idLocation = Location.id
-            WHERE ? <= capienza`;
+            WHERE ? <= capienza
+            AND custom = 0`;
             return all(query,[people]);
     },
     getCapacityAndDate: (day, people) => {
@@ -88,6 +92,7 @@ const LocationModel = {
             ON immaginiLocation.idLocation = Location.id
             WHERE ? <= capienza
             AND ? <= dateLocation.dataFine AND ? >= dateLocation.dataInizio
+            AND custom = 0
             AND Location.id NOT IN (
                 SELECT idLocation
                 FROM Evento

@@ -129,4 +129,63 @@ exports.getAvailableStaff = async (request, response) => {
       error: err.message
     });
   }
+ }
+  exports.createEvent = async (req, res) => {
+    try {
+      const {
+        nome,
+        data,
+        invitati,
+        prezzoTotale,
+        emailUtente,
+        idLocation,
+        customLocation,
+        location,
+        staffIds
+      } = req.eventCreation;
+
+      let finalIdLocation = idLocation;
+
+      // Se la location è personalizzata, prima la salvo nel DB
+      if (customLocation) {
+        const newLocation = await LocationModel.addCustomLoc(
+          location.lat,
+          location.lng,
+          location.nome,
+          emailUtente,
+          data
+        );
+
+        finalIdLocation = newLocation.id;
+      }
+
+      // Poi creo l'evento usando l'idLocation finale
+      const newEvent = await Event.addEvent(
+        data,
+        nome,
+        prezzoTotale,
+        invitati,
+        emailUtente,
+        finalIdLocation
+      );
+
+      // Infine associo gli staff selezionati
+      await Event.addStaffToEvent(newEvent.id, staffIds);
+
+      return res.status(201).json({
+        success: true,
+        message: "Evento creato con successo",
+        data: {
+          idEvento: newEvent.id
+        }
+      });
+    } catch (err) {
+      console.error("Errore in createEvent:", err);
+
+      return res.status(500).json({
+        success: false,
+        message: "Errore durante la creazione dell'evento",
+        error: err.message
+      });
+    }
 };

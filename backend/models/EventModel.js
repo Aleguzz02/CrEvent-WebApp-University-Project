@@ -119,9 +119,32 @@ const EventModel = {
       return run(query, [id]);
     },
 
-    addEvent: () => {
-        
+    addEvent: (data, nome, prezzoTotale, invitati, emailUtente, idLocation) => {
+      const query = `
+        INSERT INTO Evento
+        (data, nome, prezzoTotale, invitati, emailUtente, idLocation)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+
+      return run(query, [
+        data,
+        nome,
+        prezzoTotale,
+        invitati,
+        emailUtente,
+        idLocation
+      ]);
     },
+
+    addStaffToEvent: async (idEvento, staffIds = []) => {
+      for (const idStaff of staffIds) {
+        await run(
+          `INSERT INTO Coinvolge (idEvento, idStaff) VALUES (?, ?)`,
+          [idEvento, idStaff]
+        );
+      }
+    },
+    
     getEventById: (idEvento, email) => {
       return get(`
         SELECT *

@@ -1,11 +1,13 @@
 const { run, get, all } = require('../db/dbAsync');
 
 const StaffModel = {
-    getAll: () => {
+    getAllAvaiable: () => {
         const query = `
             SELECT S.*, Im.url 
             FROM Staff S 
-            LEFT JOIN immaginiStaff Im ON S.id = Im.idStaff`;
+            LEFT JOIN immaginiStaff Im ON S.id = Im.idStaff
+            LEFT JOIN dateStaff ON S.id = dateStaff.idStaff
+            WHERE DATE('now','localtime') <= dataFine`;
             return all(query);
     },
     addStaff: async (
