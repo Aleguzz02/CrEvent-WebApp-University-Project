@@ -84,10 +84,29 @@ const StaffModel = {
             throw new Error("futureEventsForStaff");
         }
 
-        return run(
-            `DELETE FROM Staff WHERE id = ?`,
-            [idStaff]
-        );
+        try {
+            await run(`BEGIN TRANSACTION`);
+
+            const deletedUsers = await run(
+                `DELETE FROM User WHERE idStaff = ? AND tipoUtente = 2`,
+                [idStaff]
+            );
+
+            const deletedStaff = await run(
+                `DELETE FROM Staff WHERE id = ?`,
+                [idStaff]
+            );
+
+            await run(`COMMIT`);
+
+            return {
+                changes: deletedStaff.changes,
+                deletedUsers: deletedUsers.changes
+            };
+        } catch (err) {
+            await run(`ROLLBACK`).catch(() => {});
+            throw err;
+        }
     },
     getFreeDates: (idStaff, idLocation) => {
 

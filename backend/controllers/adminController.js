@@ -61,14 +61,26 @@ exports.deleteUser = async (req, res) => {
       });
     }
 
-    const result = await User.deleteUser(email);
+    const result = user.tipoUtente === 2 && user.idStaff
+      ? await Staff.remStaff(user.idStaff)
+      : await User.deleteUser(email);
 
     res.status(200).json({
       success: true,
-      message: "Utente eliminato con successo",
-      changes: result.changes
+      message: user.tipoUtente === 2 && user.idStaff
+        ? "Utente staff e staff collegato eliminati con successo"
+        : "Utente eliminato con successo",
+      changes: result.changes,
+      deletedUsers: result.deletedUsers
     });
   } catch (err) {
+    if (err.message === "futureEventsForStaff") {
+      return res.status(409).json({
+        success: false,
+        message: "Non puoi eliminare un utente staff collegato a uno staff coinvolto in eventi futuri"
+      });
+    }
+
     console.error("Errore in deleteUser admin:", err);
     res.status(500).json({
       success: false,
