@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonButton, IonIcon, 
-  IonCard, IonCardContent, IonButtons
+  IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader
 } from '@ionic/angular/standalone';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { EventDataModalComponent } from '../components/event-data-modal/event-da
   styleUrls: ['tab1.page.scss'],
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, EventCardComponent, IonFab, IonButton, 
-    IonIcon, IonCard, IonCardContent, IonButtons
+    IonIcon, IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -34,6 +34,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   // Variabili
   isAuthenticated = false;
+  isAdmin = false;
   private destroy$ = new Subject<void>();
   
   userEvents: any[] = [];
@@ -51,8 +52,8 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.isAuthenticated = status;
     })
   }
-  ionViewWillEnter() {
 
+  ionViewWillEnter() {
     if (this.isAuthenticated) {
       this.loadEvents();
     } else {

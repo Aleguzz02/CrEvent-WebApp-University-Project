@@ -59,7 +59,7 @@
   }
 
 
-  @if(isAuthenticated == true) {
+  @if(isAuthenticated == true && isAdmin == false) {
     @if(userEvents.length > 0){
       @for(event of userEvents; track event.id){
         <app-event-card [evento]="event"></app-event-card>
@@ -77,6 +77,30 @@
         Nuovo evento
       </ion-button>
     </ion-fab>
+  }
+
+  @if(isAuthenticated == true && isAdmin == true) {
+    <div class="contenitore-iniziale">
+    <ion-card class="bottone-grande">
+      <div class="overlay-scuro">
+        <ion-card-header>
+          <ion-card-title>
+            <strong>Utenti</strong>
+          </ion-card-title>
+        </ion-card-header>
+      </div>
+    </ion-card>
+
+    <ion-card class="bottone-grande">
+      <div class="overlay-scuro">
+        <ion-card-header>
+          <ion-card-title>
+            <strong>Eventi</strong>
+          </ion-card-title>
+        </ion-card-header>
+      </div>
+    </ion-card>
+    </div>
   }
 
 </ion-content>
