@@ -254,7 +254,16 @@ locationLibera(location: LocationResource, day: string) {
     return;
   }
 
-  //this.createEvent();
+  this.router.navigate(['/event-summary'], {
+        state: {
+          eventDraft: this.tempEvent,
+          selectedDate: this.selectedDate,
+          selectedLocation: this.selectedLocation,
+          selectedStaff: this.selectedStaff,
+          customLocation: this.customLocationSetted
+        }
+      });
+
 }
   loadAvaiableStaff() {
     if (!this.selectedLocation || !this.selectedDate) return;

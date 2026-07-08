@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../interfaces/profile.interface';
-import { Evento } from '../interfaces/event.interface';
+import { EventDraft, Evento } from '../interfaces/event.interface';
 import { UserEventsResponse, EventDetailResponse } from '../interfaces/event.interface';
 import { LocationsResponse, LocationFreeDatesResponse, LocationResource } from '../interfaces/location.interface';
 import { StaffResource } from '../interfaces/staff.interface';
@@ -58,5 +58,16 @@ export class EventService {
       id: idEvento
      }      
     });
+  }
+  createEvent(eventData: EventDraft, loc: LocationResource, staff: StaffResource[], date: string, price: number): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/create`, 
+      {
+        event: eventData,
+        location: loc,
+        staff,
+        date,
+        price,
+      }
+    );
   }
 }

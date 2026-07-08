@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button fill="clear" (click)="goBack()">Indietro</ion-button>
+      <ion-button class="back-button" fill="clear" (click)="goBack()">Indietro</ion-button>
     </ion-buttons>
 
     <ion-title>Riepilogo evento</ion-title>
@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-card>
+  <ion-card class="summary-card">
     <ion-card-content>
       <h2>{{ eventDraft?.name }}</h2>
       <p><strong>Data:</strong> {{ selectedDate }}</p>
@@ -17,23 +17,31 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
+  <ion-card class="summary-card">
     <ion-card-content>
       <h2>Location</h2>
-      <p><strong>Nome:</strong> {{ selectedLocation?.nome }}</p>
-      <p><strong>Citta:</strong> {{ selectedLocation?.citta }}</p>
-      <p><strong>Costo:</strong> {{ selectedLocation?.costo }} euro</p>
+      <div class="location-summary">
+        <div class="location-details">
+          <p><strong>Nome:</strong> {{ selectedLocation?.nome }}</p>
+          <p><strong>Citta:</strong> {{ selectedLocation?.citta }}</p>
+          <p><strong>Costo:</strong> {{ selectedLocation?.costo }} euro</p>
+        </div>
+        <img class="location-photo" [src]="locationImage" alt="Foto location">
+      </div>
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
+  <ion-card class="summary-card">
     <ion-card-content>
       <h2>Staff</h2>
 
       @for (staff of selectedStaff; track staff.id) {
         <div class="staff-row">
-          <span>{{ staff.nome }} {{ staff.cognome }}</span>
-          <span>
+          <div class="staff-info">
+            <span class="staff-name">{{ staff.nome }} {{ staff.cognome }}</span>
+            <span class="staff-type">{{ staff.tipo }}</span>
+          </div>
+          <span class="staff-price">
             {{ staff.tipo === 'catering'
               ? staff.costo + ' euro pp'
               : staff.costo + ' euro' }}
@@ -45,14 +53,18 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
+  <ion-card class="summary-card price-card">
     <ion-card-content>
       <h2>Totale</h2>
       <p class="total-price">{{ totalPrice }} euro</p>
     </ion-card-content>
+    <ion-card-content class="deposit-section">
+      <h3>Acconto da versare subito</h3>
+      <p class="pay-price">{{ paymentPrice }} euro</p>
+    </ion-card-content>
   </ion-card>
 
-  <ion-button expand="block" (click)="confirmEvent()">
+  <ion-button class="summary-button" expand="block" (click)="confirmEvent()">
     Conferma evento
   </ion-button>
 </ion-content>

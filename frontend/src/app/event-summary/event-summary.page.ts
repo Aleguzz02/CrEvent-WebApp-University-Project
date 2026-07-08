@@ -38,6 +38,7 @@ export class EventSummaryPage {
   selectedDate: string = history.state?.selectedDate ?? '';
   selectedLocation: LocationResource | null = history.state?.selectedLocation ?? null;
   selectedStaff: StaffResource[] = history.state?.selectedStaff ?? [];
+  customLocation: boolean = history.state?.customLocation ?? false;
 
   constructor(
     private router: Router,
@@ -46,10 +47,46 @@ export class EventSummaryPage {
     if (!this.eventDraft || !this.selectedLocation || !this.selectedDate) {
       this.router.navigate(['/tabs/tab1']);
     }
+    this.selectedDate = this.selectedDate.substring(0,10);
   }
 
-  get totalPrice(): Number {
-    return 2;
+  get totalPrice(): number {
+    if(!this.selectedLocation){
+      return 0;
+    }
+    else{
+      var tempPrice = this.selectedLocation.costo;
+      if(this.selectedStaff){
+        this.selectedStaff.forEach(staff => {
+          if(staff.tipo === 'catering')
+            tempPrice += staff.costo * this.people;
+          else
+            tempPrice += staff.costo;
+        });
+      }
+      return tempPrice;
+    }
+  }
+
+  get people() : number{
+    return this.customLocation 
+    ? this.selectedLocation?.capienza ?? 0
+    : this.eventDraft?.capacity ?? 0
+  }
+
+  get locationImage(): string {
+    if (!this.selectedLocation?.url) {
+      return 'https://via.placeholder.com/120x90';
+    }
+
+    if (
+      this.selectedLocation.url.startsWith('http://') ||
+      this.selectedLocation.url.startsWith('https://')
+    ) {
+      return this.selectedLocation.url;
+    }
+
+    return 'http://localhost:3000' + this.selectedLocation.url;
   }
 
   goBack() {
@@ -66,7 +103,7 @@ export class EventSummaryPage {
     });
   }
 
-  paymentPrice() {
-    //return this.totalPrice*0.4;
+  get paymentPrice(): number {
+    return this.totalPrice*0.4;
   }
 }

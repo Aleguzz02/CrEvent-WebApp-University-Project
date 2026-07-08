@@ -1,0 +1,206 @@
+ion-content {
+  --padding-top: 18px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-bottom: 32px;
+}
+
+ion-toolbar {
+  --min-height: 70px;
+}
+
+ion-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ion-color-primary, #3880ff);
+}
+
+.back-button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  --border-radius: 18px;
+  --color: var(--ion-color-medium);
+}
+
+.summary-card {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 16px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ion-card-background, #ffffff);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+ion-card-content {
+  padding: 18px 18px 16px 18px;
+}
+
+h2,
+h3 {
+  margin: 0 0 12px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--ion-color-primary, #3880ff);
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+p {
+  margin: 8px 0 0 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--ion-text-color);
+}
+
+strong {
+  color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
+.location-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.location-details p {
+  margin: 8px 0 0 0;
+}
+
+.location-photo {
+  width: 110px;
+  height: 82px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--ion-color-light);
+  flex-shrink: 0;
+}
+
+.staff-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(var(--ion-color-medium-rgb, 146, 148, 156), 0.22);
+}
+
+.staff-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.staff-name,
+.staff-type,
+.staff-price {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.staff-name {
+  font-weight: 600;
+}
+
+.staff-type {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.12);
+  color: var(--ion-color-primary, #3880ff);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.staff-price {
+  flex-shrink: 0;
+  color: var(--ion-color-cash, rgb(28, 205, 28));
+  font-weight: 700;
+  text-align: right;
+}
+
+.price-card {
+  border: 2px solid rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.18);
+}
+
+.deposit-section {
+  border-top: 1px solid rgba(var(--ion-color-medium-rgb, 146, 148, 156), 0.22);
+}
+
+.total-price,
+.pay-price {
+  margin-top: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.total-price {
+  font-size: 30px;
+  color: var(--ion-color-cash, rgb(28, 205, 28));
+}
+
+.pay-price {
+  font-size: 22px;
+  color: rgb(205, 28, 28);
+}
+
+.summary-button {
+  width: clamp(180px, 70vw, 420px);
+  height: 48px;
+  margin: 22px auto 0 auto;
+  --border-radius: 24px;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.summary-button:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 420px) {
+  ion-title {
+    font-size: 18px;
+  }
+
+  ion-card-content {
+    padding: 16px 14px 14px 14px;
+  }
+
+  .staff-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .location-photo {
+    width: 86px;
+    height: 64px;
+  }
+
+  .staff-price {
+    text-align: left;
+  }
+
+  .total-price {
+    font-size: 26px;
+  }
+
+  .pay-price {
+    font-size: 20px;
+  }
+}
