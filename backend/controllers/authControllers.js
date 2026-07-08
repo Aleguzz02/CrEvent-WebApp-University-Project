@@ -88,3 +88,33 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.me = async (req, res) => {
+    try {
+        const email = req.user.email;
+        const user = await User.findByEmail(email);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Utente non trovato"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                email: user.email,
+                nome: user.nome,
+                cognome: user.cognome,
+                telefono: user.telefono,
+                dataNascita: user.dataNascita,
+                urlFotoProfilo: user.urlFotoProfilo || null,
+                tipoUtente: user.tipoUtente
+            }
+        });
+    } catch (err) {
+        console.error("ERRORE DETTAGLIATO NEL CONTROLLER:", err);
+        res.status(500).json({ success: false, message: "Errore nel recupero dell'utente" });
+    }
+};

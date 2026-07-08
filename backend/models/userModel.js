@@ -24,6 +24,16 @@ const User = {
     });
   },
 
+  // Recupera tutti gli utenti senza restituire la password
+  findAllSafe: () => {
+    const query = `
+      SELECT email, nome, cognome, telefono, dataNascita, urlFotoProfilo, tipoUtente, idStaff, idLocation
+      FROM User
+      ORDER BY tipoUtente DESC, cognome ASC, nome ASC
+    `;
+    return all(query);
+  },
+
   // Aggiorna il telefono
   updatePhone: (email, telefono) => {
     return new Promise((resolve, reject) => {

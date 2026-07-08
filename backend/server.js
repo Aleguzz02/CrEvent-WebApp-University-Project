@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const browseRoutes = require('./routes/browseRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 app.use(cors({
   origin: "*", 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api', authRoutes);
 app.use('/api', profileRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 //Rotte per immagini pubbliche
