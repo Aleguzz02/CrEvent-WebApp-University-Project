@@ -3,24 +3,14 @@ const db = require("../db/db");
 
 const User = {
   create: (email, password, nome, cognome, telefono, dataNascita) => {
-    return new Promise((resolve, reject) => {
-      const query = `INSERT INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      db.run(query, [email, password, nome, cognome, telefono, dataNascita, 0], function (err) {
-        if (err) reject(err);
-        else resolve({ email });
-      });
-    });
+    const query = `INSERT INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      return run(query, [email, password, nome, cognome, telefono, dataNascita, 0], email);
   },
   
   // Trova utente con la mail
   findByEmail: (email) => {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT * FROM User WHERE email = ?`;
-      db.get(query, [email], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const query = `SELECT * FROM User WHERE email = ?`;
+      return get(query, [email]);
   },
 
   // Recupera tutti gli utenti senza restituire la password

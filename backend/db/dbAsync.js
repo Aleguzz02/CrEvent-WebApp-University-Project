@@ -1,10 +1,13 @@
 const db = require('./db');
 
-const run = (query, params = []) => {
+const run = (query, params = [], pk = null) => {
   return new Promise((resolve, reject) => {
     db.run(query, params, function (err) {
       if (err) return reject(err);
-      resolve({ id: this.lastID, changes: this.changes });
+      resolve({ 
+        id: pk ?? this.lastID, 
+        changes: this.changes 
+      });
     });
   });
 };
