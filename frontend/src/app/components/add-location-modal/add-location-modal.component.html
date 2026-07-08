@@ -8,30 +8,183 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form #locationForm="ngForm" class="admin-modal-form" (ngSubmit)="save(locationForm)">
-    <input name="locNome" [(ngModel)]="location.nome" placeholder="Nome" required maxlength="100">
-    <input name="locIndirizzo" [(ngModel)]="location.indirizzo" placeholder="Indirizzo" required maxlength="150">
-    <input name="locCitta" [(ngModel)]="location.citta" placeholder="Citta" required maxlength="80" pattern="^[a-zA-ZÀ-ÿ\s'’-]+$">
-    <textarea name="locDescrizione" [(ngModel)]="location.descrizione" placeholder="Descrizione" required maxlength="2000"></textarea>
-    <input name="locCapienza" [(ngModel)]="location.capienza" type="number" min="1" placeholder="Capienza" required>
-    <input name="locCosto" [(ngModel)]="location.costo" type="number" min="0.01" step="0.01" placeholder="Costo" required>
-    <input name="locUrlImg" [(ngModel)]="location.urlImg" type="url" placeholder="URL immagine" required>
-    <input name="locLinkSito" [(ngModel)]="location.linkSito" type="url" placeholder="Link sito">
-    <input name="locLat" [(ngModel)]="location.lat" type="number" min="-90" max="90" step="any" placeholder="Latitudine">
-    <input name="locLng" [(ngModel)]="location.lng" type="number" min="-180" max="180" step="any" placeholder="Longitudine">
-    <label>Disponibile da</label>
-    <input name="locDataInizio" [(ngModel)]="location.dataInizio" type="date" [min]="today" required>
-    <label>Disponibile fino a</label>
-    <input name="locDataFine" [(ngModel)]="location.dataFine" type="date" [min]="location.dataInizio || today" required>
+  <form [formGroup]="locationForm" (ngSubmit)="save()" class="admin-modal-form">
+    
+    <!-- Nome -->
+    <ion-item>
+      <ion-input
+        formControlName="nome"
+        label="Nome"
+        labelPlacement="stacked"
+        placeholder="Nome della location"
+        errorText="Il nome è obbligatorio"
+        maxlength="100"
+        required
+      ></ion-input>
+    </ion-item>
 
-    @if(locationForm.submitted && locationForm.invalid) {
-      <p class="form-error">Compila correttamente tutti i campi obbligatori.</p>
-    }
-    @if(dateRangeInvalid) {
-      <p class="form-error">La data di fine deve essere successiva o uguale alla data di inizio.</p>
+    <!-- Indirizzo -->
+    <ion-item>
+      <ion-input
+        formControlName="indirizzo"
+        label="Indirizzo"
+        labelPlacement="stacked"
+        placeholder="Via Roma, 123"
+        errorText="L'indirizzo è obbligatorio"
+        maxlength="150"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Città -->
+    <ion-item>
+      <ion-input
+        formControlName="citta"
+        label="Città"
+        labelPlacement="stacked"
+        placeholder="Roma"
+        errorText="Città non valida (solo lettere, spazi e apostrofi)"
+        maxlength="80"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Descrizione -->
+    <ion-item>
+      <ion-textarea
+        formControlName="descrizione"
+        label="Descrizione"
+        labelPlacement="stacked"
+        placeholder="Descrizione dettagliata della location"
+        errorText="La descrizione è obbligatoria"
+        maxlength="2000"
+        required
+      ></ion-textarea>
+    </ion-item>
+
+    <!-- Capienza -->
+    <ion-item>
+      <ion-input
+        formControlName="capienza"
+        label="Capienza (persone)"
+        labelPlacement="stacked"
+        type="number"
+        min="1"
+        placeholder="100"
+        errorText="La capienza deve essere un numero positivo"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Costo -->
+    <ion-item>
+      <ion-input
+        formControlName="costo"
+        label="Costo (€)"
+        labelPlacement="stacked"
+        type="number"
+        min="0.01"
+        step="0.01"
+        placeholder="0.00"
+        errorText="Inserisci un costo positivo"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- URL Immagine -->
+    <ion-item>
+      <ion-input
+        formControlName="urlImg"
+        label="URL Immagine"
+        labelPlacement="stacked"
+        type="url"
+        placeholder="https://esempio.com/location.jpg"
+        errorText="Inserisci un URL valido (http:// o https://)"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Link Sito (opzionale) -->
+    <ion-item>
+      <ion-input
+        formControlName="linkSito"
+        label="Link Sito (opzionale)"
+        labelPlacement="stacked"
+        type="url"
+        placeholder="https://esempio.com"
+        errorText="Inserisci un URL valido (http:// o https://)"
+      ></ion-input>
+    </ion-item>
+
+    <!-- Latitudine (opzionale) -->
+    <ion-item>
+      <ion-input
+        formControlName="lat"
+        label="Latitudine (opzionale)"
+        labelPlacement="stacked"
+        type="number"
+        min="-90"
+        max="90"
+        step="any"
+        placeholder="41.9028"
+        errorText="La latitudine deve essere tra -90 e 90"
+      ></ion-input>
+    </ion-item>
+
+    <!-- Longitudine (opzionale) -->
+    <ion-item>
+      <ion-input
+        formControlName="lng"
+        label="Longitudine (opzionale)"
+        labelPlacement="stacked"
+        type="number"
+        min="-180"
+        max="180"
+        step="any"
+        placeholder="12.4964"
+        errorText="La longitudine deve essere tra -180 e 180"
+      ></ion-input>
+    </ion-item>
+
+    <!-- Data Inizio -->
+    <ion-item>
+      <ion-input
+        formControlName="dataInizio"
+        label="Disponibile da"
+        labelPlacement="stacked"
+        type="date"
+        [min]="today"
+        errorText="La data non può essere nel passato"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Data Fine -->
+    <ion-item>
+      <ion-input
+        formControlName="dataFine"
+        label="Disponibile fino a"
+        labelPlacement="stacked"
+        type="date"
+        [min]="locationForm.get('dataInizio')?.value || today"
+        errorText="La data di fine deve essere successiva o uguale alla data di inizio"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <!-- Messaggio di errore generico -->
+    @if (locationForm.invalid && locationForm.touched) {
+      <ion-text color="danger" class="form-error">
+        <p>Compila correttamente tutti i campi obbligatori.</p>
+      </ion-text>
     }
 
-    <ion-button type="submit" expand="block" [disabled]="locationForm.invalid || dateRangeInvalid">
+    <!-- Pulsante Submit -->
+    <ion-button
+      type="submit"
+      expand="block"
+      [disabled]="locationForm.invalid"
+    >
       Salva location
     </ion-button>
   </form>
