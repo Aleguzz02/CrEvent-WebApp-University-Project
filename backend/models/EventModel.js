@@ -47,6 +47,78 @@ const EventModel = {
             return all(query,[email]);
     },
 
+    getAllEvents: () => {
+      const query = `
+        SELECT
+          Evento.*,
+          User.nome AS nomeUtente,
+          User.cognome AS cognomeUtente,
+          User.telefono AS telefonoUtente,
+          Location.nome AS nomeLocation,
+          Location.indirizzo AS indirizzoLocation,
+          Location.citta AS cittaLocation,
+          Location.descrizione AS descrizioneLocation,
+          Location.capienza AS capienzaLocation,
+          Location.lat,
+          Location.lng,
+          Location.linkSito AS linkSitoLocation,
+          Location.costo AS costoLocation,
+          GROUP_CONCAT(
+            Staff.id || ':' || Staff.nome || ' ' || Staff.cognome || ' (' || Staff.tipo || ')',
+            ', '
+          ) AS staffCoinvolto
+        FROM Evento
+        LEFT JOIN User ON Evento.emailUtente = User.email
+        LEFT JOIN Location ON Evento.idLocation = Location.id
+        LEFT JOIN Coinvolge ON Evento.id = Coinvolge.idEvento
+        LEFT JOIN Staff ON Coinvolge.idStaff = Staff.id
+        GROUP BY Evento.id
+        ORDER BY DATE(Evento.data) DESC, Evento.id DESC
+      `;
+      return all(query);
+    },
+
+    deleteEvent: (id) => {
+      const query = `DELETE FROM Evento WHERE id = ?`;
+      return run(query, [id]);
+    },
+
+    getAllEvents: () => {
+      const query = `
+        SELECT
+          Evento.*,
+          User.nome AS nomeUtente,
+          User.cognome AS cognomeUtente,
+          User.telefono AS telefonoUtente,
+          Location.nome AS nomeLocation,
+          Location.indirizzo AS indirizzoLocation,
+          Location.citta AS cittaLocation,
+          Location.descrizione AS descrizioneLocation,
+          Location.capienza AS capienzaLocation,
+          Location.lat,
+          Location.lng,
+          Location.linkSito AS linkSitoLocation,
+          Location.costo AS costoLocation,
+          GROUP_CONCAT(
+            Staff.id || ':' || Staff.nome || ' ' || Staff.cognome || ' (' || Staff.tipo || ')',
+            ', '
+          ) AS staffCoinvolto
+        FROM Evento
+        LEFT JOIN User ON Evento.emailUtente = User.email
+        LEFT JOIN Location ON Evento.idLocation = Location.id
+        LEFT JOIN Coinvolge ON Evento.id = Coinvolge.idEvento
+        LEFT JOIN Staff ON Coinvolge.idStaff = Staff.id
+        GROUP BY Evento.id
+        ORDER BY DATE(Evento.data) DESC, Evento.id DESC
+      `;
+      return all(query);
+    },
+
+    deleteEvent: (id) => {
+      const query = `DELETE FROM Evento WHERE id = ?`;
+      return run(query, [id]);
+    },
+
     addEvent: () => {
         
     },

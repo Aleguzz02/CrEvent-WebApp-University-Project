@@ -69,5 +69,75 @@ ion-fab {
   }
 }
 
-// Opzionale: Se hai paura che il bottone copra l'ultima card quando scrolli fino in fondo, 
-// puoi aggiungere un po' di padding sul fondo del content/lista.
+  .bottone-grande {
+  width: 100%;
+  // Definiamo una dimensione base flessibile ed elegante per schermi desktop/web
+  min-width: 180px;
+  max-width: 260px;        
+  aspect-ratio: 1 / 1;     // Rapporto 1:1 fisso (Larghezza = Altezza)
+  
+  margin: 0;               // Elimina i margini nativi di Ionic
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  border-radius: 20px;     // Arrotondamento moderno dei bordi
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  //transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+
+  // Effetto sollevamento al passaggio del mouse (Hover web)
+  &:hover {
+    transform: translateY(-6px); 
+    box-shadow: 0 0ch 40px rgba(255, 255, 255, 0.7);
+
+    @media(prefers-color-scheme: light){
+      box-shadow: 0 0ch 40px rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+
+
+.contenitore-iniziale{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: clamp(10vw, 10vw, 50vw);
+  box-sizing: border-box;
+  gap: clamp(10px, 20vw, 200px);
+
+  @media (max-width: 480px) {
+    flex-direction: column; 
+    gap: 16px;
+  }
+}
+
+.admin-section {
+  padding: 16px 0;
+}
+
+.admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid var(--ion-color-medium);
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+}
