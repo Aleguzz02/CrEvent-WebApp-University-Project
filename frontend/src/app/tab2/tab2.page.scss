@@ -162,6 +162,11 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
     flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
     max-height: 420px;
   }
+
+  .admin-resource-item {
+    width: 320px;
+    flex: 0 0 auto;
+  }
 }
 .cards-container::-webkit-scrollbar{
   display: none;
@@ -207,3 +212,42 @@ ion-item-divider {
       font-weight: 300;
     }
   }
+
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.admin-form {
+  width: min(700px, calc(100% - 32px));
+  margin: 0 auto 24px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 4px;
+    background: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+
+  textarea {
+    min-height: 90px;
+  }
+}
+
+.admin-resource-item {
+  width: 100%;
+}
+
+.admin-resource-actions {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 16px 0;
+}

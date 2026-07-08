@@ -36,6 +36,36 @@ export interface AdminEvent {
   staffCoinvolto: string | null;
 }
 
+export interface CreateLocationRequest {
+  nome: string;
+  indirizzo: string;
+  citta: string;
+  descrizione: string;
+  capienza: number | null;
+  costo: number | null;
+  dataInizio: string;
+  dataFine: string;
+  urlImg: string;
+  linkSito?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+}
+
+export interface CreateStaffRequest {
+  nome: string;
+  cognome: string;
+  linkSito?: string | null;
+  tipo: 'catering' | 'intrattenimento' | 'fotografo' | 'altro';
+  costo: number | null;
+  descrizione: string;
+  genereMusicale?: string | null;
+  genereFotografico?: string | null;
+  mansione?: string | null;
+  dataInizio: string;
+  dataFine: string;
+  urlImg: string;
+}
+
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -66,5 +96,21 @@ export class AdminService {
 
   deleteEvent(id: number): Observable<ApiResponse> {
     return this.http.delete<ApiResponse>(`${this.apiUrl}/events/${id}`);
+  }
+
+  createLocation(data: CreateLocationRequest): Observable<ApiResponse<{ id: number }>> {
+    return this.http.post<ApiResponse<{ id: number }>>(`${this.apiUrl}/locations`, data);
+  }
+
+  deleteLocation(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${this.apiUrl}/locations/${id}`);
+  }
+
+  createStaff(data: CreateStaffRequest): Observable<ApiResponse<{ id: number }>> {
+    return this.http.post<ApiResponse<{ id: number }>>(`${this.apiUrl}/staff`, data);
+  }
+
+  deleteStaff(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${this.apiUrl}/staff/${id}`);
   }
 }
