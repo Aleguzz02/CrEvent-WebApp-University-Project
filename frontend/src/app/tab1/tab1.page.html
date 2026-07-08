@@ -80,27 +80,160 @@
   }
 
   @if(isAuthenticated == true && isAdmin == true) {
-    <div class="contenitore-iniziale">
-    <ion-card class="bottone-grande">
-      <div class="overlay-scuro">
-        <ion-card-header>
-          <ion-card-title>
-            <strong>Utenti</strong>
-          </ion-card-title>
-        </ion-card-header>
-      </div>
-    </ion-card>
+    @if(adminView == 'home') {
+      <div class="contenitore-iniziale">
+        <ion-card class="bottone-grande" button="true" (click)="showAdminUsers()">
+          <div class="overlay-scuro">
+            <ion-card-header>
+              <ion-card-title>
+                <strong>Utenti</strong>
+              </ion-card-title>
+            </ion-card-header>
+          </div>
+        </ion-card>
 
-    <ion-card class="bottone-grande">
-      <div class="overlay-scuro">
-        <ion-card-header>
-          <ion-card-title>
-            <strong>Eventi</strong>
-          </ion-card-title>
-        </ion-card-header>
+        <ion-card class="bottone-grande" button="true" (click)="showAdminEvents()">
+          <div class="overlay-scuro">
+            <ion-card-header>
+              <ion-card-title>
+                <strong>Eventi</strong>
+              </ion-card-title>
+            </ion-card-header>
+          </div>
+        </ion-card>
       </div>
-    </ion-card>
-    </div>
+    }
+
+    @if(adminView == 'users') {
+      <div class="admin-section">
+        <ion-button fill="outline" size="small" (click)="showAdminHome()">Indietro</ion-button>
+        <h2>Utenti</h2>
+
+        @if(isLoading) {
+          <p>Caricamento utenti...</p>
+        }
+
+        @if(!isLoading && adminUsers.length == 0) {
+          <p>Nessun utente trovato.</p>
+        }
+
+        @if(!isLoading && adminUsers.length > 0) {
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Telefono</th>
+                  <th>Data nascita</th>
+                  <th>Tipo</th>
+                  <th>Foto</th>
+                  <th>idStaff</th>
+                  <th>idLocation</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(user of adminUsers; track user.email) {
+                  <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.nome }}</td>
+                    <td>{{ user.cognome }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.dataNascita }}</td>
+                    <td>{{ user.tipoUtente }}</td>
+                    <td>{{ user.urlFotoProfilo || '-' }}</td>
+                    <td>{{ user.idStaff || '-' }}</td>
+                    <td>{{ user.idLocation || '-' }}</td>
+                    <td>
+                      @if(user.tipoUtente != 1) {
+                        <ion-button color="danger" size="small" (click)="deleteAdminUser(user)">
+                          Elimina
+                        </ion-button>
+                      }
+                      @else {
+                        <span>Admin</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    @if(adminView == 'events') {
+      <div class="admin-section">
+        <ion-button fill="outline" size="small" (click)="showAdminHome()">Indietro</ion-button>
+        <h2>Eventi</h2>
+
+        @if(isLoading) {
+          <p>Caricamento eventi...</p>
+        }
+
+        @if(!isLoading && adminEvents.length == 0) {
+          <p>Nessun evento trovato.</p>
+        }
+
+        @if(!isLoading && adminEvents.length > 0) {
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Data</th>
+                  <th>Invitati</th>
+                  <th>Email utente</th>
+                  <th>Nome utente</th>
+                  <th>Telefono utente</th>
+                  <th>Location</th>
+                  <th>Indirizzo</th>
+                  <th>Citta</th>
+                  <th>Descrizione location</th>
+                  <th>Capienza</th>
+                  <th>Costo</th>
+                  <th>Coordinate</th>
+                  <th>Sito</th>
+                  <th>Staff</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(event of adminEvents; track event.id) {
+                  <tr>
+                    <td>{{ event.id }}</td>
+                    <td>{{ event.nome }}</td>
+                    <td>{{ event.data }}</td>
+                    <td>{{ event.invitati }}</td>
+                    <td>{{ event.emailUtente }}</td>
+                    <td>{{ event.nomeUtente || '-' }} {{ event.cognomeUtente || '' }}</td>
+                    <td>{{ event.telefonoUtente || '-' }}</td>
+                    <td>{{ event.nomeLocation || '-' }}</td>
+                    <td>{{ event.indirizzoLocation || '-' }}</td>
+                    <td>{{ event.cittaLocation || '-' }}</td>
+                    <td>{{ event.descrizioneLocation || '-' }}</td>
+                    <td>{{ event.capienzaLocation || '-' }}</td>
+                    <td>{{ event.costoLocation || '-' }}</td>
+                    <td>{{ event.lat || '-' }}, {{ event.lng || '-' }}</td>
+                    <td>{{ event.linkSitoLocation || '-' }}</td>
+                    <td>{{ event.staffCoinvolto || '-' }}</td>
+                    <td>
+                      <ion-button color="danger" size="small" (click)="deleteAdminEvent(event)">
+                        Elimina
+                      </ion-button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
   }
 
 </ion-content>

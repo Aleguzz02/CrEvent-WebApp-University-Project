@@ -118,3 +118,26 @@ ion-fab {
     gap: 16px;
   }
 }
+
+.admin-section {
+  padding: 16px 0;
+}
+
+.admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid var(--ion-color-medium);
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+}
