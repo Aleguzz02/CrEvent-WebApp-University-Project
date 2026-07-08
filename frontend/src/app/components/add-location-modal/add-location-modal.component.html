@@ -8,22 +8,31 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form class="admin-modal-form" (ngSubmit)="save()">
-    <input name="locNome" [(ngModel)]="location.nome" placeholder="Nome" required>
-    <input name="locIndirizzo" [(ngModel)]="location.indirizzo" placeholder="Indirizzo" required>
-    <input name="locCitta" [(ngModel)]="location.citta" placeholder="Citta" required>
-    <textarea name="locDescrizione" [(ngModel)]="location.descrizione" placeholder="Descrizione" required></textarea>
-    <input name="locCapienza" [(ngModel)]="location.capienza" type="number" placeholder="Capienza" required>
-    <input name="locCosto" [(ngModel)]="location.costo" type="number" placeholder="Costo" required>
-    <input name="locUrlImg" [(ngModel)]="location.urlImg" placeholder="URL immagine" required>
-    <input name="locLinkSito" [(ngModel)]="location.linkSito" placeholder="Link sito">
-    <input name="locLat" [(ngModel)]="location.lat" type="number" step="any" placeholder="Latitudine">
-    <input name="locLng" [(ngModel)]="location.lng" type="number" step="any" placeholder="Longitudine">
+  <form #locationForm="ngForm" class="admin-modal-form" (ngSubmit)="save(locationForm)">
+    <input name="locNome" [(ngModel)]="location.nome" placeholder="Nome" required maxlength="100">
+    <input name="locIndirizzo" [(ngModel)]="location.indirizzo" placeholder="Indirizzo" required maxlength="150">
+    <input name="locCitta" [(ngModel)]="location.citta" placeholder="Citta" required maxlength="80" pattern="^[a-zA-ZÀ-ÿ\s'’-]+$">
+    <textarea name="locDescrizione" [(ngModel)]="location.descrizione" placeholder="Descrizione" required maxlength="2000"></textarea>
+    <input name="locCapienza" [(ngModel)]="location.capienza" type="number" min="1" placeholder="Capienza" required>
+    <input name="locCosto" [(ngModel)]="location.costo" type="number" min="0.01" step="0.01" placeholder="Costo" required>
+    <input name="locUrlImg" [(ngModel)]="location.urlImg" type="url" placeholder="URL immagine" required>
+    <input name="locLinkSito" [(ngModel)]="location.linkSito" type="url" placeholder="Link sito">
+    <input name="locLat" [(ngModel)]="location.lat" type="number" min="-90" max="90" step="any" placeholder="Latitudine">
+    <input name="locLng" [(ngModel)]="location.lng" type="number" min="-180" max="180" step="any" placeholder="Longitudine">
     <label>Disponibile da</label>
-    <input name="locDataInizio" [(ngModel)]="location.dataInizio" type="date" required>
+    <input name="locDataInizio" [(ngModel)]="location.dataInizio" type="date" [min]="today" required>
     <label>Disponibile fino a</label>
-    <input name="locDataFine" [(ngModel)]="location.dataFine" type="date" required>
+    <input name="locDataFine" [(ngModel)]="location.dataFine" type="date" [min]="location.dataInizio || today" required>
 
-    <ion-button type="submit" expand="block">Salva location</ion-button>
+    @if(locationForm.submitted && locationForm.invalid) {
+      <p class="form-error">Compila correttamente tutti i campi obbligatori.</p>
+    }
+    @if(dateRangeInvalid) {
+      <p class="form-error">La data di fine deve essere successiva o uguale alla data di inizio.</p>
+    }
+
+    <ion-button type="submit" expand="block" [disabled]="locationForm.invalid || dateRangeInvalid">
+      Salva location
+    </ion-button>
   </form>
 </ion-content>

@@ -32,6 +32,16 @@ const generateTemporaryPassword = () => {
   return crypto.randomBytes(9).toString("base64url");
 };
 
+const isPastDate = (value) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const date = new Date(value);
+  date.setHours(0, 0, 0, 0);
+
+  return date < today;
+};
+
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAllSafe();
@@ -183,6 +193,13 @@ exports.createLocation = async (req, res) => {
       });
     }
 
+    if (isPastDate(dataInizio)) {
+      return res.status(400).json({
+        success: false,
+        message: "La data di inizio non può essere nel passato"
+      });
+    }
+
     if ((parsedLat !== null && !Number.isFinite(parsedLat)) || (parsedLng !== null && !Number.isFinite(parsedLng))) {
       return res.status(400).json({
         success: false,
@@ -302,12 +319,22 @@ exports.createStaff = async (req, res) => {
       });
     }
 
+    if (isPastDate(dataInizio)) {
+      return res.status(400).json({
+        success: false,
+        message: "La data di inizio non può essere nel passato"
+      });
+    }
+
     if (!isValidEmail(accountEmail)) {
       return res.status(400).json({
         success: false,
         message: "Email account staff non valida"
       });
     }
+
+    console.log('dataInizio ricevuta:', dataInizio);
+    console.log('isPastDate(dataInizio):', isPastDate(dataInizio));
 
     const existingUser = await User.findByEmail(accountEmail.trim());
     if (existingUser) {

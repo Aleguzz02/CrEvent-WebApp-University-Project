@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular/standalone';
 import { CreateLocationRequest } from '../../services/admin.service';
 
@@ -13,6 +13,7 @@ import { CreateLocationRequest } from '../../services/admin.service';
 })
 export class AddLocationModalComponent {
   private modalCtrl = inject(ModalController);
+  today = new Date().toISOString().slice(0, 10);
 
   location: CreateLocationRequest = {
     nome: '',
@@ -33,7 +34,18 @@ export class AddLocationModalComponent {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  save() {
+  get dateRangeInvalid(): boolean {
+    return !!this.location.dataInizio
+      && !!this.location.dataFine
+      && this.location.dataFine < this.location.dataInizio;
+  }
+
+  save(form: NgForm) {
+    if (form.invalid || this.dateRangeInvalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
     this.modalCtrl.dismiss(this.location, 'confirm');
   }
 }

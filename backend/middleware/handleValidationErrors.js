@@ -9,6 +9,7 @@ const { validationResult } = require('express-validator');
 const handleValidationErrors = (req, res, next) => {
   // Estrae gli eventuali errori dalla richiesta
   const errors = validationResult(req);
+  console.log('Errori di validazione:', errors.array());
 
   // Se non ci sono errori, prosegui
   if (errors.isEmpty()) {

@@ -8,29 +8,38 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form class="admin-modal-form" (ngSubmit)="save()">
-    <input name="staffNome" [(ngModel)]="staff.nome" placeholder="Nome" required>
-    <input name="staffCognome" [(ngModel)]="staff.cognome" placeholder="Cognome" required>
+  <form #staffForm="ngForm" class="admin-modal-form" (ngSubmit)="save(staffForm)">
+    <input name="staffNome" [(ngModel)]="staff.nome" placeholder="Nome" required maxlength="80" pattern="^[a-zA-ZÀ-ÿ\s'’-]+$">
+    <input name="staffCognome" [(ngModel)]="staff.cognome" placeholder="Cognome" required maxlength="80" pattern="^[a-zA-ZÀ-ÿ\s'’-]+$">
     <select name="staffTipo" [(ngModel)]="staff.tipo" required>
       <option value="catering">Catering</option>
       <option value="intrattenimento">Intrattenimento</option>
       <option value="fotografo">Fotografo</option>
       <option value="altro">Altro</option>
     </select>
-    <input name="staffCosto" [(ngModel)]="staff.costo" type="number" placeholder="Costo" required>
-    <textarea name="staffDescrizione" [(ngModel)]="staff.descrizione" placeholder="Descrizione" required></textarea>
-    <input name="staffUrlImg" [(ngModel)]="staff.urlImg" placeholder="URL immagine" required>
-    <input name="staffLinkSito" [(ngModel)]="staff.linkSito" placeholder="Link sito">
-    <input name="staffGenereMusicale" [(ngModel)]="staff.genereMusicale" placeholder="Genere musicale">
-    <input name="staffGenereFotografico" [(ngModel)]="staff.genereFotografico" placeholder="Genere fotografico">
-    <input name="staffMansione" [(ngModel)]="staff.mansione" placeholder="Mansione">
+    <input name="staffCosto" [(ngModel)]="staff.costo" type="number" min="0.01" step="0.01" placeholder="Costo" required>
+    <textarea name="staffDescrizione" [(ngModel)]="staff.descrizione" placeholder="Descrizione" required maxlength="2000"></textarea>
+    <input name="staffUrlImg" [(ngModel)]="staff.urlImg" type="url" placeholder="URL immagine" required>
+    <input name="staffLinkSito" [(ngModel)]="staff.linkSito" type="url" placeholder="Link sito">
+    <input name="staffGenereMusicale" [(ngModel)]="staff.genereMusicale" maxlength="100" placeholder="Genere musicale">
+    <input name="staffGenereFotografico" [(ngModel)]="staff.genereFotografico" maxlength="100" placeholder="Genere fotografico">
+    <input name="staffMansione" [(ngModel)]="staff.mansione" maxlength="100" placeholder="Mansione">
     <label>Disponibile da</label>
-    <input name="staffDataInizio" [(ngModel)]="staff.dataInizio" type="date" required>
+    <input name="staffDataInizio" [(ngModel)]="staff.dataInizio" type="date" [min]="today" required>
     <label>Disponibile fino a</label>
-    <input name="staffDataFine" [(ngModel)]="staff.dataFine" type="date" required>
+    <input name="staffDataFine" [(ngModel)]="staff.dataFine" type="date" [min]="staff.dataInizio || today" required>
     <label>Account staff</label>
     <input name="staffAccountEmail" [(ngModel)]="staff.accountEmail" type="email" placeholder="Email account" required>
 
-    <ion-button type="submit" expand="block">Salva staff</ion-button>
+    @if(staffForm.submitted && staffForm.invalid) {
+      <p class="form-error">Compila correttamente tutti i campi obbligatori.</p>
+    }
+    @if(dateRangeInvalid) {
+      <p class="form-error">La data di fine deve essere successiva o uguale alla data di inizio.</p>
+    }
+
+    <ion-button type="submit" expand="block" [disabled]="staffForm.invalid || dateRangeInvalid">
+      Salva staff
+    </ion-button>
   </form>
 </ion-content>
