@@ -276,7 +276,10 @@ ion-alert.delete-account-alert {
 ion-content {
   // Creiamo un gradiente lineare a 45 gradi con più colori
   //--background: linear-gradient(-45deg, #349437, #1e5a49, #1b6c8a, #1d977b) no-repeat;
-  --background: url('C:\\Users\\marco\\Downloads\\voglio_questo_video_rallentato.mp4');
+  --background: url('C:\\Users\\marco\\Downloads\\voglio_questo_video_rallentato.mp4' )no-repeat center center / cover;
+  
+  // Questo dice a Ionic di tenere lo sfondo fisso durante lo scroll
+  --background-attachment: fixed;;
   // TRUCCO: Ingrandiamo lo sfondo al 400% così l'animazione ha lo "spazio" per muoversi
   //background-size: 400% 400% !important;
   
