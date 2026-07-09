@@ -1,7 +1,7 @@
 const { run, get, all } = require('../db/dbAsync');
     
 const LocationModel = {
-    addLoc: async (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = null, lat = null, lng = null) => {
+    addLoc: async (nome, indirizzo, citta, descrizione, capienza, costo, dataInizio, dataFine, urlImg, linkSito = null, lat = null, lng = null, account = null) => {
         try {
             await run(`BEGIN TRANSACTION`);
 
@@ -23,6 +23,24 @@ const LocationModel = {
                 `INSERT INTO dateLocation (idLocation, dataInizio, dataFine) VALUES (?, ?, ?)`,
                 [idLocation, dataInizio, dataFine]
             );
+
+            if (account) {
+                await run(
+                    `INSERT INTO User
+                    (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idLocation)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        account.email,
+                        account.password,
+                        account.nome,
+                        account.cognome,
+                        account.telefono,
+                        account.dataNascita,
+                        2,
+                        idLocation
+                    ]
+                );
+            }
 
             await run(`COMMIT`);
 
@@ -46,20 +64,47 @@ const LocationModel = {
     },
 
     remLoc: async (idLocation) => {
-        const events = await get(`
-            SELECT COUNT(*) AS totale
-            FROM Evento
-            WHERE idLocation = ?
-            AND DATE(data) >= DATE('now','localtime')`,
-            [idLocation]);
-            
-        if(events.totale > 0){
-            throw new Error("futureEventsForLocation");
-        }
-        return run(
+    // Controllo eventi futuri
+    const events = await get(`
+        SELECT COUNT(*) AS totale
+        FROM Evento
+        WHERE idLocation = ?
+        AND DATE(data) >= DATE('now','localtime')`,
+        [idLocation]
+    );
+
+    if (events.totale > 0) {
+        throw new Error("futureEventsForLocation");
+    }
+
+    try {
+        await run(`BEGIN TRANSACTION`);
+
+        // Elimina l'utente associato alla location (tipoUtente = 2)
+        const deletedUser = await run(
+            `DELETE FROM User WHERE idLocation = ? AND tipoUtente = 2`,
+            [idLocation]
+        );
+
+        // Elimina la location (con cascade su immagini, date)
+        const deletedLocation = await run(
             `DELETE FROM Location WHERE id = ?`,
-            [idLocation]);
-    },
+            [idLocation]
+        );
+
+        await run(`COMMIT`);
+
+        return {
+            changes: deletedLocation.changes,
+            deletedUsers: deletedUser.changes
+        };
+    } catch (err) {
+        await run(`ROLLBACK`).catch(() => {});
+        throw err;
+    }
+},
+
+
     getFreeDates: (idLocation) => {
        const query = `SELECT *
             FROM dateLocation

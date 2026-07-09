@@ -89,6 +89,45 @@
       <ion-input formControlName="urlImg" type="hidden"></ion-input>
     </div>
 
+
+<div class="account-section">
+  <ion-label class="section-label">Dati account gestore</ion-label>
+  
+  <ion-item>
+    <ion-input
+      formControlName="accountEmail"
+      label="Email account"
+      labelPlacement="stacked"
+      type="email"
+      placeholder="gestore@esempio.com"
+      errorText="Inserisci un'email valida"
+      required
+    ></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-input
+      formControlName="gestoreNome"
+      label="Nome gestore (opzionale)"
+      labelPlacement="stacked"
+      placeholder="Mario"
+      errorText="Nome non valido"
+      maxlength="80"
+    ></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-input
+      formControlName="gestoreCognome"
+      label="Cognome gestore (opzionale)"
+      labelPlacement="stacked"
+      placeholder="Rossi"
+      errorText="Cognome non valido"
+      maxlength="80"
+    ></ion-input>
+  </ion-item>
+</div>
+
     <!-- Altri campi -->
     <ion-item>
       <ion-input formControlName="linkSito" label="Link Sito (opzionale)" labelPlacement="stacked" type="url" placeholder="https://esempio.com" errorText="URL non valido"></ion-input>

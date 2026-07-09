@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import {
@@ -52,7 +52,7 @@ import { cloudUpload, close, checkmarkCircle } from 'ionicons/icons';
     IonLabel
   ]
 })
-export class AddStaffModalComponent implements OnInit {
+export class AddStaffModalComponent implements OnInit, OnDestroy   {
   private modalCtrl = inject(ModalController);
   private fb = inject(FormBuilder);
   private uploadService = inject(UploadService);
@@ -69,6 +69,7 @@ export class AddStaffModalComponent implements OnInit {
   previewUrl: string | null = null;
   isUploading = false;
   imageUploaded = false;
+  isConfirmed = false;
 
   constructor() {
     addIcons({ cloudUpload, close, checkmarkCircle });
@@ -102,6 +103,18 @@ export class AddStaffModalComponent implements OnInit {
     this.staffForm.get('dataInizio')?.valueChanges.subscribe(() => {
       this.staffForm.get('dataFine')?.updateValueAndValidity();
     });
+  }
+
+    ngOnDestroy() {
+    if (this.imageUploaded && !this.isConfirmed) {
+      const url = this.staffForm.get('urlImg')?.value;
+      if (url) {
+        this.uploadService.deleteImage(url).subscribe({
+          next: () => console.log('File cancellato (chiusura involontaria)'),
+          error: (err) => console.error('Errore cancellazione file:', err)
+        });
+      }
+    }
   }
 
   // Validatori esistenti (validateNotPast, validateDateRange)
@@ -184,7 +197,7 @@ export class AddStaffModalComponent implements OnInit {
     });
   }
 
-  save() {
+    save() {
     if (this.staffForm.invalid) {
       this.staffForm.markAllAsTouched();
       return;
@@ -195,6 +208,7 @@ export class AddStaffModalComponent implements OnInit {
       return;
     }
 
+    this.isConfirmed = true;
     this.modalCtrl.dismiss(this.staffForm.value, 'confirm');
   }
 

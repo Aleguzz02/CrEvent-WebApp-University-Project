@@ -166,7 +166,26 @@ const adminLocationValidators = [
   body('lng')
     .optional({ values: 'falsy' })
     .isFloat({ min: -180, max: 180 }).withMessage('Longitudine non valida')
-    .toFloat()
+    .toFloat(),
+
+  // NUOVI CAMPI per l'account
+  body('accountEmail')
+    .trim()
+    .notEmpty().withMessage('L\'email account è obbligatoria')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .isEmail().withMessage('Email account non valida'),
+
+  body('gestoreNome')
+    .trim()
+    .optional({ values: 'falsy' })
+    .matches(/^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/).withMessage('Il nome può contenere solo lettere, spazi, apostrofi e trattini')
+    .isLength({ max: 80 }).withMessage('Il nome è troppo lungo'),
+
+  body('gestoreCognome')
+    .trim()
+    .optional({ values: 'falsy' })
+    .matches(/^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/).withMessage('Il cognome può contenere solo lettere, spazi, apostrofi e trattini')
+    .isLength({ max: 80 }).withMessage('Il cognome è troppo lungo'),
 ];
 
 const adminStaffValidators = [

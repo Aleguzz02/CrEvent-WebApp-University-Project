@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import {
@@ -48,7 +48,7 @@ import { cloudUpload, close, checkmarkCircle } from 'ionicons/icons';
     IonImg
   ]
 })
-export class AddLocationModalComponent implements OnInit {
+export class AddLocationModalComponent implements OnInit, OnDestroy {
   private modalCtrl = inject(ModalController);
   private fb = inject(FormBuilder);
   private uploadService = inject(UploadService);
@@ -65,6 +65,7 @@ export class AddLocationModalComponent implements OnInit {
   previewUrl: string | null = null;
   isUploading = false;
   imageUploaded = false;
+  isConfirmed = false;
 
   constructor() {
     addIcons({ cloudUpload, close, checkmarkCircle });
@@ -83,12 +84,28 @@ export class AddLocationModalComponent implements OnInit {
       lat: [null, [Validators.min(-90), Validators.max(90)]],
       lng: [null, [Validators.min(-180), Validators.max(180)]],
       dataInizio: ['', [Validators.required, this.validateNotPast.bind(this)]],
-      dataFine: ['', [Validators.required, this.validateDateRange.bind(this)]]
+      dataFine: ['', [Validators.required, this.validateDateRange.bind(this)]],
+      accountEmail: ['', [Validators.required, Validators.email]],
+      gestoreNome: ['', [Validators.maxLength(80)]],
+      gestoreCognome: ['', [Validators.maxLength(80)]]
     });
 
     this.locationForm.get('dataInizio')?.valueChanges.subscribe(() => {
       this.locationForm.get('dataFine')?.updateValueAndValidity();
     });
+  }
+
+    ngOnDestroy() {
+    // Se l'immagine è stata caricata ma non è stata confermata (salvata), cancella il file
+    if (this.imageUploaded && !this.isConfirmed) {
+      const url = this.locationForm.get('urlImg')?.value;
+      if (url) {
+        this.uploadService.deleteImage(url).subscribe({
+          next: () => console.log('File cancellato (chiusura involontaria)'),
+          error: (err) => console.error('Errore cancellazione file:', err)
+        });
+      }
+    }
   }
 
   validateNotPast(control: AbstractControl): ValidationErrors | null {
@@ -176,7 +193,7 @@ export class AddLocationModalComponent implements OnInit {
     this.locationForm.patchValue({ urlImg: '' });
   }
 
-  save() {
+    save() {
     if (this.locationForm.invalid) {
       this.locationForm.markAllAsTouched();
       return;
@@ -187,6 +204,7 @@ export class AddLocationModalComponent implements OnInit {
       return;
     }
 
+    this.isConfirmed = true;
     this.modalCtrl.dismiss(this.locationForm.value, 'confirm');
   }
 }
