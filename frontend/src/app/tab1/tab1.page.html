@@ -1,12 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-title class="titolo-eventi">
-      I miei eventi
+      @if (isAdmin) {
+        Dashboard
+      } @else {
+        I miei eventi
+      }
     </ion-title>
-    @if(isAuthenticated == true) {
-    <ion-buttons slot="end">
-      <ion-button (click)="logout()">Log Out</ion-button>
-    </ion-buttons>
+    @if (isAuthenticated) {
+      <ion-buttons slot="end">
+        <ion-button (click)="logout()">Log Out</ion-button>
+      </ion-buttons>
     }
   </ion-toolbar>
   <ion-toolbar mode="ios" class="toolbar-mid">
