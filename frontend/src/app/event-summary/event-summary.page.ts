@@ -7,6 +7,7 @@ import {
   IonCardContent,
   IonContent,
   IonHeader,
+  ModalController,
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
@@ -14,6 +15,9 @@ import { Router } from '@angular/router';
 import { EventDraft } from '../interfaces/event.interface';
 import { LocationResource } from '../interfaces/location.interface';
 import { StaffResource } from '../interfaces/staff.interface';
+import { CheckoutModalComponent } from '../components/checkout-modal/checkout-modal.component';
+import { EventService } from '../services/event.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-event-summary',
@@ -42,7 +46,10 @@ export class EventSummaryPage {
 
   constructor(
     private router: Router,
-    private location: Location
+    private location: Location,
+    private modalController: ModalController,
+    private eventService: EventService,
+    private toastService: ToastService
   ) {
     if (!this.eventDraft || !this.selectedLocation || !this.selectedDate) {
       this.router.navigate(['/tabs/tab1']);
@@ -93,13 +100,52 @@ export class EventSummaryPage {
     this.location.back();
   }
 
-  confirmEvent() {
-    // Qui poi chiamerai il backend per salvare Evento + Coinvolge.
-    console.log({
-      eventDraft: this.eventDraft,
-      selectedDate: this.selectedDate,
-      selectedLocation: this.selectedLocation,
-      selectedStaff: this.selectedStaff,
+  async confirmEvent() {
+    const modal = await this.modalController.create({
+      component: CheckoutModalComponent,
+      cssClass: 'checkout-modal-sheet',
+      componentProps: {
+        amount: this.paymentPrice
+      }
+    });
+
+    await modal.present();
+
+    const result = await modal.onDidDismiss<{
+      paid: boolean;
+      amount: number;
+      cardBrand: string;
+    }>();
+
+    if (result.role !== 'confirm' || !result.data?.paid) {
+      return;
+    }
+
+    if (!this.eventDraft || !this.selectedLocation) {
+      return;
+    }
+
+    this.eventService.createEvent(
+      this.eventDraft,
+      this.selectedLocation,
+      this.selectedStaff,
+      this.selectedDate,
+      this.totalPrice
+    ).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          this.toastService.error(res.message || 'Errore durante la creazione evento');
+          return;
+        }
+
+        this.toastService.success('Evento creato con successo');
+        this.router.navigate(['/tabs/tab1']);
+      },
+      error: (err) => {
+        this.toastService.error(
+          err.error?.message || 'Errore durante la creazione evento'
+        );
+      }
     });
   }
 

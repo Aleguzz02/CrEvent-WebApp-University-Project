@@ -1,0 +1,137 @@
+ion-toolbar ion-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(15px, 4vw, 25px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ion-color-primary, #3880ff);
+  text-align: center;
+}
+
+.toolbar-grande {
+  --min-height: 72px;
+}
+
+.checkout-content {
+  width: 100%;
+  max-width: 420px;
+  margin: 24px auto 0 auto;
+}
+
+.payment-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #323232;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.payment-summary span {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
+
+.payment-summary strong {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--ion-color-cash, rgb(28, 205, 28));
+  font-size: 20px;
+}
+
+.card-preview {
+  min-height: 130px;
+  margin-bottom: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #25282e, #3880ff);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.card-preview div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-preview span {
+  letter-spacing: 1px;
+}
+
+.card-label {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.checkout-input-item {
+  --border-radius: 16px;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --background: #323232;
+  --color: #ffffff;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.checkout-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+}
+
+.errore-input {
+  display: block;
+  margin: -6px 0 14px 8px;
+  font-size: 13px;
+}
+
+.bottone-paga {
+  height: 48px;
+  margin-top: 18px;
+  --border-radius: 24px;
+  font-weight: 700;
+}
+
+.contenitore-annulla {
+  width: auto;
+  height: auto;
+  background-color: #323232;
+  border-radius: 1000px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+  transition: ease 0.2s;
+  margin-left: 15px;
+}
+
+.contenitore-annulla:hover {
+  transform: scale(1.05);
+}
+
+.contenitore-annulla:active {
+  transform: scale(0.96);
+}
+
+.bottone-annulla {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(10px, 3vw, 18px);
+  font-weight: 600;
+  --color: var(--ion-color-medium);
+  --border-radius: 18px;
+  transition: ease 0.2s;
+}
+
+.bottone-annulla:hover {
+  --color: rgb(255, 113, 113);
+}
+
+@media (max-width: 420px) {
+  .checkout-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

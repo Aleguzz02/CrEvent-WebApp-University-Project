@@ -67,8 +67,26 @@
   --height: 600px;
 }
 
+.checkout-modal-sheet {
+  --border-radius: 30px;
+  --width: 520px;
+  --height: 640px;
+  --max-height: 90%;
+}
+
+.checkout-modal-sheet .ion-page {
+  position: relative;
+  contain: content;
+}
+
 @media(max-width: 600px){
   .create-modals{
+    --width: 100%;
+    --height: 100%;
+    --border-radius: 0px;
+  }
+
+  .checkout-modal-sheet {
     --width: 100%;
     --height: 100%;
     --border-radius: 0px;

@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla">
+        <ion-button class="bottone-annulla" fill="clear" (click)="cancel()">
+          Annulla
+        </ion-button>
+      </div>
+    </ion-buttons>
+
+    <ion-title>Pagamento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="checkout-content" [formGroup]="form">
+    <div class="payment-summary">
+      <span>Acconto da versare</span>
+      <strong>{{ formattedAmount }} euro</strong>
+    </div>
+
+    <div class="card-preview">
+      <div>
+        <span class="card-label">Carta</span>
+        <strong>{{ cardBrand || 'Numero carta' }}</strong>
+      </div>
+      <span>{{ form.controls.cardNumber.value || '0000 0000 0000 0000' }}</span>
+    </div>
+
+    <ion-item class="checkout-input-item">
+      <ion-label position="stacked">Numero carta</ion-label>
+      <ion-input
+        type="tel"
+        inputmode="numeric"
+        autocomplete="cc-number"
+        maxlength="23"
+        formControlName="cardNumber"
+        (ionInput)="formatCardNumber($event)"
+        placeholder="1234 5678 9012 3456">
+      </ion-input>
+    </ion-item>
+
+    @if (form.controls.cardNumber.value && form.controls.cardNumber.invalid) {
+      <ion-text color="danger" class="errore-input">
+        Numero carta non valido o gestore non riconosciuto.
+      </ion-text>
+    }
+
+    <div class="checkout-row">
+      <ion-item class="checkout-input-item">
+        <ion-label position="stacked">Scadenza</ion-label>
+        <ion-input
+          type="tel"
+          inputmode="numeric"
+          autocomplete="cc-exp"
+          maxlength="5"
+          formControlName="expiry"
+          (ionInput)="formatExpiry($event)"
+          placeholder="MM/AA">
+        </ion-input>
+      </ion-item>
+
+      <ion-item class="checkout-input-item">
+        <ion-label position="stacked">CVV</ion-label>
+        <ion-input
+          type="tel"
+          inputmode="numeric"
+          autocomplete="cc-csc"
+          maxlength="4"
+          formControlName="cvv"
+          (ionInput)="formatCvv($event)"
+          placeholder="123">
+        </ion-input>
+      </ion-item>
+    </div>
+
+    @if (form.controls.expiry.value && form.controls.expiry.invalid) {
+      <ion-text color="danger" class="errore-input">
+        Inserisci una scadenza valida e non passata.
+      </ion-text>
+    }
+
+    @if (form.controls.cvv.value && form.controls.cvv.invalid) {
+      <ion-text color="danger" class="errore-input">
+        CVV non valido per il tipo di carta indicato.
+      </ion-text>
+    }
+
+    <ion-button
+      class="bottone-paga"
+      expand="block"
+      [disabled]="form.invalid"
+      (click)="pay()">
+      Paga {{ formattedAmount }} euro
+    </ion-button>
+  </div>
+</ion-content>
