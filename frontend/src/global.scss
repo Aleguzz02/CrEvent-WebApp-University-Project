@@ -43,6 +43,9 @@
   --font-title: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
   --ion-font-family: var(--font-body);
+  --app-glass-bg: rgba(0, 0, 0, 0.82);
+  --app-glass-border: rgba(255, 255, 255, 0.08);
+  --app-glass-blur: blur(12px);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap');
@@ -272,21 +275,76 @@ ion-alert.delete-account-alert {
   }
 }
 
-// 2. Applichiamo l'animazione a tutti gli ion-content dell'app
-ion-content {
-  // Creiamo un gradiente lineare a 45 gradi con più colori
-  //--background: linear-gradient(-45deg, #349437, #1e5a49, #1b6c8a, #1d977b) no-repeat;
-  --background: url('C:\\Users\\marco\\Downloads\\voglio_questo_video_rallentato.mp4' )no-repeat center center / cover;
-  
-  // Questo dice a Ionic di tenere lo sfondo fisso durante lo scroll
-  --background-attachment: fixed;;
-  // TRUCCO: Ingrandiamo lo sfondo al 400% così l'animazione ha lo "spazio" per muoversi
-  //background-size: 400% 400% !important;
-  
-  // Colleghiamo l'animazione: dura 15 secondi, è fluida (ease) e continua all'infinito (infinite)
-  //animation: gradientMove 1s ease infinite;
-
-  // Blocchiamo lo sfondo in modo che non si muova con lo scroll del testo
-  //--background-attachment: fixed;
+html,
+body,
+app-root {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
 }
 
+app-root {
+  display: block;
+}
+
+.app-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  background: #000;
+}
+
+.app-bg-overlay {
+  position: fixed;
+  inset: 0;
+  //z-index: 1;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.68);
+}
+
+ion-app {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+ion-content {
+  --background: transparent;
+}
+
+ion-content::part(background) {
+  background: transparent;
+}
+
+.ion-page {
+  background: transparent !important;
+}
+
+ion-header,
+ion-footer {
+  background: transparent;
+}
+
+ion-toolbar,
+ion-tab-bar {
+  --background: var(--app-glass-bg);
+  --color: #ffffff;
+  backdrop-filter: var(--app-glass-blur);
+  -webkit-backdrop-filter: var(--app-glass-blur);
+  border-color: var(--app-glass-border);
+  box-shadow: none;
+}
+
+ion-toolbar {
+  --border-color: var(--app-glass-border);
+}
+
+ion-tab-bar {
+  --color: rgba(255, 255, 255, 0.72);
+  --color-selected: #ffffff;
+  border-top: 1px solid var(--app-glass-border);
+}
