@@ -68,6 +68,9 @@ export class Tab2Page implements OnInit, OnDestroy {
   }
   
   ionViewWillEnter(){
+    this.listaLocation = [];
+    this.listaStaff = [];
+
     this.loadData();
   }
 
