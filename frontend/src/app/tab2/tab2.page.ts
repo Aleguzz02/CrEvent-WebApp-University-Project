@@ -13,6 +13,7 @@ import { LocationResource } from '../interfaces/location.interface';
 import { StaffResource } from '../interfaces/staff.interface';
 import { AdminService, CreateLocationRequest, CreateStaffRequest } from '../services/admin.service';
 import { Subject, takeUntil } from 'rxjs';
+import { UploadService } from '../services/upload.service';
 import { AddLocationModalComponent } from '../components/add-location-modal/add-location-modal.component';
 import { AddStaffModalComponent } from '../components/add-staff-modal/add-staff-modal.component';
 
@@ -32,6 +33,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private adminService = inject(AdminService);
   private modalCtrl = inject(ModalController);
+  private uploadService = inject(UploadService);
   private destroy$ = new Subject<void>();
 
   sezione: 'iniziale' | 'location' | 'staff' = 'iniziale';
@@ -137,6 +139,9 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         if (!response.success) {
           this.toast.error(response.message || 'Errore durante la creazione della location');
+          if (locationData.urlImg) {
+            this.uploadService.deleteImage(locationData.urlImg).subscribe();
+          }
           return;
         }
 
@@ -147,6 +152,9 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         console.error(err);
         this.toast.error(err.error?.message || err.message || 'Errore durante la creazione della location');
+        if (locationData.urlImg) {
+          this.uploadService.deleteImage(locationData.urlImg).subscribe();
+        }
       }
     });
   }
@@ -196,6 +204,9 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         if (!response.success) {
           this.toast.error(response.message || 'Errore durante la creazione dello staff');
+          if (staffData.urlImg) {
+            this.uploadService.deleteImage(staffData.urlImg).subscribe();
+          }
           return;
         }
 
@@ -206,6 +217,9 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         console.error(err);
         this.toast.error(err.error?.message || err.message || 'Errore durante la creazione dello staff');
+        if (staffData.urlImg) {
+          this.uploadService.deleteImage(staffData.urlImg).subscribe();
+        }
       }
     });
   }

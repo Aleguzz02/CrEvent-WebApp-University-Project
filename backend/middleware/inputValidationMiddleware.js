@@ -153,8 +153,8 @@ const adminLocationValidators = [
 
   body('urlImg')
     .trim()
-    .notEmpty().withMessage('L\'URL immagine è obbligatorio')
-    .isURL({ require_protocol: true }).withMessage('URL immagine non valido'),
+    .notEmpty().withMessage('L\'immagine è obbligatoria')
+    .isLength({ max: 255 }).withMessage('Percorso immagine troppo lungo'),
 
   optionalUrl('linkSito', 'Link sito non valido'),
 
@@ -218,8 +218,8 @@ const adminStaffValidators = [
 
   body('urlImg')
     .trim()
-    .notEmpty().withMessage('L\'URL immagine è obbligatorio')
-    .isURL({ require_protocol: true }).withMessage('URL immagine non valido'),
+    .notEmpty().withMessage('L\'immagine è obbligatoria')
+    .isLength({ max: 255 }).withMessage('Percorso immagine troppo lungo'),
 
   optionalUrl('linkSito', 'Link sito non valido'),
 

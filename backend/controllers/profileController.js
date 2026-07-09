@@ -208,7 +208,9 @@ const deletePicture = async (req, res) => {
 
     // Cancella il file fisico se esisteva
     if (currentPath) {
-      const fullPath = path.join(__dirname, '../../', currentPath);
+      // Rimuovi lo slash iniziale e costruisci il path relativo a backend
+      const relativePath = currentPath.startsWith('/') ? currentPath.slice(1) : currentPath;
+      const fullPath = path.join(__dirname, '..', relativePath);
       fs.unlink(fullPath, (unlinkErr) => {
         if (unlinkErr) console.error('Errore cancellazione file:', unlinkErr);
       });

@@ -244,11 +244,6 @@ export class Tab3Page implements OnInit, OnDestroy {
   async openPhotoActionSheet(): Promise<void> {
     const buttons: any[] = [
       {
-        text: 'Scatta una foto',
-        icon: 'camera',
-        handler: () => this.takePhoto('camera')
-      },
-      {
         text: 'Scegli dalla galleria',
         icon: 'images',
         handler: () => this.takePhoto('gallery')
