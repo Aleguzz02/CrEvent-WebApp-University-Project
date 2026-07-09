@@ -64,6 +64,7 @@ export class Tab2Page implements OnInit, OnDestroy {
       this.isAdmin = status;
     });
   }
+  
   ionViewWillEnter(){
     this.loadData();
   }
@@ -110,7 +111,8 @@ export class Tab2Page implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error("Impossibile connettersi al backend:", err);
-        this.toast.error("Errore durante la ricezione degli elementi")
+        //this.toast.error("Errore durante la ricezione degli elementi");
+        this.toast.error(err.message);
       }
     });
   }

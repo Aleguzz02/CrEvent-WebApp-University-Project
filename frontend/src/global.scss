@@ -259,3 +259,31 @@ ion-alert.delete-account-alert {
   color: var(--ion-color-danger);
 }
 
+// 1. Definiamo l'animazione dei colori
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// 2. Applichiamo l'animazione a tutti gli ion-content dell'app
+ion-content {
+  // Creiamo un gradiente lineare a 45 gradi con più colori
+  //--background: linear-gradient(-45deg, #349437, #1e5a49, #1b6c8a, #1d977b) no-repeat;
+  --background: url('C:\\Users\\marco\\Downloads\\voglio_questo_video_rallentato.mp4');
+  // TRUCCO: Ingrandiamo lo sfondo al 400% così l'animazione ha lo "spazio" per muoversi
+  //background-size: 400% 400% !important;
+  
+  // Colleghiamo l'animazione: dura 15 secondi, è fluida (ease) e continua all'infinito (infinite)
+  //animation: gradientMove 1s ease infinite;
+
+  // Blocchiamo lo sfondo in modo che non si muova con lo scroll del testo
+  //--background-attachment: fixed;
+}
+
