@@ -56,10 +56,18 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.authService.isAuthenticated$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(status => {
-      this.isAuthenticated = status;
-    });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(status => {
+        this.isAuthenticated = status;
+
+        if (status && !this.isAdmin) {
+          this.loadEvents();
+        }
+
+        if (!status) {
+          this.userEvents = [];
+        }
+      });
 
     this.authService.isAdmin$
     .pipe(takeUntil(this.destroy$))

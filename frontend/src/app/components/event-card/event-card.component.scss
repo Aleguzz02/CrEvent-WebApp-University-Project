@@ -1,41 +1,122 @@
+.evento-card {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto 20px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--ion-card-background, #ffffff);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.evento-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.evento-card:active {
+  transform: scale(0.98);
+}
+
+.evento-in-programma {
+  border-color: var(--ion-color-cash, rgb(28, 205, 28));
+  box-shadow: 0 0 0 2px rgba(28, 205, 28, 0.16);
+}
+
 .card-layout {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch; /* Costringe i due blocchi ad avere la stessa altezza */
+  align-items: stretch;
+  min-height: 190px;
 }
 
 .card-info {
-  flex: 1; /* Occupa tutto lo spazio a sinistra */
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
 }
 
 .card-immagine {
-  width: 120px; /* Imposta quanto vuoi che sia larga la striscia della foto */
-  flex-shrink: 0; /* Impedisce che la foto si rimpicciolisca su schermi piccoli */
+  width: 230px;
+  flex-shrink: 0;
+  background: var(--ion-color-light);
 }
 
 .card-immagine img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Mantiene le proporzioni tagliando gli eccessi */
+  object-fit: cover;
   display: block;
 }
 
-/* Riduciamo i padding standard di Ionic per un look più pulito */
 ion-card-header {
-  padding-bottom: 4px;
+  padding: 22px 24px 6px 24px;
+}
+
+ion-card-content {
+  padding: 6px 24px 20px 24px;
 }
 
 .titolo-evento {
-  font-size: 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
   line-height: 1.2;
+  color: var(--ion-color-primary, #3880ff);
 }
 
 .dettagli-riga p {
-  margin: 2px 0;
-  font-size: 14px;
+  margin: 6px 0;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--ion-text-color);
+}
+
+.dettagli-riga strong {
   color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
+.stato-evento {
+  margin: 14px 0 10px 0;
+}
+
+.stato-evento ion-badge {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.bottone-info {
+  margin-left: -8px;
+  font-weight: 600;
+  --border-radius: 18px;
+}
+
+@media (max-width: 480px) {
+  .card-layout {
+    min-height: 150px;
+  }
+
+  .card-immagine {
+    width: 130px;
+  }
+
+  ion-card-header {
+    padding: 14px 12px 4px 12px;
+  }
+
+  ion-card-content {
+    padding: 4px 12px 12px 12px;
+  }
+
+  .titolo-evento {
+    font-size: 17px;
+  }
+
+  .dettagli-riga p {
+    font-size: 14px;
+  }
 }

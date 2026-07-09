@@ -28,6 +28,22 @@ export class EventCardComponent  implements OnInit {
 
   apriDettagli(){}
 
+  get formattedDate(): string {
+    const date = this.evento?.data;
+
+    if (!date) {
+      return '';
+    }
+
+    const [year, month, day] = date.substring(0, 10).split('-');
+
+    if (!year || !month || !day) {
+      return date;
+    }
+
+    return `${day}/${month}/${year}`;
+  }
+
   get locationImage() {
     if (this.evento?.url) {
       if (

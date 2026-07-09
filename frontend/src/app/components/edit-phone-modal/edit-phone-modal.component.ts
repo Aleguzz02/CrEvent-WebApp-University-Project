@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
   IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, 
-  IonContent, IonItem, IonLabel, IonInput, IonNote 
+  IonContent, IonItem, IonLabel, IonInput, IonNote, IonText
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
 
@@ -24,33 +24,44 @@ import { ModalController } from '@ionic/angular/standalone';
     IonItem,
     IonLabel,
     IonInput,
-    IonNote
+    IonNote,
+    IonText
   ]
 })
 export class EditPhoneModalComponent implements OnInit {
-  // Dato ricevuto dalla pagina chiamante
+  @Input()
   phone: string = '';
+
+  submitted = false;
 
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {}
 
 
-  // Chiudi il modal senza salvare
   dismiss() {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
+  get cleanPhone(): string {
+    return this.phone.replace(/\D/g, '').slice(0, 10);
+  }
 
-  // Salva e chiudi restituendo il nuovo telefono
+  get validPhone(): boolean {
+    return /^[0-9]{10}$/.test(this.cleanPhone);
+  }
+
+  formatPhone(event: any) {
+    this.phone = String(event.detail?.value ?? '').replace(/\D/g, '').slice(0, 10);
+  }
+
   save() {
-    // Validazione base (esattamente 10 cifre)
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(this.phone)) {
-      // Mostra errore
-      this.modalCtrl.dismiss({ error: 'Il telefono deve contenere esattamente 10 cifre' }, 'error');
+    this.submitted = true;
+
+    if (!this.validPhone) {
       return;
     }
-    this.modalCtrl.dismiss(this.phone, 'save');
+
+    this.modalCtrl.dismiss(this.cleanPhone, 'save');
   }
 }

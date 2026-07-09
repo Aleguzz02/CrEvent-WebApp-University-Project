@@ -1,6 +1,5 @@
-<ion-card class="evento-card">
+<ion-card class="evento-card" [class.evento-in-programma]="evento?.svolto !== 1">
   <div class="card-layout">
-    
     <div class="card-info">
       <ion-card-header>
         <ion-card-title class="titolo-evento">{{ evento?.nome }}</ion-card-title>
@@ -8,27 +7,24 @@
 
       <ion-card-content>
         <div class="dettagli-riga">
-          <p><strong>Data:</strong> {{ evento?.data }}</p>
+          <p><strong>Data:</strong> {{ formattedDate }}</p>
           <p><strong>Invitati:</strong> {{ evento?.invitati }}</p>
         </div>
-        
-        <div class="stato-evento" style="margin-top: 8px; margin-bottom: 8px;">
+
+        <div class="stato-evento">
           <ion-badge [color]="evento?.svolto === 1 ? 'medium' : 'success'">
             {{ evento?.svolto === 1 ? 'Concluso' : 'In Programma' }}
           </ion-badge>
         </div>
 
-        <ion-button fill="clear" size="small" (click)="apriDettagli()" style="margin-left: -8px;">
+        <ion-button class="bottone-info" fill="clear" size="small" (click)="apriDettagli()">
           Gestisci / Info
         </ion-button>
       </ion-card-content>
     </div>
 
     <div class="card-immagine">
-      <img 
-        [src]="locationImage" 
-        alt="Foto della location" />
+      <img [src]="locationImage" alt="Foto della location" />
     </div>
-
   </div>
 </ion-card>

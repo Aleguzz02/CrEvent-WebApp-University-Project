@@ -149,6 +149,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   async openEditPhoneModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: EditPhoneModalComponent,
+      cssClass: 'profile-phone-modal',
       componentProps: {
         phone: this.profile?.telefono || ''
       }
@@ -198,6 +199,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   async openPasswordModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: ChangePasswordModalComponent,
+      cssClass: 'profile-password-modal',
     });
     await modal.present();
 
@@ -385,6 +387,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   async startDeleteAccount(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Conferma identità',
+      cssClass: 'delete-account-alert',
       message: 'Inserisci la tua password per procedere con l\'eliminazione dell\'account.',
       inputs: [
         {
@@ -423,7 +426,8 @@ export class Tab3Page implements OnInit, OnDestroy {
    */
   async confirmDeleteAccount(password: string): Promise<void> {
     const alert = await this.alertCtrl.create({
-      header: '⚠️ Eliminazione definitiva',
+      cssClass: ['delete-account-alert', 'delete-account-alert-danger'],
+      header: 'Eliminazione definitiva',
       message: 'Questa operazione è irreversibile. Tutti i tuoi dati verranno cancellati permanentemente.',
       buttons: [
         {

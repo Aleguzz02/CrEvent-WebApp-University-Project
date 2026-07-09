@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonButton,
-  IonContent, IonItem, IonLabel, IonInput, IonNote
+  IonContent, IonItem, IonLabel, IonInput, IonNote, IonText
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
 
@@ -24,13 +24,15 @@ import { ModalController } from '@ionic/angular/standalone';
     IonItem,
     IonLabel,
     IonInput,
-    IonNote
+    IonNote,
+    IonText
   ]
 })
 export class ChangePasswordModalComponent implements OnInit {
   currentPassword = '';
   newPassword = '';
   confirmPassword = '';
+  submitted = false;
 
   constructor(private modalCtrl: ModalController) {}
 
@@ -40,26 +42,28 @@ export class ChangePasswordModalComponent implements OnInit {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
+  get validNewPassword(): boolean {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.newPassword);
+  }
+
+  get passwordsMatch(): boolean {
+    return this.newPassword === this.confirmPassword;
+  }
+
+  get validForm(): boolean {
+    return this.currentPassword.length > 0
+      && this.validNewPassword
+      && this.confirmPassword.length > 0
+      && this.passwordsMatch;
+  }
+
   save() {
-    // Validazione nuova password
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    if (!passwordRegex.test(this.newPassword)) {
-      this.modalCtrl.dismiss(
-        { error: 'La password deve avere almeno 8 caratteri, 1 maiuscola, 1 minuscola e 1 numero' },
-        'error'
-      );
+    this.submitted = true;
+
+    if (!this.validForm) {
       return;
     }
 
-    if (this.newPassword !== this.confirmPassword) {
-      this.modalCtrl.dismiss(
-        { error: 'Le password non coincidono' },
-        'error'
-      );
-      return;
-    }
-
-    // Restituisci i dati alla pagina chiamante
     this.modalCtrl.dismiss(
       {
         currentPassword: this.currentPassword,
