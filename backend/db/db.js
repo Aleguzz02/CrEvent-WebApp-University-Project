@@ -62,8 +62,8 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS Otp (
             email TEXT PRIMARY KEY,
-            otp TEXT,
-            dataOra TEXT,
+            otp TEXT NOT NULL,
+            dataOra TEXT NOT NULL,
             FOREIGN KEY (email) REFERENCES User(email) ON DELETE CASCADE
         )
         `);

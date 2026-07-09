@@ -13,6 +13,12 @@
 <ion-content class="ion-padding">
   <app-login-form #loginFormRef (formSubmit)="handleFormSubmit($event)"></app-login-form>
 
+  <div class="forgot-password-container ion-text-center ion-padding-top">
+    <ion-button fill="clear" color="medium" size="small" (click)="openForgotPasswordModal()">
+      Hai dimenticato la password?
+    </ion-button>
+  </div>
+
   <ion-button expand="block" (click)="loginFormRef.submitForm()" [strong]="true">Conferma</ion-button>
 
   <div class="ion-padding-top ion-margin-top" style="border-top: 1px solid var(--ion-color-light);">
