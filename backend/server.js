@@ -12,6 +12,7 @@ const browseRoutes = require('./routes/browseRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 app.use(cors({
   origin: "*", 
@@ -24,7 +25,8 @@ app.use(cors());
 app.use('/api', authRoutes);
 app.use('/api', profileRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api', uploadRoutes);
 
 //Rotte per immagini pubbliche
 app.use('/resource', express.static(path.join(__dirname, 'public/resource')));

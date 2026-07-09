@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { catchError, switchMap, map, tap } from 'rxjs/operators';     // Reactive eXtensions for JavaScript per flusso dati async
+import {
+  RequestOtpRequest,
+  RequestOtpResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse
+} from '../interfaces/auth.interface';
 
 export interface CurrentUser {
   email: string;
@@ -85,6 +93,33 @@ export class AuthService {
       catchError((error: HttpErrorResponse) => {
         let errorMessage = error.error?.message || "";
         return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  requestOtp(data: RequestOtpRequest): Observable<RequestOtpResponse> {
+    return this.http.post<RequestOtpResponse>('/api/request-otp', data).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const message = error.error?.message || 'Errore nella richiesta OTP';
+        return throwError(() => new Error(message));
+      })
+    );
+  }
+
+  verifyOtp(data: VerifyOtpRequest): Observable<VerifyOtpResponse> {
+    return this.http.post<VerifyOtpResponse>('/api/verify-otp', data).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const message = error.error?.message || 'Errore nella verifica OTP';
+        return throwError(() => new Error(message));
+      })
+    );
+  }
+
+  resetPassword(data: ResetPasswordRequest): Observable<ResetPasswordResponse> {
+    return this.http.post<ResetPasswordResponse>('/api/reset-password', data).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const message = error.error?.message || 'Errore nel reset della password';
+        return throwError(() => new Error(message));
       })
     );
   }

@@ -1,25 +1,137 @@
 .admin-modal-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 
-  input,
-  textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--ion-color-medium);
-    border-radius: 4px;
-    background: var(--ion-background-color);
-    color: var(--ion-text-color);
+  ion-item {
+    --padding-start: 0;
   }
 
-  textarea {
-    min-height: 90px;
+  .form-error {
+    margin: 8px 0;
+    text-align: center;
   }
 }
 
-.form-error {
-  color: var(--ion-color-danger);
-  margin: 0;
-  font-size: 14px;
+// Stili per la sezione upload
+.upload-section {
+  margin: 8px 0;
+
+  .upload-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+  }
+
+  .upload-area {
+    border: 2px dashed var(--ion-color-medium);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.05);
+    }
+
+    .upload-placeholder {
+      color: var(--ion-color-medium);
+
+      ion-icon {
+        font-size: 48px;
+        margin-bottom: 8px;
+      }
+
+      p {
+        margin: 4px 0;
+        font-size: 14px;
+      }
+
+      .upload-hint {
+        display: block;
+        font-size: 12px;
+      }
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+
+      ion-img {
+        border-radius: 8px;
+        max-height: 200px;
+        object-fit: cover;
+      }
+
+      .remove-image {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        --padding-start: 4px;
+        --padding-end: 4px;
+        --padding-top: 4px;
+        --padding-bottom: 4px;
+        --min-height: 28px;
+        background: var(--ion-color-danger);
+        color: white;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .upload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+
+      p {
+        margin-top: 8px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .upload-status {
+    display: block;
+    margin-top: 8px;
+    text-align: center;
+
+    ion-icon {
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.account-section {
+  margin: 16px 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--ion-color-light);
+
+  .section-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+  }
 }

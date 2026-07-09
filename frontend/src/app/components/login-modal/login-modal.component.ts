@@ -1,11 +1,11 @@
 import { Component, inject, OnInit} from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonText,
-  ToastController
+  ToastController, ModalController
  } from '@ionic/angular/standalone';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { AuthService } from '../../services/auth.service';
-import { ModalController } from '@ionic/angular/standalone';
 import { SignupModalComponent } from '../signup-modal/signup-modal.component';
+import { ForgotPasswordModalComponent } from '../forgot-password-modal/forgot-password-modal.component';
 
 @Component({
   selector: 'app-login-modal',
@@ -72,4 +72,18 @@ export class LoginModalComponent  implements OnInit {
       await modal.present();
     }
 
+    async openForgotPasswordModal() {
+      const modal = await this.modalCtrl.create({
+        component: ForgotPasswordModalComponent,
+      });
+      await modal.present();
+
+      const result = await modal.onDidDismiss();
+      if (result.role === 'confirm') {
+      // L'utente ha resettato la password con successo.
+      // Possiamo chiudere anche il login modal? Decidiamo di lasciarlo aperto.
+      // Opzionale: chiudere entrambi.
+      // this.closeLoginModal();
+      }
+    }
 }

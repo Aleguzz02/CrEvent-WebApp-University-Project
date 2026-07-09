@@ -78,23 +78,34 @@ exports.deleteUser = async (req, res) => {
       });
     }
 
-    const result = user.tipoUtente === 2 && user.idStaff
-      ? await Staff.remStaff(user.idStaff)
-      : await User.deleteUser(email);
+    // Se l'utente è staff o location, elimina la risorsa associata
+    let result;
+    if (user.tipoUtente === 2 && user.idStaff) {
+      // Staff: elimina staff + utente
+      result = await Staff.remStaff(user.idStaff);
+    } else if (user.tipoUtente === 2 && user.idLocation) {
+      // Location: elimina location + utente
+      result = await Location.remLoc(user.idLocation);
+    } else {
+      // Utente normale o staff/location senza id (non dovrebbe succedere)
+      result = await User.deleteUser(email);
+    }
 
     res.status(200).json({
       success: true,
-      message: user.tipoUtente === 2 && user.idStaff
-        ? "Utente staff e staff collegato eliminati con successo"
+      message: user.tipoUtente === 2 && (user.idStaff || user.idLocation)
+        ? "Utente e risorsa collegata eliminati con successo"
         : "Utente eliminato con successo",
       changes: result.changes,
       deletedUsers: result.deletedUsers
     });
   } catch (err) {
-    if (err.message === "futureEventsForStaff") {
+    if (err.message === "futureEventsForStaff" || err.message === "futureEventsForLocation") {
       return res.status(409).json({
         success: false,
-        message: "Non puoi eliminare un utente staff collegato a uno staff coinvolto in eventi futuri"
+        message: err.message === "futureEventsForStaff"
+          ? "Non puoi eliminare un utente staff collegato a uno staff coinvolto in eventi futuri"
+          : "Non puoi eliminare un utente location collegato a una location con eventi futuri"
       });
     }
 
@@ -171,7 +182,11 @@ exports.createLocation = async (req, res) => {
       urlImg,
       linkSito,
       lat,
-      lng
+      lng,
+      // Nuovi campi
+      accountEmail,
+      gestoreNome,
+      gestoreCognome
     } = req.body;
 
     const parsedCapienza = toPositiveNumber(capienza);
@@ -179,6 +194,7 @@ exports.createLocation = async (req, res) => {
     const parsedLat = lat === undefined || lat === null || lat === "" ? null : Number(lat);
     const parsedLng = lng === undefined || lng === null || lng === "" ? null : Number(lng);
 
+    // Validazioni esistenti per la location
     if (!nome || !indirizzo || !citta || !descrizione || !urlImg || !parsedCapienza || !parsedCosto || !isValidDate(dataInizio) || !isValidDate(dataFine)) {
       return res.status(400).json({
         success: false,
@@ -207,6 +223,39 @@ exports.createLocation = async (req, res) => {
       });
     }
 
+    // --- VALIDAZIONI PER L'ACCOUNT ---
+    if (!accountEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "L'email dell'account è obbligatoria"
+      });
+    }
+
+    if (!isValidEmail(accountEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: "Email account non valida"
+      });
+    }
+
+    // Verifica che l'email non sia già usata
+    const existingUser = await User.findByEmail(accountEmail.trim());
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Esiste già un utente con questa email"
+      });
+    }
+
+    // Genera password temporanea
+    const temporaryPassword = generateTemporaryPassword();
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
+
+    // Determina nome e cognome del gestore (con default)
+    const gestoreNomeFinal = gestoreNome ? gestoreNome.trim() : "Gestore";
+    const gestoreCognomeFinal = gestoreCognome ? gestoreCognome.trim() : nome.trim();
+
+    // Crea la location con l'account associato
     const result = await Location.addLoc(
       nome.trim(),
       indirizzo.trim(),
@@ -219,14 +268,47 @@ exports.createLocation = async (req, res) => {
       urlImg.trim(),
       normalizeOptionalText(linkSito),
       parsedLat,
-      parsedLng
+      parsedLng,
+      {
+        email: accountEmail.trim(),
+        password: hashedPassword,
+        nome: gestoreNomeFinal,
+        cognome: gestoreCognomeFinal,
+        telefono: "0000000000",
+        dataNascita: "2000-01-01"
+      }
     );
+
+    // Invia email con credenziali
+    try {
+      await SMTP.sendEmail({
+        to: accountEmail.trim(),
+        subject: "Account location CrEvent",
+        text: `Ciao ${gestoreNomeFinal} ${gestoreCognomeFinal}, il tuo account per la location "${nome.trim()}" è stato creato.\n\nEmail: ${accountEmail.trim()}\nPassword temporanea: ${temporaryPassword}\n\nAccedi e modifica la password dal tuo profilo.`,
+        html: `<h1>Account location CrEvent</h1>
+          <p>Ciao ${gestoreNomeFinal} ${gestoreCognomeFinal}, il tuo account per la location <strong>"${nome.trim()}"</strong> è stato creato.</p>
+          <p><strong>Email:</strong> ${accountEmail.trim()}</p>
+          <p><strong>Password temporanea:</strong> ${temporaryPassword}</p>
+          <p>Accedi e modifica la password dal tuo profilo.</p>`
+      });
+    } catch (emailErr) {
+      if (emailErr.code === "emailError") {
+        return res.status(201).json({
+          success: true,
+          message: "Location creata con successo. Email con password temporanea non inviata",
+          emailError: true,
+          data: result
+        });
+      }
+      throw emailErr;
+    }
 
     res.status(201).json({
       success: true,
       message: "Location creata con successo",
       data: result
     });
+
   } catch (err) {
     console.error("Errore in createLocation admin:", err);
     res.status(500).json({
@@ -259,7 +341,8 @@ exports.deleteLocation = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Location eliminata con successo",
-      changes: result.changes
+      changes: result.changes,
+      deletedUsers: result.deletedUsers
     });
   } catch (err) {
     if (err.message === "futureEventsForLocation") {

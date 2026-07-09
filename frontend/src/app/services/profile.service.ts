@@ -93,37 +93,37 @@ export class ProfileService {
       );
   }
 
-  /**
-   * Carica foto profilo
-   */
-  uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
-    this.loadingSubject.next(true);
-    const formData = new FormData();
-    formData.append('file', file);
+/**
+ * Carica foto profilo
+ */
+uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
+  this.loadingSubject.next(true);
+  const formData = new FormData();
+  formData.append('file', file);
 
-    return this.http.post<ApiResponse<ProfilePictureResponse>>(
-      `${this.apiUrl}/profile/foto`,
-      formData
-    ).pipe(
-      tap(response => {
-        this.loadingSubject.next(false);
-        if (response.success && response.data) {
-          // Aggiorna localmente il profilo
-          const current = this.profileSubject.value;
-          if (current) {
-            this.profileSubject.next({
-              ...current,
-              urlFotoProfilo: response.data.urlFotoProfilo
-            });
-          }
+  // Aggiungi ?type=profile come query parameter
+  return this.http.post<ApiResponse<ProfilePictureResponse>>(
+    `${this.apiUrl}/profile/foto?type=profile`,  // <-- MODIFICATO
+    formData
+  ).pipe(
+    tap(response => {
+      this.loadingSubject.next(false);
+      if (response.success && response.data) {
+        const current = this.profileSubject.value;
+        if (current) {
+          this.profileSubject.next({
+            ...current,
+            urlFotoProfilo: response.data.urlFotoProfilo
+          });
         }
-      }),
-      catchError(error => {
-        this.loadingSubject.next(false);
-        return throwError(() => error);
-      })
-    );
-  }
+      }
+    }),
+    catchError(error => {
+      this.loadingSubject.next(false);
+      return throwError(() => error);
+    })
+  );
+}
 
   /**
    * Rimuovi foto profilo

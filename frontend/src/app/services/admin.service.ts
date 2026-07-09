@@ -49,6 +49,9 @@ export interface CreateLocationRequest {
   linkSito?: string | null;
   lat?: number | null;
   lng?: number | null;
+  accountEmail: string;
+  gestoreNome?: string | null;
+  gestoreCognome?: string | null;
 }
 
 export interface CreateStaffRequest {

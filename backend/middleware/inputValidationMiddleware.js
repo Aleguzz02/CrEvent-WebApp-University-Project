@@ -153,8 +153,8 @@ const adminLocationValidators = [
 
   body('urlImg')
     .trim()
-    .notEmpty().withMessage('L\'URL immagine è obbligatorio')
-    .isURL({ require_protocol: true }).withMessage('URL immagine non valido'),
+    .notEmpty().withMessage('L\'immagine è obbligatoria')
+    .isLength({ max: 255 }).withMessage('Percorso immagine troppo lungo'),
 
   optionalUrl('linkSito', 'Link sito non valido'),
 
@@ -166,7 +166,26 @@ const adminLocationValidators = [
   body('lng')
     .optional({ values: 'falsy' })
     .isFloat({ min: -180, max: 180 }).withMessage('Longitudine non valida')
-    .toFloat()
+    .toFloat(),
+
+  // NUOVI CAMPI per l'account
+  body('accountEmail')
+    .trim()
+    .notEmpty().withMessage('L\'email account è obbligatoria')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .isEmail().withMessage('Email account non valida'),
+
+  body('gestoreNome')
+    .trim()
+    .optional({ values: 'falsy' })
+    .matches(/^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/).withMessage('Il nome può contenere solo lettere, spazi, apostrofi e trattini')
+    .isLength({ max: 80 }).withMessage('Il nome è troppo lungo'),
+
+  body('gestoreCognome')
+    .trim()
+    .optional({ values: 'falsy' })
+    .matches(/^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/).withMessage('Il cognome può contenere solo lettere, spazi, apostrofi e trattini')
+    .isLength({ max: 80 }).withMessage('Il cognome è troppo lungo'),
 ];
 
 const adminStaffValidators = [
@@ -218,8 +237,8 @@ const adminStaffValidators = [
 
   body('urlImg')
     .trim()
-    .notEmpty().withMessage('L\'URL immagine è obbligatorio')
-    .isURL({ require_protocol: true }).withMessage('URL immagine non valido'),
+    .notEmpty().withMessage('L\'immagine è obbligatoria')
+    .isLength({ max: 255 }).withMessage('Percorso immagine troppo lungo'),
 
   optionalUrl('linkSito', 'Link sito non valido'),
 
@@ -230,9 +249,62 @@ const adminStaffValidators = [
     .isEmail().withMessage('Email account staff non valida')
 ];
 
+// Validatore per richiesta OTP
+const requestOtpValidators = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('L\'email è obbligatoria')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .isEmail().withMessage('Email non valida')
+];
+
+// Validatore per verifica OTP
+const verifyOtpValidators = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('L\'email è obbligatoria')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .isEmail().withMessage('Email non valida'),
+  
+  body('otp')
+    .trim()
+    .notEmpty().withMessage('L\'OTP è obbligatorio')
+    .isLength({ min: 6, max: 6 }).withMessage('OTP deve essere di 6 cifre')
+    .isNumeric().withMessage('OTP deve contenere solo numeri')
+];
+
+// Validatore per reset password
+const resetPasswordValidators = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('L\'email è obbligatoria')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .isEmail().withMessage('Email non valida'),
+  
+  body('otp')
+    .trim()
+    .notEmpty().withMessage('L\'OTP è obbligatorio')
+    .isLength({ min: 6, max: 6 }).withMessage('OTP deve essere di 6 cifre')
+    .isNumeric().withMessage('OTP deve contenere solo numeri'),
+  
+  body('newPassword')
+    .notEmpty().withMessage('La nuova password è obbligatoria')
+    .isLength({ min: 8 }).withMessage('La password deve avere almeno 8 caratteri')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('La password deve contenere almeno una lettera maiuscola, una minuscola e un numero'),
+  
+  body('confirmPassword')
+    .notEmpty().withMessage('Conferma la password')
+    .custom((value, { req }) => value === req.body.newPassword)
+    .withMessage('Le password non coincidono')
+];
+
 module.exports = {
   signupValidators,
   loginValidators,
   adminLocationValidators,
-  adminStaffValidators
+  adminStaffValidators,
+  requestOtpValidators,
+  verifyOtpValidators,
+  resetPasswordValidators
 };
