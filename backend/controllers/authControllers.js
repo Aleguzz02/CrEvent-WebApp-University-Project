@@ -134,8 +134,9 @@ exports.requestOtp = async (req, res) => {
     }
 
     const otp = generateOtp();
-    console.log(`OTP generato per ${email}: ${otp}`); // debug
+    console.log(`OTP generato per ${email}: ${otp}`);
 
+    await OtpModel.cleanExpired();
     await OtpModel.upsert(email, otp);
 
     await SMTP.sendEmail({

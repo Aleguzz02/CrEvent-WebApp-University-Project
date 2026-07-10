@@ -3,13 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const requireAdmin = require('./requireAdmin');
 
-/**
- * Middleware di upload dinamico per immagini
- * Supporta i tipi: 'profile', 'location', 'staff'
- * 
- * Usa req.body.type per determinare la sottocartella di destinazione
- * Esempio: { type: 'location' } => salva in backend/uploads/location/
- */
 const requireAdminForResourceImage = (req, res, next) => {
   const urlType = typeof req.query.url === 'string'
     ? req.query.url.replace(/\\/g, '/').match(/^\/uploads\/([^/]+)\//)?.[1]
@@ -24,9 +17,7 @@ const requireAdminForResourceImage = (req, res, next) => {
 };
 
 const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff']) => {
-  // Validazione del tipo
   const validateType = (req) => {
-    // Legge da query string invece che da body
     const type = req.query.type;
     if (!type) {
       throw new Error('Il campo "type" è obbligatorio come parametro query (profile, location, staff)');
@@ -37,13 +28,11 @@ const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff'])
     return type;
   };
 
-  // Configurazione storage
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       try {
         const type = validateType(req);
         const uploadDir = path.join(__dirname, '../uploads', type);
-        // Crea la cartella se non esiste
         if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -64,7 +53,6 @@ const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff'])
     }
   });
 
-  // Filtro: solo immagini
   const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -75,7 +63,7 @@ const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff'])
 
   return multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
   });
 };

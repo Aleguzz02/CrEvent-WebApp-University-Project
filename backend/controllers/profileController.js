@@ -195,7 +195,6 @@ const deletePicture = async (req, res) => {
     }
 
     if (currentPath) {
-      // Rimuovi lo slash iniziale e costruisci il path relativo a backend
       const relativePath = currentPath.startsWith('/') ? currentPath.slice(1) : currentPath;
       const fullPath = path.join(__dirname, '..', relativePath);
       fs.unlink(fullPath, (unlinkErr) => {
