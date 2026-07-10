@@ -1,117 +1,103 @@
-<ion-modal
-  class="staff-event-detail-modal"
-  [isOpen]="selectedEvent !== null"
-  (didDismiss)="closeEventModal()">
-  <ng-template>
-    @if (selectedEvent; as card) {
-      @let event = card.event;
+@let event = eventCard.event;
 
-      <ion-header>
-        <ion-toolbar mode="ios">
-          <ion-buttons slot="start">
-            <ion-button fill="clear" (click)="closeEventModal()">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-          <ion-title>{{ event.nome }}</ion-title>
-        </ion-toolbar>
-      </ion-header>
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="close()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ event.nome }}</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-      <ion-content class="ion-padding">
-        <div class="event-modal-content">
-          <div class="modal-summary">
-            <div class="date-pill modal-date">
-              <span>{{ card.day }}</span>
-              <small>{{ card.month }}</small>
-            </div>
+<ion-content class="ion-padding">
+  <div class="event-modal-content">
+    <div class="modal-summary">
+      <div class="date-pill modal-date">
+        <span>{{ day }}</span>
+        <small>{{ month }}</small>
+      </div>
 
-            <div>
-              <h2>{{ event.nome }}</h2>
-              <p>{{ card.formattedDate }}</p>
-            </div>
+      <div>
+        <h2>{{ event.nome }}</h2>
+        <p>{{ formattedDate }}</p>
+      </div>
 
-            <ion-badge [color]="event.svolto === 1 ? 'medium' : 'success'">
-              {{ event.svolto === 1 ? 'Concluso' : 'In programma' }}
-            </ion-badge>
-          </div>
+      <ion-badge [color]="event.svolto === 1 ? 'medium' : 'success'">
+        {{ event.svolto === 1 ? 'Concluso' : 'In programma' }}
+      </ion-badge>
+    </div>
 
-          @if (card.staff.length > 0) {
-            <section class="modal-section">
-              <h3>Staff</h3>
-              <div class="modal-staff-list">
-                @for (staff of card.staff; track staff.id ?? staff.nome) {
-                  <article class="modal-staff-row">
-                    <div>
-                      <strong>{{ staff.nome }}</strong>
-                      <span>{{ staff.ruolo }}</span>
-                    </div>
-                  </article>
-                }
+    @if (eventCard.staff.length > 0) {
+      <section class="modal-section">
+        <h3>Staff</h3>
+        <div class="modal-staff-list">
+          @for (staff of eventCard.staff; track staff.id ?? staff.nome) {
+            <article class="modal-staff-row">
+              <div>
+                <strong>{{ staff.nome }}</strong>
+                <span>{{ staff.ruolo }}</span>
               </div>
-            </section>
+            </article>
           }
-
-          <section class="modal-section">
-            <h3>Cliente</h3>
-
-            <div class="modal-client">
-              <div class="client-avatar">
-                @if (card.profileImage; as image) {
-                  <img [src]="image" alt="Foto profilo cliente">
-                } @else {
-                  <span>{{ card.clientInitials }}</span>
-                }
-              </div>
-
-              <div>
-                <strong>{{ card.clientName }}</strong>
-                @if (event.emailCliente.trim()) {
-                  <span>
-                    <ion-icon name="mail-outline"></ion-icon>
-                    {{ event.emailCliente }}
-                  </span>
-                }
-                @if (event.telefonoCliente.trim()) {
-                  <span>
-                    <ion-icon name="call-outline"></ion-icon>
-                    {{ event.telefonoCliente }}
-                  </span>
-                }
-              </div>
-            </div>
-          </section>
-
-          <section class="modal-section">
-            <h3>Evento</h3>
-
-            <div class="modal-detail-grid">
-              <div>
-                <span>Invitati</span>
-                <strong>{{ event.invitati }}</strong>
-              </div>
-
-              @if (card.locationLabel; as location) {
-                <div>
-                  <span>Location</span>
-                  <strong>{{ location }}</strong>
-                </div>
-              }
-
-              @if (event.customLocation === 1) {
-                <div>
-                  <span>Indirizzo</span>
-                  <strong>Location personalizzata</strong>
-                </div>
-              } @else if (event.indirizzoLocation?.trim(); as address) {
-                <div>
-                  <span>Indirizzo</span>
-                  <strong>{{ address }}</strong>
-                </div>
-              }
-            </div>
-          </section>
         </div>
-      </ion-content>
+      </section>
     }
-  </ng-template>
-</ion-modal>
+
+    <section class="modal-section">
+      <h3>Cliente</h3>
+
+      <div class="modal-client">
+        <div class="client-avatar">
+          @if (profileImage; as image) {
+            <img [src]="image" alt="Foto profilo cliente">
+          } @else {
+            <span>{{ clientInitials }}</span>
+          }
+        </div>
+
+        <div>
+          <strong>{{ clientName }}</strong>
+          @if (event.emailCliente.trim()) {
+            <span>
+              <ion-icon name="mail-outline"></ion-icon>
+              {{ event.emailCliente }}
+            </span>
+          }
+          @if (event.telefonoCliente.trim()) {
+            <span>
+              <ion-icon name="call-outline"></ion-icon>
+              {{ event.telefonoCliente }}
+            </span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="modal-section">
+      <h3>Evento</h3>
+
+      <div class="modal-detail-grid">
+        <div>
+          <span>Invitati</span>
+          <strong>{{ event.invitati }}</strong>
+        </div>
+
+        @if (locationLabel; as location) {
+          <div>
+            <span>Location</span>
+            <strong>{{ location }}</strong>
+          </div>
+        }
+
+        @if (locationAddress; as address) {
+          <div>
+            <span>Indirizzo</span>
+            <strong>{{ address }}</strong>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</ion-content>

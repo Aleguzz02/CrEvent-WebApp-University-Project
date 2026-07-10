@@ -6,6 +6,7 @@ import {
   IonCardContent,
   IonIcon,
   IonSkeletonText,
+  ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -57,15 +58,14 @@ type LocationDetails = {
     IonCard,
     IonCardContent,
     IonIcon,
-    IonSkeletonText,
-    StaffEventInfoModalComponent
+    IonSkeletonText
   ]
 })
 export class StaffEventInfoCardComponent implements OnInit {
   private readonly eventService = inject(EventService);
+  private readonly modalController = inject(ModalController);
 
   eventCards: StaffEventCard[] = [];
-  selectedEvent: StaffEventCard | null = null;
   loading = true;
   errorMessage = '';
   readonly skeletonRows = [0, 1];
@@ -109,12 +109,14 @@ export class StaffEventInfoCardComponent implements OnInit {
     });
   }
 
-  openEventModal(card: StaffEventCard): void {
-    this.selectedEvent = card;
-  }
+  async openEventModal(card: StaffEventCard): Promise<void> {
+    const modal = await this.modalController.create({
+      component: StaffEventInfoModalComponent,
+      componentProps: { eventCard: card },
+      cssClass: 'staff-event-detail-modal'
+    });
 
-  closeEventModal(): void {
-    this.selectedEvent = null;
+    await modal.present();
   }
 
   handleCardKeydown(event: KeyboardEvent, card: StaffEventCard): void {
@@ -123,7 +125,7 @@ export class StaffEventInfoCardComponent implements OnInit {
     }
 
     event.preventDefault();
-    this.openEventModal(card);
+    void this.openEventModal(card);
   }
 
   private groupEventsById(events: StaffEventInfo[]): StaffEventCard[] {

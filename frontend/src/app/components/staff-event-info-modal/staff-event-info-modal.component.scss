@@ -1,14 +1,8 @@
-.staff-event-detail-modal {
-  --height: min(720px, 88vh);
-  --width: min(680px, calc(100vw - 28px));
-  --border-radius: 14px;
-}
-
-.staff-event-detail-modal ion-toolbar {
+ion-toolbar {
   --min-height: 64px;
 }
 
-.staff-event-detail-modal ion-title {
+ion-title {
   font-family: var(--font-title);
   font-size: 18px;
   font-weight: 800;

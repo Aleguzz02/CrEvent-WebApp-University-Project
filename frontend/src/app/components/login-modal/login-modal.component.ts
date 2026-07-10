@@ -63,7 +63,6 @@ export class LoginModalComponent  implements OnInit {
   }
 
   async openSignupModal() {
-    // Chiudi il modal di login
     await this.closeLoginModal();
 
     const modal = await this.modalCtrl.create({
@@ -80,10 +79,7 @@ export class LoginModalComponent  implements OnInit {
 
       const result = await modal.onDidDismiss();
       if (result.role === 'confirm') {
-      // L'utente ha resettato la password con successo.
-      // Possiamo chiudere anche il login modal? Decidiamo di lasciarlo aperto.
-      // Opzionale: chiudere entrambi.
-      // this.closeLoginModal();
+    
       }
     }
 }

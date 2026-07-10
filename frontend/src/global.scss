@@ -72,14 +72,25 @@ h3 {
 }
 
 .resource-detail-modal {
-  --width: 90%;
-  --height: 88%;
+  --width: min(720px, calc(100vw - 28px));
+  --height: min(760px, 88vh);
+  --max-width: calc(100% - 28px);
+  --max-height: 92%;
+  --border-radius: 16px;
+  --background: transparent;
+}
 
-  //--max-width: 900px;
-  //--max-height: 850px;
+.resource-detail-modal::part(content) {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 11, 13, 0.88);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
 
-  --border-radius: 50px;
-
+.resource-detail-modal .ion-page {
+  position: relative;
+  contain: content;
 }
 
 .create-modals{
@@ -113,10 +124,14 @@ h3 {
 
 .event-detail-modal-sheet {
   --border-radius: 30px;
-  --width: 920px;
+  --width: min(100vw, 1000px);
   --height: 86%;
   --max-width: calc(100% - 28px);
   --max-height: 92%;
+}
+.event-detail-modal-sheet::part(content){
+ --background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
 }
 
 .checkout-modal-sheet .ion-page {
@@ -132,11 +147,22 @@ h3 {
   --max-height: 90%;
 }
 
+.profile-phone-modal::part(content) {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+
 .profile-password-modal {
   --border-radius: 30px;
   --width: 500px;
   --height: 560px;
   --max-height: 90%;
+}
+
+.profile-password-modal::part(content) {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .profile-phone-modal .ion-page,
@@ -146,6 +172,14 @@ h3 {
 }
 
 @media(max-width: 600px){
+  .resource-detail-modal {
+    --width: 100%;
+    --height: 100%;
+    --max-width: 100%;
+    --max-height: 100%;
+    --border-radius: 0;
+  }
+
   .create-modals{
     --width: 100%;
     --height: 100%;
@@ -176,10 +210,10 @@ h3 {
 
 app-tab1, app-tab2, app-tab3 {
   display: block; 
-  animation: tabFadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  animation: tabFadeIn 0.3s ease forwards;
 }
 
-/* Definiamo i fotogrammi chiave (Keyframes) */
+
 @keyframes tabFadeIn {
   from {
     opacity: 0;
@@ -195,7 +229,6 @@ ion-toast.app-toast {
   --border-radius: 16px;
   --box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
   --color: white;
-  //--max-width: 420px;
   --width: calc(100% - 32px);
   --white-space: normal;
 }
@@ -225,15 +258,16 @@ ion-toast.app-toast-info {
 ion-alert.delete-account-alert {
   --width: 420px;
   --max-width: calc(100% - 32px);
-  --border-radius: 22px;
+  
   --background: var(--ion-card-background, #ffffff);
   --backdrop-opacity: 0.45;
-}
-
-.delete-account-alert .alert-wrapper {
   background: rgba(0, 0, 0, 0.58);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+}
+
+.delete-account-alert .alert-wrapper {
+  
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -296,19 +330,6 @@ ion-alert.delete-account-alert {
 
 .delete-account-alert .alert-button-role-destructive {
   color: var(--ion-color-danger);
-}
-
-// 1. Definiamo l'animazione dei colori
-@keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
 }
 
 html,
@@ -381,4 +402,14 @@ ion-tab-bar {
   --color: rgba(255, 255, 255, 0.72);
   --color-selected: #ffffff;
   border-top: 1px solid var(--app-glass-border);
+}
+
+ion-modal.staff-event-detail-modal {
+  --height: min(720px, 88vh);
+  --width: min(680px, calc(100vw - 28px));
+  --border-radius: 14px;
+}
+
+ion-modal.staff-event-detail-modal::part(content) {
+  backdrop-filter: blur(10px);
 }

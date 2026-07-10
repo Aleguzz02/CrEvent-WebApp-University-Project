@@ -34,7 +34,6 @@ export class SignupModalComponent  implements OnInit {
 
   handleFormSubmit(formData: any) {
     if (formData) {
-      // Registrazione
       this.authService.signup(formData).subscribe({
         next: (signupRes) => {
           console.log('Risposta server:', signupRes);
@@ -42,11 +41,9 @@ export class SignupModalComponent  implements OnInit {
           if(signupRes?.emailError){
             this.toastService.warning(signupRes.message);
           }
-          // Login immediato dopo registrazione
           this.authService.login(formData).subscribe({
             next: (loginRes) => {
               console.log('Accesso', loginRes);
-              // Chiudi modal
               this.modalCtrl.dismiss(formData, 'confirm');
             },
             error: (loginErr) => {

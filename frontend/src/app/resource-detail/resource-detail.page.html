@@ -1,44 +1,84 @@
-<ion-content [fullscreen]="true">
-  @if(resource){
-      <div class="hero-banner">
-        <img [src]="resource.url ? 'http://localhost:3000' + resource.url : 'https://via.placeholder.com/600x300'" alt="Foto copertina">
-        
-        <div class="overlay-testo">
-          <h1>{{ resource.nome }} {{ resource.cognome ? resource.cognome : '' }}</h1>
-          @if(resource.citta){
-            <h3>{{ resource.indirizzo }} - {{ resource.citta }}</h3>
-          }
-          @if(resource.tipo){
-            <h3>{{ resource.tipo }}</h3>
-          }
-          <div class="ion-padding testo-dettaglio">
-            <p class="descrizione">{{ resource.descrizione }}</p>
-          
-            <h2>{{ priceText }}</h2>
-            @if(resource.capienza){
-              <p><strong>Capienza massima:</strong> {{ resource.capienza }} persone</p>
-            }
-            @if(resource.genereMusicale){
-              <p><strong>Genere:</strong> {{ resource.genereMusicale }}</p>
-            }
-            @if(resource.mansione){
-              <p><strong>Mansione:</strong> {{ resource.mansione }}</p>
-            }
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-title>Dettaglio risorsa</ion-title>
 
-            @if(resource.linkSito){
-              <div class="azione-sito">
-                <ion-button [href]="resource.linkSito" target="_blank">
-                  Visita il sito web
-                </ion-button>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="close()">Chiudi</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (resource) {
+    <main class="resource-shell">
+      <section class="resource-hero">
+        <img
+          [src]="resource.url ? 'http://localhost:3000' + resource.url : 'https://via.placeholder.com/600x300'"
+          [alt]="'Foto di ' + resource.nome">
+
+        <div class="resource-hero-copy">
+          @if (resource.tipo) {
+            <span class="resource-kicker">{{ resource.tipo }}</span>
+          } @else {
+            <span class="resource-kicker">Location</span>
+          }
+
+          <h1>{{ resource.nome }}{{ resource.cognome ? ' ' + resource.cognome : '' }}</h1>
+
+          @if (resource.citta) {
+            <p>{{ resource.indirizzo }} · {{ resource.citta }}</p>
+          }
+        </div>
+      </section>
+
+      <section class="resource-content">
+        <div class="resource-intro">
+          <p class="resource-description">
+            {{ resource.descrizione || 'Nessuna descrizione disponibile.' }}
+          </p>
+          <strong class="resource-price">{{ priceText }}</strong>
+        </div>
+
+        @if (resource.capienza || resource.genereMusicale || resource.genereFotografico || resource.mansione) {
+          <dl class="resource-facts">
+            @if (resource.capienza) {
+              <div>
+                <dt>Capienza</dt>
+                <dd>{{ resource.capienza }} persone</dd>
               </div>
             }
-            
-            <div class="closeButton">
-              <ion-button fill="clear" (click)="close()">Chiudi</ion-button>
-            </div>
+
+            @if (resource.genereMusicale) {
+              <div>
+                <dt>Genere musicale</dt>
+                <dd>{{ resource.genereMusicale }}</dd>
+              </div>
+            }
+
+            @if (resource.genereFotografico) {
+              <div>
+                <dt>Stile fotografico</dt>
+                <dd>{{ resource.genereFotografico }}</dd>
+              </div>
+            }
+
+            @if (resource.mansione) {
+              <div>
+                <dt>Specialità</dt>
+                <dd>{{ resource.mansione }}</dd>
+              </div>
+            }
+          </dl>
+        }
+
+        @if (resource.linkSito) {
+          <div class="resource-actions">
+            <ion-button fill="outline" [href]="resource.linkSito" target="_blank" rel="noopener noreferrer">
+              Visita il sito web
+            </ion-button>
           </div>
-        </div>
-        
-      </div>
+        }
+      </section>
+    </main>
   }
 </ion-content>

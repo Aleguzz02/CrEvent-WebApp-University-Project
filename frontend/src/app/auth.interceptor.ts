@@ -45,7 +45,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userNome');
 
-        // Nel tuo progetto non esiste /login, quindi meglio una route esistente.
         router.navigate(['/tabs/tab2']);
       }
 
