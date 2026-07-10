@@ -31,7 +31,7 @@
 
   h2 {
     font-family: 'Montserrat', sans-serif;
-    margin-bottom: 8px; /* Aggiunto un piccolo margine inferiore per distanziare il paragrafo */
+    margin-bottom: 8px; 
   }
 
   p {
@@ -43,21 +43,16 @@
 ion-fab {
   margin-bottom: 16px;
   ion-button {
-    // Struttura e Dimensioni
     min-width: 180px;
     height: 48px;
     
-    // Riproduce shape="round" tramite variabile Ionic
     --border-radius: 24px;
 
-    // Colori presi dalle variabili globali di Ionic (Primary)
     --background: var(--ion-color-primary);
     --color: var(--ion-color-primary-contrast);
 
-    // Effetto ombra per dare profondità sullo scrolling delle card
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     
-    // Transizione fluida al click (opzionale)
     transition: transform 0.2s ease;
 
     &:active {
@@ -65,7 +60,6 @@ ion-fab {
     }
 
     ion-icon {
-      // Riproduce slot="start" (Icona a sinistra del testo)
       order: -1; 
       margin-right: 8px;
       font-size: 1.4em;
@@ -75,26 +69,23 @@ ion-fab {
 
   .bottone-grande {
   width: 100%;
-  // Definiamo una dimensione base flessibile ed elegante per schermi desktop/web
   min-width: 180px;
   max-width: 260px;        
-  aspect-ratio: 1 / 1;     // Rapporto 1:1 fisso (Larghezza = Altezza)
+  aspect-ratio: 1 / 1;     
   
-  margin: 0;               // Elimina i margini nativi di Ionic
+  margin: 0;               
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  border-radius: 20px;     // Arrotondamento moderno dei bordi
+  border-radius: 20px;     
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-  //transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
   position: relative;
   background-size: cover;
   background-position: center;
 
-  // Effetto sollevamento al passaggio del mouse (Hover web)
   &:hover {
     transform: translateY(-6px); 
     box-shadow: 0 0ch 40px rgba(255, 255, 255, 0.7);

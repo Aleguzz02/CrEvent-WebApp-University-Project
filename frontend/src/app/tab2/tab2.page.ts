@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButton, IonCard, IonCardHeader, 
-  IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons, IonModal } from '@ionic/angular/standalone';
+  IonCardTitle, IonList, IonSegment, IonSegmentButton, IonItemDivider, IonButtons, IonModal, IonSearchbar } from '@ionic/angular/standalone';
 import { CardCreventComponent } from '../components/card-crevent/card-crevent.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
@@ -22,7 +22,8 @@ import { AddStaffModalComponent } from '../components/add-staff-modal/add-staff-
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, CardCreventComponent, IonLabel, CommonModule, 
-    IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider, IonButtons],
+    IonCard, IonCardHeader, IonCardTitle, IonButton, IonList, IonSegmentButton, IonSegment, IonItemDivider, IonButtons,
+    IonSearchbar],
   standalone: true
 })
 export class Tab2Page implements OnInit, OnDestroy {
@@ -41,9 +42,13 @@ export class Tab2Page implements OnInit, OnDestroy {
   isAuthenticated = false;
   isAdmin = false;
   isSaving = false;
+  searchTerm = '';
+  isSearching = false;
+  hasStaffResults = false;
 
   listaLocation: LocationResource[] = [];  
   listaStaff: StaffResource[] = [];
+  locationFiltrate: LocationResource[] = [];
 
   dj: StaffResource[] = [];
   catering: StaffResource[] = [];
@@ -74,8 +79,12 @@ export class Tab2Page implements OnInit, OnDestroy {
   }
 
   resetData() {
+    this.searchTerm = '';
+    this.isSearching = false;
+    this.hasStaffResults = false;
     this.listaLocation = [];
     this.listaStaff = [];
+    this.locationFiltrate = [];
     this.dj = [];
     this.catering = [];
     this.altro = [];
@@ -104,13 +113,31 @@ export class Tab2Page implements OnInit, OnDestroy {
     this.sezione = sezione;
   }
 
-  caricaDatiFinti() {}
-
   filterData() {
-    this.dj = this.listaStaff.filter(staff => staff.tipo === 'intrattenimento');
-    this.catering = this.listaStaff.filter(staff => staff.tipo === 'catering');
-    this.fotografo = this.listaStaff.filter(staff => staff.tipo === 'fotografo');
-    this.altro = this.listaStaff.filter(staff => staff.tipo === 'altro');
+    const ricerca = this.searchTerm.trim().toLowerCase();
+    this.isSearching = ricerca !== '';
+
+    this.locationFiltrate = this.listaLocation.filter(location => {
+      const testoLocation = `${location.nome} ${location.citta} ${location.indirizzo} ${location.descrizione}`.toLowerCase();
+      return testoLocation.includes(ricerca);
+    });
+
+    const staffFiltrato = this.listaStaff.filter(staff => {
+      const testoStaff = `${staff.nome} ${staff.cognome} ${staff.tipo} ${staff.descrizione} ${staff.genereMusicale} ${staff.genereFotografico} ${staff.mansione}`.toLowerCase();
+      return testoStaff.includes(ricerca);
+    });
+
+    this.dj = staffFiltrato.filter(staff => staff.tipo === 'intrattenimento');
+    this.catering = staffFiltrato.filter(staff => staff.tipo === 'catering');
+    this.fotografo = staffFiltrato.filter(staff => staff.tipo === 'fotografo');
+    this.altro = staffFiltrato.filter(staff => staff.tipo === 'altro');
+
+    this.hasStaffResults = staffFiltrato.length > 0;
+  }
+
+  onSearchChange(event: any) {
+    this.searchTerm = event.detail.value || '';
+    this.filterData();
   }
 
   loadData(){
@@ -152,6 +179,7 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         if (!response.success) {
           this.toast.error(response.message || 'Errore durante la creazione della location');
+          this.deleteUploadedImage(locationData.urlImg);
           return;
         }
 
@@ -162,8 +190,17 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         console.error(err);
         this.toast.error(err.error?.message || err.message || 'Errore durante la creazione della location');
+        this.deleteUploadedImage(locationData.urlImg);
       }
     });
+  }
+
+  private deleteUploadedImage(url: string | null | undefined) {
+    if (url) {
+      this.uploadService.deleteImage(url).subscribe({
+        error: (err) => console.error('Errore durante la cancellazione dell\'immagine:', err)
+      });
+    }
   }
 
   deleteLocation(location: any) {
@@ -192,6 +229,10 @@ export class Tab2Page implements OnInit, OnDestroy {
   async openCreateStaffModal() {
     const modal = await this.modalCtrl.create({
       component: AddStaffModalComponent,
+      componentProps: {
+        locations: this.listaLocation.filter(location => !location.custom)
+      },
+      cssClass: 'add-resource-modal'
     });
     await modal.present();
 
@@ -211,9 +252,7 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         if (!response.success) {
           this.toast.error(response.message || 'Errore durante la creazione dello staff');
-          if (staffData.urlImg) {
-            this.uploadService.deleteImage(staffData.urlImg).subscribe();
-          }
+          this.deleteUploadedImage(staffData.urlImg);
           return;
         }
 
@@ -224,9 +263,7 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         console.error(err);
         this.toast.error(err.error?.message || err.message || 'Errore durante la creazione dello staff');
-        if (staffData.urlImg) {
-          this.uploadService.deleteImage(staffData.urlImg).subscribe();
-        }
+        this.deleteUploadedImage(staffData.urlImg);
       }
     });
   }

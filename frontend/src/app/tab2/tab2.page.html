@@ -25,7 +25,6 @@
   </ion-toolbar>
   @if(sezione !== 'iniziale'){
   <ion-toolbar mode="ios" class="toolbar-sottile">
-
     <ion-segment [value]="sezione" (ionChange)="selezionaSezione($any($event).detail.value)">
       <ion-segment-button value="location">
         <ion-label>Location</ion-label>
@@ -39,6 +38,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+    @if(sezione !== 'iniziale') {
+      <div class="browse-search-container">
+        <ion-searchbar
+          class="browse-search"
+          [value]="searchTerm"
+          [placeholder]="sezione === 'location' ? 'Cerca location' : 'Cerca staff'"
+          [debounce]="100"
+          show-clear-button="focus"
+          aria-label="Cerca tra le risorse"
+          (ionInput)="onSearchChange($event)">
+        </ion-searchbar>
+      </div>
+    }
+
     @if (sezione === 'iniziale') {
     <div class="contenitore-iniziale">
       <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
@@ -72,7 +85,7 @@
       }
 
       <ion-list>
-        @for(loc of listaLocation; track loc.id){
+        @for(loc of locationFiltrate; track loc.id){
           <div class="admin-resource-item">
             <app-card-crevent [resourceData]="loc"></app-card-crevent>
             @if(isAdmin) {
@@ -84,7 +97,11 @@
             }
           </div>
         }@empty{
-          <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          @if(isSearching) {
+            <p class="emptyBrowseSection">Nessuna location corrisponde a “{{ searchTerm.trim() }}”.</p>
+          } @else {
+            <p class="emptyBrowseSection">Ci dispiace non aver trovato alcun risultato per te<br>Stiamo lavorando per nuovi arrivi!</p>
+          }
         }
       </ion-list>
     }
@@ -97,7 +114,8 @@
         </div>
       }
 
-      <ion-item-divider>
+      @if(!isSearching || catering.length > 0) {
+      <ion-item-divider class="section-title">
         <ion-label>Servizi di Catering</ion-label>
       </ion-item-divider>
       <div class="categoria-staff-gruppo">
@@ -119,8 +137,10 @@
             }
           </div>
         </div>
+      }
 
-        <ion-item-divider>
+        @if(!isSearching || dj.length > 0) {
+        <ion-item-divider class="section-title">
           <ion-label>DJ e Intrattenimento</ion-label>
         </ion-item-divider>
         <div class="categoria-staff-gruppo">
@@ -142,8 +162,10 @@
             }
           </div>
         </div>
+        }
 
-        <ion-item-divider>
+        @if(!isSearching || fotografo.length > 0) {
+        <ion-item-divider class="section-title">
           <ion-label>Fotografi</ion-label>
         </ion-item-divider>
         <div class="categoria-staff-gruppo">
@@ -164,8 +186,10 @@
             }
           </div>
         </div>
+        }
 
-         <ion-item-divider>
+         @if(!isSearching || altro.length > 0) {
+         <ion-item-divider class="section-title">
           <ion-label>Altri Servizi e Spettacoli</ion-label>
         </ion-item-divider>
         <div class="categoria-staff-gruppo">
@@ -186,5 +210,10 @@
             }
           </div>
         </div>
+        }
+
+        @if(isSearching && !hasStaffResults) {
+          <p class="emptyBrowseSection">Nessun membro dello staff corrisponde a “{{ searchTerm.trim() }}”.</p>
+        }
     }
 </ion-content>

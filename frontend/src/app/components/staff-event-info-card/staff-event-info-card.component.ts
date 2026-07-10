@@ -1,48 +1,50 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   IonBadge,
   IonButton,
   IonCard,
   IonCardContent,
-  IonButtons,
-  IonContent,
-  IonHeader,
   IonIcon,
-  IonModal,
   IonSkeletonText,
-  IonTitle,
-  IonToolbar
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   alertCircleOutline,
   calendarOutline,
-  callOutline,
   chevronForwardOutline,
-  closeOutline,
   locationOutline,
-  mailOutline,
   peopleOutline,
   refreshOutline
 } from 'ionicons/icons';
 import { StaffEventInfo } from '../../interfaces/event.interface';
 import { EventService } from '../../services/event.service';
+import { StaffEventInfoModalComponent } from '../staff-event-info-modal/staff-event-info-modal.component';
 
-interface StaffMemberInfo {
+type StaffMemberInfo = {
   id: number | null;
   nome: string;
   ruolo: string;
-  descrizione: string | null;
-  linkSito: string | null;
-  costo: number | null;
-}
+};
 
-interface StaffEventCard {
+export type StaffEventCard = {
   event: StaffEventInfo;
   staff: StaffMemberInfo[];
   staffNames: string;
-}
+  clientName: string;
+  clientInitials: string;
+  day: string;
+  month: string;
+  formattedDate: string;
+  locationLabel: string | null;
+  locationDetails: LocationDetails | null;
+  profileImage: string | null;
+  staffCountLabel: string;
+};
+
+type LocationDetails = {
+  primary: string;
+  secondary: string | null;
+};
 
 @Component({
   selector: 'app-staff-event-info-card',
@@ -50,25 +52,18 @@ interface StaffEventCard {
   styleUrls: ['./staff-event-info-card.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     IonBadge,
     IonButton,
     IonCard,
     IonCardContent,
-    IonButtons,
-    IonContent,
-    IonHeader,
     IonIcon,
-    IonModal,
     IonSkeletonText,
-    IonTitle,
-    IonToolbar
+    StaffEventInfoModalComponent
   ]
 })
 export class StaffEventInfoCardComponent implements OnInit {
   private readonly eventService = inject(EventService);
 
-  staffEvents: StaffEventInfo[] = [];
   eventCards: StaffEventCard[] = [];
   selectedEvent: StaffEventCard | null = null;
   loading = true;
@@ -79,11 +74,8 @@ export class StaffEventInfoCardComponent implements OnInit {
     addIcons({
       alertCircleOutline,
       calendarOutline,
-      callOutline,
       chevronForwardOutline,
-      closeOutline,
       locationOutline,
-      mailOutline,
       peopleOutline,
       refreshOutline
     });
@@ -102,8 +94,7 @@ export class StaffEventInfoCardComponent implements OnInit {
         this.loading = false;
 
         if (response.success) {
-          this.staffEvents = response.data ?? [];
-          this.eventCards = this.groupEventsById(this.staffEvents);
+          this.eventCards = this.groupEventsById(response.data ?? []);
           return;
         }
 
@@ -135,93 +126,6 @@ export class StaffEventInfoCardComponent implements OnInit {
     this.openEventModal(card);
   }
 
-  getClientName(event: StaffEventInfo): string {
-    const fullName = `${event.nomeCliente || ''} ${event.cognomeCliente || ''}`.trim();
-    return fullName || 'Cliente';
-  }
-
-  getClientInitials(event: StaffEventInfo): string {
-    const name = event.nomeCliente?.charAt(0) || '';
-    const surname = event.cognomeCliente?.charAt(0) || '';
-    return `${name}${surname}`.toUpperCase() || '?';
-  }
-
-  getDay(dateStr: string): string {
-    const date = this.toLocalDate(dateStr);
-    return date ? String(date.getDate()).padStart(2, '0') : '--';
-  }
-
-  getMonth(dateStr: string): string {
-    const date = this.toLocalDate(dateStr);
-
-    if (!date) {
-      return '---';
-    }
-
-    return date.toLocaleDateString('it-IT', { month: 'short' }).replace('.', '');
-  }
-
-  formatDate(dateStr: string): string {
-    const date = this.toLocalDate(dateStr);
-
-    if (!date) {
-      return dateStr;
-    }
-
-    return date.toLocaleDateString('it-IT', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
-  }
-
-  getStatusLabel(event: StaffEventInfo): string {
-    return event.svolto === 1 ? 'Concluso' : 'In programma';
-  }
-
-  getStatusColor(event: StaffEventInfo): 'medium' | 'success' {
-    return event.svolto === 1 ? 'medium' : 'success';
-  }
-
-  getStaffCountLabel(card: StaffEventCard): string {
-    if (card.staff.length === 1) {
-      return '1 membro staff';
-    }
-
-    return `${card.staff.length} membri staff`;
-  }
-
-  getStaffTrackId(staff: StaffMemberInfo): string {
-    return staff.id ? `${staff.id}` : staff.nome;
-  }
-
-  hasStaffList(card: StaffEventCard): boolean {
-    return card.staff.length > 0;
-  }
-
-  getPrimaryInfo(card: StaffEventCard): string {
-    return card.staffNames || this.getLocationLabel(card.event);
-  }
-
-  getLocationLabel(event: StaffEventInfo): string {
-    const nome = event.nomeLocation || 'Location non disponibile';
-    const citta = event.cittaLocation ? `, ${event.cittaLocation}` : '';
-    return `${nome}${citta}`;
-  }
-
-  getLocationAddress(event: StaffEventInfo): string {
-    if (event.customLocation === 1) {
-      return 'Location personalizzata';
-    }
-
-    return event.indirizzoLocation || 'Indirizzo non disponibile';
-  }
-
-  getProfileImage(event: StaffEventInfo): string | null {
-    return this.normalizeAssetUrl(event.urlFotoProfiloCliente);
-  }
-
   private groupEventsById(events: StaffEventInfo[]): StaffEventCard[] {
     const groupedEvents = new Map<number, StaffEventCard>();
 
@@ -229,10 +133,54 @@ export class StaffEventInfoCardComponent implements OnInit {
       let card = groupedEvents.get(event.id);
 
       if (!card) {
+        const clientName = `${event.nomeCliente || ''} ${event.cognomeCliente || ''}`.trim();
+        const clientInitials = `${event.nomeCliente?.charAt(0) || ''}${event.cognomeCliente?.charAt(0) || ''}`;
+        const datePart = event.data.substring(0, 10);
+        const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(datePart)
+          ? new Date(`${datePart}T00:00:00`)
+          : null;
+        const eventDate = parsedDate && !Number.isNaN(parsedDate.getTime()) ? parsedDate : null;
+        const locationName = event.nomeLocation?.trim() || '';
+        const locationCity = event.customLocation === 1
+          ? null
+          : event.cittaLocation?.trim() || null;
+        const locationAddress = event.customLocation === 1
+          ? 'Location personalizzata'
+          : event.indirizzoLocation?.trim() || null;
+        const locationPrimary = locationAddress || locationCity;
+        const profileUrl = event.urlFotoProfiloCliente?.trim() || '';
+
         card = {
           event,
           staff: [],
-          staffNames: ''
+          staffNames: '',
+          clientName: clientName || 'Cliente',
+          clientInitials: clientInitials.toUpperCase() || '?',
+          day: eventDate ? String(eventDate.getDate()).padStart(2, '0') : '--',
+          month: eventDate
+            ? eventDate.toLocaleDateString('it-IT', { month: 'short' }).replace('.', '')
+            : '---',
+          formattedDate: eventDate
+            ? eventDate.toLocaleDateString('it-IT', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+              })
+            : event.data,
+          locationLabel: [locationName, locationCity].filter(Boolean).join(', ') || null,
+          locationDetails: locationPrimary
+            ? {
+                primary: locationPrimary,
+                secondary: locationAddress ? locationCity : null
+              }
+            : null,
+          profileImage: profileUrl
+            ? profileUrl.startsWith('http://') || profileUrl.startsWith('https://')
+              ? profileUrl
+              : `http://localhost:3000${profileUrl.startsWith('/') ? '' : '/'}${profileUrl}`
+            : null,
+          staffCountLabel: ''
         };
         groupedEvents.set(event.id, card);
       }
@@ -244,53 +192,29 @@ export class StaffEventInfoCardComponent implements OnInit {
       }
     }
 
-    return Array.from(groupedEvents.values()).map((card) => ({
-      ...card,
-      staffNames: card.staff.map((staff) => staff.nome).join(', ')
-    }));
+    return Array.from(groupedEvents.values()).map((card) => {
+      const staffCount = card.staff.length;
+
+      return {
+        ...card,
+        staffNames: card.staff.map((staff) => staff.nome).join(', '),
+        staffCountLabel: `${staffCount} ${staffCount === 1 ? 'membro' : 'membri'} staff`
+      };
+    });
   }
 
   private toStaffMember(event: StaffEventInfo): StaffMemberInfo | null {
-    if (!event.idStaff && !event.nomeStaff && !event.cognomeStaff) {
+    const nome = `${event.nomeStaff || ''} ${event.cognomeStaff || ''}`.trim();
+
+    if (event.idStaff == null && !nome) {
       return null;
     }
-
-    const nome = `${event.nomeStaff || ''} ${event.cognomeStaff || ''}`.trim();
 
     return {
       id: event.idStaff ?? null,
       nome: nome || 'Staff non disponibile',
-      ruolo: event.tipoStaff || event.mansioneStaff || 'Ruolo non disponibile',
-      descrizione: event.descrizioneStaff ?? null,
-      linkSito: event.linkSitoStaff ?? null,
-      costo: event.costoStaff ?? null
+      ruolo: event.tipoStaff || event.mansioneStaff || 'Ruolo non disponibile'
     };
-  }
-
-  private normalizeAssetUrl(url: string | null): string | null {
-    if (!url) {
-      return null;
-    }
-
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
-
-    return `http://localhost:3000${url.startsWith('/') ? '' : '/'}${url}`;
-  }
-
-  private toLocalDate(dateStr: string): Date | null {
-    if (!dateStr) {
-      return null;
-    }
-
-    const day = dateStr.substring(0, 10);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) {
-      return null;
-    }
-
-    const date = new Date(`${day}T00:00:00`);
-    return Number.isNaN(date.getTime()) ? null : date;
   }
 
 }

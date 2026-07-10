@@ -67,6 +67,7 @@ export interface CreateStaffRequest {
   dataInizio: string;
   dataFine: string;
   urlImg: string;
+  locationIds: number[];
   accountEmail: string;
 }
 

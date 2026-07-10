@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const fs = require('fs');
 
-// GET PROFILO
 const getProfile = async (req, res) => {
   try {
     const email = req.user.email;
@@ -39,7 +38,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-// UPDATE TELEFONO
 const updatePhone = async (req, res) => {
   try {
     const email = req.user.email;
@@ -76,7 +74,6 @@ const updatePhone = async (req, res) => {
   }
 };
 
-// UPDATE PASSWORD
 const updatePassword = async (req, res) => {
   try {
     const email = req.user.email;
@@ -90,7 +87,6 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    // Recupera la password hashata dal DB
     const userData = await User.getPasswordByEmail(email);
     if (!userData) {
       return res.status(404).json({
@@ -99,7 +95,6 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    // Verifica la password corrente
     const isMatch = await bcrypt.compare(passwordCorrente, userData.password);
     if (!isMatch) {
       return res.status(403).json({
@@ -108,10 +103,8 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    // Hash della nuova password
     const hashedNewPassword = await bcrypt.hash(nuovaPassword, 10);
 
-    // Aggiorna nel DB
     const result = await User.updatePassword(email, hashedNewPassword);
     
     if (result.changes === 0) {
@@ -134,7 +127,6 @@ const updatePassword = async (req, res) => {
   }
 };
 
-// UPLOAD FOTO
 const uploadPicture = async (req, res) => {
   try {
     const email = req.user.email;
@@ -146,14 +138,11 @@ const uploadPicture = async (req, res) => {
       });
     }
 
-    // Percorso relativo da salvare nel DB
     const relativePath = '/uploads/profile/' + path.basename(req.file.path);
 
-    // Aggiorna il DB
     const result = await User.updateProfilePicture(email, relativePath);
     
     if (result.changes === 0) {
-      // Se l'utente non esiste, cancella il file
       fs.unlink(req.file.path, (unlinkErr) => {
         if (unlinkErr) console.error('Errore cancellazione file orfano:', unlinkErr);
       });
@@ -169,7 +158,6 @@ const uploadPicture = async (req, res) => {
       data: { urlFotoProfilo: relativePath }
     });
   } catch (err) {
-    // Se c'è un errore, cancella il file appena salvato
     if (req.file) {
       fs.unlink(req.file.path, (unlinkErr) => {
         if (unlinkErr) console.error('Errore cancellazione file orfano:', unlinkErr);
@@ -183,12 +171,10 @@ const uploadPicture = async (req, res) => {
   }
 };
 
-// DELETE FOTO
 const deletePicture = async (req, res) => {
   try {
     const email = req.user.email;
 
-    // Recupera il percorso attuale della foto
     const userData = await User.getPasswordByEmail(email);
     if (!userData) {
       return res.status(404).json({
@@ -199,7 +185,6 @@ const deletePicture = async (req, res) => {
 
     const currentPath = userData.urlFotoProfilo;
 
-    // Aggiorna il DB impostando NULL
     const result = await User.deleteProfilePicture(email);
     
     if (result.changes === 0) {
@@ -209,7 +194,6 @@ const deletePicture = async (req, res) => {
       });
     }
 
-    // Cancella il file fisico se esisteva
     if (currentPath) {
       // Rimuovi lo slash iniziale e costruisci il path relativo a backend
       const relativePath = currentPath.startsWith('/') ? currentPath.slice(1) : currentPath;
@@ -232,7 +216,6 @@ const deletePicture = async (req, res) => {
   }
 };
 
-// DELETE ACCOUNT
 const deleteAccount = async (req, res) => {
   try {
     const email = req.user.email;
@@ -245,7 +228,6 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    // Recupera la password e la foto
     const userData = await User.getPasswordByEmail(email);
     if (!userData) {
       return res.status(404).json({
@@ -254,7 +236,6 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    // Verifica la password
     const isMatch = await bcrypt.compare(password, userData.password);
     if (!isMatch) {
       return res.status(403).json({
@@ -263,7 +244,6 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    // Cancella la foto se esisteva
     if (userData.urlFotoProfilo) {
       const fullPath = path.join(__dirname, '../../', userData.urlFotoProfilo);
       fs.unlink(fullPath, (unlinkErr) => {
@@ -271,7 +251,6 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    // Elimina l'utente dal DB
     const result = await User.deleteUser(email);
     
     if (result.changes === 0) {
@@ -294,7 +273,6 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-// ESPORTAZIONE
 module.exports = {
   getProfile,
   updatePhone,

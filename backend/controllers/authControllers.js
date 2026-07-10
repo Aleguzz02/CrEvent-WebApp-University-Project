@@ -11,14 +11,12 @@ exports.register = async (req, res) => {
     try {
         const { email, password, confermaPassword, nome, cognome, telefono, dataNascita} = req.body;
 
-        // Verifica aggiuntiva di controllo campi
         if (!email || !password || !confermaPassword || !nome || !cognome || !telefono || !dataNascita) {
             return res.status(400).json({ message : "Sono richiesti tutti i campi"});
         }
         
         console.log("Registering user: ", email);
         
-        // Verifica che la mail inserita sia presente nel DB
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({
@@ -59,18 +57,15 @@ exports.login = async (req, res) => {
     try {
         const {email, password} = req.body;
 
-        // Verifica aggiuntiva di controllo campi
         if (!email || !password) {
             return res.status(400).json({ message : "Sono richiesti email e password"});
         }
 
-        // Verifica che la mail inserita sia presente nel DB
         const user = await User.findByEmail(email);
         if (!user) {
             return res.status(400).json({ message: "Credenziali non valide" });
         };
 
-        // Verifica corrispondenza password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: 'Credenziali non valide' });
@@ -122,17 +117,14 @@ exports.me = async (req, res) => {
     }
 };
 
-// Helper per generare OTP di 6 cifre
 const generateOtp = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
 
-// 1. Richiedi OTP
 exports.requestOtp = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Verifica che l'email esista
     const user = await User.findByEmail(email);
     if (!user) {
       return res.status(404).json({
@@ -141,14 +133,11 @@ exports.requestOtp = async (req, res) => {
       });
     }
 
-    // Genera OTP
     const otp = generateOtp();
     console.log(`OTP generato per ${email}: ${otp}`); // debug
 
-    // Salva OTP nel database
     await OtpModel.upsert(email, otp);
 
-    // Invia email
     await SMTP.sendEmail({
       to: email,
       subject: 'Recupero password - CrEvent',
@@ -186,7 +175,6 @@ exports.requestOtp = async (req, res) => {
   }
 };
 
-// 2. Verifica OTP
 exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -221,12 +209,10 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// 3. Reset password
 exports.resetPassword = async (req, res) => {
   try {
     const { email, newPassword, confirmPassword, otp } = req.body;
 
-    // Validazioni base
     if (!email || !newPassword || !confirmPassword || !otp) {
       return res.status(400).json({
         success: false,
@@ -241,7 +227,6 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    // Verifica complessità password (minimo 8 caratteri, maiuscola, minuscola, numero)
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
@@ -250,7 +235,6 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    // Verifica OTP (non deve essere scaduto)
     const isValidOtp = await OtpModel.validate(email, otp);
     if (!isValidOtp) {
       return res.status(401).json({
@@ -259,13 +243,10 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    // Hash della nuova password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Aggiorna password nel database
     await User.updatePassword(email, hashedPassword);
 
-    // Elimina OTP (è stato usato)
     await OtpModel.delete(email);
 
     res.status(200).json({

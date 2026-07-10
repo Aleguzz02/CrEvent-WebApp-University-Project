@@ -12,8 +12,6 @@
     text-align: center;
   }
 }
-
-// Stili per la sezione upload
 .upload-section {
   margin: 8px 0;
 
@@ -36,6 +34,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &.uploading {
+      cursor: wait;
+    }
 
     &:hover {
       border-color: var(--ion-color-primary);

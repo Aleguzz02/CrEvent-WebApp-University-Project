@@ -23,10 +23,27 @@ const StaffModel = {
         dataInizio,
         dataFine,
         urlImg,
+        locationIds,
         account = null
     ) => {
         try {
             await run(`BEGIN TRANSACTION`);
+
+            const uniqueLocationIds = [...new Set(locationIds)];
+            if (uniqueLocationIds.length === 0) {
+                throw new Error("invalidStaffLocations");
+            }
+
+            const placeholders = uniqueLocationIds.map(() => '?').join(', ');
+            const validLocations = await all(
+                `SELECT id FROM Location
+                WHERE custom = 0 AND id IN (${placeholders})`,
+                uniqueLocationIds
+            );
+
+            if (validLocations.length !== uniqueLocationIds.length) {
+                throw new Error("invalidStaffLocations");
+            }
 
             const result = await run(
                 `INSERT INTO Staff
@@ -46,6 +63,13 @@ const StaffModel = {
                 `INSERT INTO dateStaff (idStaff, dataInizio, dataFine) VALUES (?, ?, ?)`,
                 [idStaff, dataInizio, dataFine]
             );
+
+            for (const idLocation of uniqueLocationIds) {
+                await run(
+                    `INSERT INTO Lavora (idStaff, idLocation) VALUES (?, ?)`,
+                    [idStaff, idLocation]
+                );
+            }
 
             if (account) {
                 await run(

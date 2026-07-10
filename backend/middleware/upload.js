@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const requireAdmin = require('./requireAdmin');
 
 /**
  * Middleware di upload dinamico per immagini
@@ -9,6 +10,19 @@ const fs = require('fs');
  * Usa req.body.type per determinare la sottocartella di destinazione
  * Esempio: { type: 'location' } => salva in backend/uploads/location/
  */
+const requireAdminForResourceImage = (req, res, next) => {
+  const urlType = typeof req.query.url === 'string'
+    ? req.query.url.replace(/\\/g, '/').match(/^\/uploads\/([^/]+)\//)?.[1]
+    : null;
+  const type = req.query.type || urlType;
+
+  if (type === 'location' || type === 'staff') {
+    return requireAdmin(req, res, next);
+  }
+
+  next();
+};
+
 const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff']) => {
   // Validazione del tipo
   const validateType = (req) => {
@@ -66,4 +80,4 @@ const createUploadMiddleware = (allowedTypes = ['profile', 'location', 'staff'])
   });
 };
 
-module.exports = createUploadMiddleware;
+module.exports = {createUploadMiddleware,requireAdminForResourceImage};

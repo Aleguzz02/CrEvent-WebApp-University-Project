@@ -1,24 +1,19 @@
 const { body } = require('express-validator');
 
-// Validatori per la registrazione (signup)
 const signupValidators = [
-  // Nome: obbligatorio, solo lettere (incluse accentate) e spazi, trim
   body('nome')
     .trim()
     .notEmpty().withMessage('Il nome è obbligatorio')
     .matches(/^[a-zA-ZÀ-ÿ\s]+$/).withMessage('Il nome può contenere solo lettere e spazi'),
 
-  // Cognome: obbligatorio, solo lettere (incluse accentate) e spazi, trim
   body('cognome')
     .trim()
     .notEmpty().withMessage('Il cognome è obbligatorio')
     .matches(/^[a-zA-ZÀ-ÿ\s]+$/).withMessage('Il cognome può contenere solo lettere e spazi'),
 
-  // Data di nascita: formato YYYY-MM-DD, obbligatoria
   body('dataNascita')
     .notEmpty().withMessage('La data di nascita è obbligatoria')
     .isISO8601().withMessage('Data di nascita non valida (formato YYYY-MM-DD)')
-    // Opzionale: controllo età minima (es. 18 anni)
     .custom((value) => {
       const birthDate = new Date(value);
       const today = new Date();
@@ -33,44 +28,37 @@ const signupValidators = [
       return true;
     }),
 
-  // Email: obbligatoria, formato valido, normalizzata (trim + lowercase + canonical)
   body('email')
     .trim()
     .notEmpty().withMessage('L\'email è obbligatoria')
-    .normalizeEmail({ gmail_remove_dots: false }) // mantiene i punti per Gmail (opzionale)
+    .normalizeEmail({ gmail_remove_dots: false }) 
     .isEmail().withMessage('Email non valida'),
 
-  // Telefono: obbligatorio, 10 cifre numeriche
   body('telefono')
     .trim()
     .notEmpty().withMessage('Il telefono è obbligatorio')
     .isNumeric().withMessage('Il telefono deve contenere solo numeri')
     .isLength({ min: 10, max: 10 }).withMessage('Il telefono deve avere esattamente 10 cifre'),
 
-  // Password: obbligatoria, almeno 8 caratteri, con maiuscola, minuscola e numero
   body('password')
     .notEmpty().withMessage('La password è obbligatoria')
     .isLength({ min: 8 }).withMessage('La password deve avere almeno 8 caratteri')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .withMessage('La password deve contenere almeno una lettera maiuscola, una minuscola e un numero'),
 
-  // Conferma password: deve corrispondere a password
   body('confermaPassword')
     .notEmpty().withMessage('Conferma la password')
     .custom((value, { req }) => value === req.body.password)
     .withMessage('Le password non coincidono')
 ];
 
-// Validatori per il login
 const loginValidators = [
-  // Email: obbligatoria, formato valido
   body('email')
     .trim()
     .notEmpty().withMessage('L\'email è obbligatoria')
     .normalizeEmail({ gmail_remove_dots: false })
     .isEmail().withMessage('Email non valida'),
 
-  // Password: obbligatoria (non applichiamo restrizioni di complessità, solo presenza)
   body('password')
     .notEmpty().withMessage('La password è obbligatoria')
 ];
@@ -168,7 +156,6 @@ const adminLocationValidators = [
     .isFloat({ min: -180, max: 180 }).withMessage('Longitudine non valida')
     .toFloat(),
 
-  // NUOVI CAMPI per l'account
   body('accountEmail')
     .trim()
     .notEmpty().withMessage('L\'email account è obbligatoria')
@@ -231,6 +218,13 @@ const adminStaffValidators = [
     .optional({ values: 'falsy' })
     .isLength({ max: 100 }).withMessage('La mansione è troppo lunga'),
 
+  body('locationIds')
+    .isArray({ min: 1 }).withMessage('Seleziona almeno una location'),
+
+  body('locationIds.*')
+    .isInt({ min: 1 }).withMessage('ID location non valido')
+    .toInt(),
+
   startDateNotPastValidator,
 
   dateRangeValidator,
@@ -249,7 +243,6 @@ const adminStaffValidators = [
     .isEmail().withMessage('Email account staff non valida')
 ];
 
-// Validatore per richiesta OTP
 const requestOtpValidators = [
   body('email')
     .trim()
@@ -258,7 +251,6 @@ const requestOtpValidators = [
     .isEmail().withMessage('Email non valida')
 ];
 
-// Validatore per verifica OTP
 const verifyOtpValidators = [
   body('email')
     .trim()
@@ -273,7 +265,6 @@ const verifyOtpValidators = [
     .isNumeric().withMessage('OTP deve contenere solo numeri')
 ];
 
-// Validatore per reset password
 const resetPasswordValidators = [
   body('email')
     .trim()

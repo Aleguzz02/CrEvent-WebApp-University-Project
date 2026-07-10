@@ -78,16 +78,12 @@ exports.deleteUser = async (req, res) => {
       });
     }
 
-    // Se l'utente è staff o location, elimina la risorsa associata
     let result;
     if (user.tipoUtente === 2 && user.idStaff) {
-      // Staff: elimina staff + utente
       result = await Staff.remStaff(user.idStaff);
     } else if (user.tipoUtente === 2 && user.idLocation) {
-      // Location: elimina location + utente
       result = await Location.remLoc(user.idLocation);
     } else {
-      // Utente normale o staff/location senza id (non dovrebbe succedere)
       result = await User.deleteUser(email);
     }
 
@@ -194,7 +190,6 @@ exports.createLocation = async (req, res) => {
     const parsedLat = lat === undefined || lat === null || lat === "" ? null : Number(lat);
     const parsedLng = lng === undefined || lng === null || lng === "" ? null : Number(lng);
 
-    // Validazioni esistenti per la location
     if (!nome || !indirizzo || !citta || !descrizione || !urlImg || !parsedCapienza || !parsedCosto || !isValidDate(dataInizio) || !isValidDate(dataFine)) {
       return res.status(400).json({
         success: false,
@@ -223,7 +218,6 @@ exports.createLocation = async (req, res) => {
       });
     }
 
-    // --- VALIDAZIONI PER L'ACCOUNT ---
     if (!accountEmail) {
       return res.status(400).json({
         success: false,
@@ -238,7 +232,6 @@ exports.createLocation = async (req, res) => {
       });
     }
 
-    // Verifica che l'email non sia già usata
     const existingUser = await User.findByEmail(accountEmail.trim());
     if (existingUser) {
       return res.status(409).json({
@@ -247,15 +240,12 @@ exports.createLocation = async (req, res) => {
       });
     }
 
-    // Genera password temporanea
     const temporaryPassword = generateTemporaryPassword();
     const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
 
-    // Determina nome e cognome del gestore (con default)
     const gestoreNomeFinal = gestoreNome ? gestoreNome.trim() : "Gestore";
     const gestoreCognomeFinal = gestoreCognome ? gestoreCognome.trim() : nome.trim();
 
-    // Crea la location con l'account associato
     const result = await Location.addLoc(
       nome.trim(),
       indirizzo.trim(),
@@ -279,7 +269,6 @@ exports.createLocation = async (req, res) => {
       }
     );
 
-    // Invia email con credenziali
     try {
       await SMTP.sendEmail({
         to: accountEmail.trim(),
@@ -375,10 +364,14 @@ exports.createStaff = async (req, res) => {
       dataInizio,
       dataFine,
       urlImg,
+      locationIds,
       accountEmail
     } = req.body;
 
     const parsedCosto = toPositiveNumber(costo);
+    const parsedLocationIds = Array.isArray(locationIds)
+      ? [...new Set(locationIds.map(Number))]
+      : [];
     const tipiValidi = ["catering", "intrattenimento", "fotografo", "altro"];
 
     if (!nome || !cognome || !tipo || !descrizione || !urlImg || !parsedCosto || !isValidDate(dataInizio) || !isValidDate(dataFine)) {
@@ -392,6 +385,13 @@ exports.createStaff = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Tipo staff non valido"
+      });
+    }
+
+    if (parsedLocationIds.length === 0 || parsedLocationIds.some(id => !Number.isInteger(id) || id <= 0)) {
+      return res.status(400).json({
+        success: false,
+        message: "Seleziona almeno una location valida"
       });
     }
 
@@ -443,6 +443,7 @@ exports.createStaff = async (req, res) => {
       dataInizio,
       dataFine,
       urlImg.trim(),
+      parsedLocationIds,
       {
         email: accountEmail.trim(),
         password: hashedPassword,
@@ -482,6 +483,13 @@ exports.createStaff = async (req, res) => {
       data: result
     });
   } catch (err) {
+    if (err.message === "invalidStaffLocations") {
+      return res.status(400).json({
+        success: false,
+        message: "Una o più location selezionate non sono valide"
+      });
+    }
+
     console.error("Errore in createStaff admin:", err);
     res.status(500).json({
       success: false,
@@ -542,7 +550,6 @@ exports.getUserEventsCount = async (req, res) => {
       });
     }
 
-    // Conta gli eventi futuri (data >= oggi) associati a questo utente
     const result = await get(
       `SELECT COUNT(*) AS count
        FROM Evento

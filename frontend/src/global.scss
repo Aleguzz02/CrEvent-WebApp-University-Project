@@ -101,6 +101,16 @@ h3 {
   --background: rgba(0,0,0,0.2);
 }
 
+.add-resource-modal{
+  --border-radius: 30px;
+  --background: rgba(0,0,0,0.6);
+}
+
+.add-resource-modal::part(content){
+  backdrop-filter: blur(10px);
+  --background: rgba(0,0,0,0.2);
+}
+
 .event-detail-modal-sheet {
   --border-radius: 30px;
   --width: 920px;

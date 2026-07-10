@@ -3,18 +3,47 @@
   --min-height: 85px; 
   
   ion-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-family: var(--font-brand);
+    font-size: clamp(30px, 3.2vw, 42px);
+    font-weight: 400;
+    letter-spacing: 3px;
     color: var(--ion-color-primary, #3880ff); 
+  }
+
+  ion-button {
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.2px;
   }
 }
 
 // Stile per il titolo grande quando la pagina non è ancora scrollata
 ion-header[collapse="condense"] .toolbar-grande ion-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 36px;
+  font-family: var(--font-brand);
+  font-size: clamp(38px, 5vw, 54px);
+}
+
+.toolbar-sottile {
+  --min-height: 58px;
+
+  ion-label {
+    font-family: var(--font-title);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+}
+
+.browse-search-container {
+  width: min(100%, 800px);
+  margin: 8px auto 0;
+  padding: 0 12px;
+  box-sizing: border-box;
+
+  .browse-search {
+    padding: 0;
+  }
 }
 
 .contenitore-iniziale{
@@ -93,73 +122,51 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
   }
 
   ion-card-title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-title);
     color: #ffffff !important;
-    font-size: 22px;
+    font-size: clamp(24px, 2.4vw, 32px);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.4px;
     text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
     text-align: center;
     width: 100%;
   }
 }
 
-// Layout contenitore liste dati dal DB
 .categoria-staff-gruppo {
   width: 100%;
   margin: 0px auto 24px auto;
   padding: 0;
-  max-width: 1200px;        // Dimensione ottimale di lettura sul web desktop
-      // Centra la lista orizzontalmente sulla pagina web
+  max-width: 1200px;        
 
-  ion-item-divider {
-  
-    --background: transparent;
-    font-weight: 700;
-    color: var(--ion-color-white);
-    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
-    margin-bottom: 16px;
-    width: 100vw;
-
-    
-    ion-label{
-      text-align: center !important;
-      width: 100%;
-      font-family: 'Celestial', sans-serif;
-      letter-spacing: 2px;
-      font-size: clamp(15px, 3vw, 40px);
-      font-weight: 300;
-    }
-  }
   .cards-container{
     max-width: 1200px;
     margin: 0px auto clamp(0px, 5vh, 100px) auto;
     padding: 0;
 
     display: flex;
-    flex-direction: column;   // Dispone prima in verticale (riga 1 e riga 2)
-    flex-wrap: wrap;          // Quando finisce l'altezza, crea una nuova colonna a destra
-    height: 900px;            // Altezza fissa calcolata per ospitare esattamente 2 righe di card (circa 340px a card + gap)
+    flex-direction: column;   
+    flex-wrap: wrap;         
+    height: 900px;            
     
-    overflow-x: auto;         // Abilita lo scorrimento orizzontale quando superano lo schermo
-    overflow-y: hidden;       // Blocca lo scorrimento verticale interno
+    overflow-x: auto;        
+    overflow-y: hidden;       
     
     gap: 20px;
     padding: 10px;
-    
-    // Centra il contenuto se ci sono poche card che non riempiono lo schermo web
+  
     justify-content: center;  
-    align-content: flex-start;    // Centra le colonne aggregate rispetto all'asse principale
+    align-content: flex-start;    
   }
 
   .oneColumn{
     height: 420px;
   }
 
-  // Configurazione della larghezza delle card del componente figlio
+  
   app-card-crevent {
-    width: 320px;             // Larghezza fissa ideale per una card leggibile sul web
-    flex: 0 0 auto;           // Impedisce alle card di rimpicciolirsi o deformarsi
+    width: 320px;             
+    flex: 0 0 auto;           
     max-height: 420px;
   }
 
@@ -186,32 +193,39 @@ ion-list {
     background-color: rgba(0, 0, 0, 0);
 }
 
-ion-item-divider {
-  
-    --background: transparent;
+.section-title {
+  width: min(100% - 32px, 1200px);
+  min-height: 64px;
+  margin: 32px auto 20px;
+  padding: 0 8px;
+
+  --background: rgba(20, 22, 25, 0.82);
+  --color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 4px solid var(--ion-color-primary);
+  border-radius: 8px;
+
+  ion-label {
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: 22px;
     font-weight: 700;
-    color: var(--ion-color-white);
-    border-bottom: 2px solid var(--ion-color-primary, #3880ff);
-    //border-top: 2px solid rgba(202, 202, 202, 0.626);
-    margin-bottom: 16px;
-    width: 100vw;
+    letter-spacing: 0;
+    text-align: left;
+  }
+}
 
-    --background: linear-gradient(to bottom, rgba(255, 255, 255, 0.347) 0%, black 60%);
+@media (max-width: 480px) {
+  .section-title {
+    min-height: 54px;
+    margin-top: 24px;
 
-    @media(prefers-color-scheme: light){
-      --background: linear-gradient(to bottom, rgba(0, 0, 0, 0.347) 0%, white 60%);
-    }
-
-    
-    ion-label{
-      text-align: center !important;
-      width: 100%;
-      font-family: 'Celestial', sans-serif;
-      letter-spacing: 2px;
-      font-size: clamp(15px, 3vw, 40px);
-      font-weight: 300;
+    ion-label {
+      font-size: 18px;
     }
   }
+}
 
 .admin-actions {
   display: flex;

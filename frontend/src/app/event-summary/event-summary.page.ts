@@ -44,6 +44,7 @@ export class EventSummaryPage {
   selectedStaff: StaffResource[] = history.state?.selectedStaff ?? [];
   customLocation: boolean = history.state?.customLocation ?? false;
 
+  
   constructor(
     private router: Router,
     private location: Location,
@@ -56,6 +57,16 @@ export class EventSummaryPage {
     }
     this.selectedDate = this.selectedDate.substring(0,10);
   }
+
+  ionViewWillEnter() {
+      this.eventDraft = history.state?.eventDraft ?? null;
+      this.selectedDate = history.state?.selectedDate ?? '';
+      this.selectedLocation = history.state?.selectedLocation ?? null;
+      this.selectedStaff = history.state?.selectedStaff ?? [];
+      this.customLocation = history.state?.customLocation ?? false;
+
+      this.selectedDate = this.selectedDate.substring(0,10);
+    }
 
   get totalPrice(): number {
     if(!this.selectedLocation){
@@ -75,7 +86,7 @@ export class EventSummaryPage {
     }
   }
 
-  get people() : number{
+  get people() : number {
     return this.customLocation 
     ? this.selectedLocation?.capienza ?? 0
     : this.eventDraft?.capacity ?? 0

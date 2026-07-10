@@ -64,7 +64,7 @@ exports.getLocations = async (request, response) => {
                 success: false,
                 message: "Capienza non valida"
             });
-        }// da mettere nel middleware
+        }
 
         const locations = day
             ? await LocationModel.getCapacityAndDate(day, capacity)
@@ -165,7 +165,6 @@ exports.getAvailableStaff = async (request, response) => {
 
       let finalIdLocation = idLocation;
 
-      // Se la location è personalizzata, prima la salvo nel DB
       if (customLocation) {
         const newLocation = await LocationModel.addCustomLoc(
           location.lat,
@@ -178,7 +177,6 @@ exports.getAvailableStaff = async (request, response) => {
         finalIdLocation = newLocation.id;
       }
 
-      // Poi creo l'evento usando l'idLocation finale
       const newEvent = await Event.addEvent(
         data,
         nome,
@@ -188,7 +186,6 @@ exports.getAvailableStaff = async (request, response) => {
         finalIdLocation
       );
 
-      // Infine associo gli staff selezionati
       await Event.addStaffToEvent(newEvent.id, staffIds);
 
       return res.status(201).json({

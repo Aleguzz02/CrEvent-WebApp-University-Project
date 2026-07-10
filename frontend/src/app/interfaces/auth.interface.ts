@@ -25,13 +25,11 @@ export interface RegisterResponse extends ApiResponse {
   emailError?: boolean;
 }
 
-// --- Nuove interfacce per recupero password ---
 export interface RequestOtpRequest {
   email: string;
 }
 
 export interface RequestOtpResponse extends ApiResponse {
-  // success e message già in ApiResponse
 }
 
 export interface VerifyOtpRequest {
@@ -40,7 +38,6 @@ export interface VerifyOtpRequest {
 }
 
 export interface VerifyOtpResponse extends ApiResponse {
-  // success e message già in ApiResponse
 }
 
 export interface ResetPasswordRequest {
@@ -51,5 +48,4 @@ export interface ResetPasswordRequest {
 }
 
 export interface ResetPasswordResponse extends ApiResponse {
-  // success e message già in ApiResponse
 }

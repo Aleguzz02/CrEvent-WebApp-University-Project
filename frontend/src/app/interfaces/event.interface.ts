@@ -56,7 +56,6 @@ export interface StaffEventInfo {
   cognomeStaff?: string | null;
   linkSitoStaff?: string | null;
   tipoStaff?: StaffResource['tipo'] | null;
-  costoStaff?: number | null;
   descrizioneStaff?: string | null;
   genereMusicaleStaff?: string | null;
   genereFotograficoStaff?: string | null;

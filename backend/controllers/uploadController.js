@@ -1,14 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Endpoint per l'upload di un'immagine
- * Riceve il file e il tipo (profile, location, staff)
- * Restituisce l'URL pubblico da salvare nel DB
- */
+
 exports.uploadImage = (req, res) => {
   try {
-    // Verifica che il file sia stato caricato
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -18,7 +13,6 @@ exports.uploadImage = (req, res) => {
 
     const type = req.uploadType || req.query.type || req.body.type;
     
-    // Costruisce l'URL pubblico (relativo alla root del server)
     const publicUrl = `/uploads/${type}/${path.basename(req.file.path)}`;
 
     res.status(200).json({
@@ -31,7 +25,6 @@ exports.uploadImage = (req, res) => {
     });
 
   } catch (err) {
-    // Se c'è un errore, cancella il file appena salvato
     if (req.file) {
       fs.unlink(req.file.path, (unlinkErr) => {
         if (unlinkErr) console.error('Errore cancellazione file orfano:', unlinkErr);
@@ -55,8 +48,24 @@ exports.deleteImage = (req, res) => {
       });
     }
 
-    // Estrai il percorso relativo dalla URL (es. /uploads/location/img.jpg)
-    const fullPath = path.join(__dirname, '../..', fileUrl);
+    const normalizedUrl = fileUrl.replace(/\\/g, '/');
+    if (!normalizedUrl.startsWith('/uploads/')) {
+      return res.status(400).json({
+        success: false,
+        message: 'URL del file non valido'
+      });
+    }
+
+    const uploadsRoot = path.resolve(__dirname, '../uploads');
+    const relativePath = normalizedUrl.slice('/uploads/'.length);
+    const fullPath = path.resolve(uploadsRoot, relativePath);
+
+    if (!fullPath.startsWith(`${uploadsRoot}${path.sep}`)) {
+      return res.status(400).json({
+        success: false,
+        message: 'URL del file non valido'
+      });
+    }
 
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
