@@ -13,13 +13,14 @@ export const routes: Routes = [
   {
     path: 'create-event',
     loadComponent: () => import('./create-event/create-event.page').then( m => m.CreateEventPage),
-    canActivate: [authGuard]      // Rotta solo utenti autenticati
+    canActivate: [authGuard]
   },
   {
   path: '',
   redirectTo: 'tabs',
   pathMatch: 'full'
-  },  {
+  },
+  {
     path: 'event-summary',
     loadComponent: () => import('./event-summary/event-summary.page').then( m => m.EventSummaryPage)
   }

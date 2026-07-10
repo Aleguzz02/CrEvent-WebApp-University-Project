@@ -66,7 +66,6 @@ export class AddStaffModalComponent implements OnInit, OnDestroy {
   staffForm!: FormGroup;
   private namePattern = /^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/;
 
-  // Stato upload
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   isUploading = false;
@@ -224,7 +223,6 @@ export class AddStaffModalComponent implements OnInit, OnDestroy {
     this.modalCtrl.dismiss(this.staffForm.value, 'confirm');
   }
 
-  // Resetta il selettore file
   resetFileInput() {
     this.deleteUploadedImage();
     this.clearImageSelection();

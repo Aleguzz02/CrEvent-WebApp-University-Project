@@ -79,7 +79,6 @@ export class LoginModalComponent  implements OnInit {
 
       const result = await modal.onDidDismiss();
       if (result.role === 'confirm') {
-    
       }
     }
 }

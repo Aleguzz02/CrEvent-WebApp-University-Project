@@ -91,7 +91,6 @@ export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  // Step 1: Invia email per OTP
   requestOtp() {
     if (this.emailForm.invalid) {
       this.emailForm.markAllAsTouched();
@@ -120,7 +119,6 @@ export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Step 2: Verifica OTP
   verifyOtp() {
     if (this.otpForm.invalid) {
       this.otpForm.markAllAsTouched();
@@ -149,7 +147,6 @@ export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Step 3: Reset password
   resetPassword() {
     if (this.resetForm.invalid) {
       this.resetForm.markAllAsTouched();
@@ -184,7 +181,6 @@ export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Navigazione tra step (back)
   goToStep(step: Step) {
     this.currentStep = step;
   }

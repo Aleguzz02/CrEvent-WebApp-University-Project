@@ -83,13 +83,11 @@ const LocationModel = {
     try {
         await run(`BEGIN TRANSACTION`);
 
-        // Elimina l'utente associato alla location (tipoUtente = 2)
         const deletedUser = await run(
             `DELETE FROM User WHERE idLocation = ? AND tipoUtente = 2`,
             [idLocation]
         );
 
-        // Elimina la location (con cascade su immagini, date)
         const deletedLocation = await run(
             `DELETE FROM Location WHERE id = ?`,
             [idLocation]

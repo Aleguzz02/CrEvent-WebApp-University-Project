@@ -76,7 +76,6 @@ export class CustomLocationMapModalComponent {
       const position = await this.getBrowserPosition();
       this.updateMapPosition(position.coords.latitude, position.coords.longitude);
     } else {
-      // Usa Capacitor per accedere al GPS nativo su mobile
       const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
       this.updateMapPosition(position.coords.latitude, position.coords.longitude);
     }

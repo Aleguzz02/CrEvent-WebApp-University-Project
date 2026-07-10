@@ -32,7 +32,6 @@ type AdminView = 'home' | 'users' | 'events';
 })
 export class Tab1Page implements OnInit, OnDestroy {
 
-  // Servizi
   private eventService = inject(EventService);
   private authService = inject(AuthService);
   private adminService = inject(AdminService);
@@ -40,7 +39,6 @@ export class Tab1Page implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private alertCtrl = inject(AlertController);
 
-  // Variabili
   isAuthenticated = false;
   isAdmin = false;
   isStaff = false;
@@ -94,7 +92,6 @@ export class Tab1Page implements OnInit, OnDestroy {
         this.loadEvents();
       });
 
-    // Se non autenticato all'avvio, apri il login
     if (!this.isAuthenticated) {
       this.openLoginModal();
     }
@@ -221,7 +218,6 @@ export class Tab1Page implements OnInit, OnDestroy {
     return;
   }
 
-  // Se è staff (tipo 2), conferma semplice
   if (user.tipoUtente === 2) {
     this.alertCtrl.create({
       header: 'Conferma eliminazione staff',
@@ -240,7 +236,6 @@ export class Tab1Page implements OnInit, OnDestroy {
     return;
   }
 
-  // Utente normale (tipo 0): recupera conteggio eventi
   this.adminService.getUserEventsCount(user.email).subscribe({
     next: (countResponse) => {
       const count = countResponse.success ? countResponse.data?.count ?? 0 : 0;
@@ -264,7 +259,6 @@ export class Tab1Page implements OnInit, OnDestroy {
     },
     error: (err) => {
       console.error('Errore nel conteggio eventi', err);
-      // Fallback: chiedi comunque
       this.alertCtrl.create({
         header: 'Attenzione',
         message: "Impossibile recuperare il conteggio degli eventi. Eliminare comunque l'utente? Verranno cancellati tutti i suoi eventi.",
@@ -283,7 +277,6 @@ export class Tab1Page implements OnInit, OnDestroy {
   });
 }
 
-// Metodo ausiliario per eseguire l'eliminazione effettiva
 private proceedDeleteUser(user: AdminUser) {
   this.adminService.deleteUser(user.email).subscribe({
     next: (response) => {

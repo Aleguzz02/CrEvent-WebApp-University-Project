@@ -179,7 +179,6 @@ exports.createLocation = async (req, res) => {
       linkSito,
       lat,
       lng,
-      // Nuovi campi
       accountEmail,
       gestoreNome,
       gestoreCognome

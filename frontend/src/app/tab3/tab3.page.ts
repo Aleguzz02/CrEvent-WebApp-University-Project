@@ -110,7 +110,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await modal.present();
   }
 
-
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
@@ -118,11 +117,11 @@ export class Tab3Page implements OnInit, OnDestroy {
     await modal.present();
   }
 
-
   logout(): void {
     this.authService.logout();
     this.profileService.resetProfile();
   }
+
 
   async openEditPhoneModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
@@ -136,13 +135,11 @@ export class Tab3Page implements OnInit, OnDestroy {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'save' && data) {
-      // data è il nuovo telefono (stringa)
       await this.savePhone(data);
     } else if (role === 'error' && data?.error) {
       this.showToast(data.error, 'danger');
     }
   }
-
 
   async savePhone(newPhone: string): Promise<void> {
     const loading = await this.loadingCtrl.create({
@@ -167,7 +164,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-
   async openPasswordModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: ChangePasswordModalComponent,
@@ -177,7 +173,6 @@ export class Tab3Page implements OnInit, OnDestroy {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'save' && data) {
-      // data contiene { currentPassword, newPassword }
       await this.savePassword(data.currentPassword, data.newPassword);
     } else if (role === 'error' && data?.error) {
       this.showToast(data.error, 'danger');
@@ -206,7 +201,6 @@ export class Tab3Page implements OnInit, OnDestroy {
       }
     });
   }
-
 
   async openPhotoActionSheet(): Promise<void> {
     const buttons: any[] = [
@@ -240,7 +234,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await actionSheet.present();
   }
 
- 
   async takePhoto(source: 'camera' | 'gallery'): Promise<void> {
     const input = document.createElement('input');
     input.type = 'file';
@@ -260,7 +253,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     input.click();
   }
 
- 
   async uploadPhoto(file: File): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Caricamento in corso...'
@@ -285,7 +277,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
- 
   async confirmDeletePicture(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Rimuovi foto',
@@ -329,7 +320,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-
   async startDeleteAccount(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Conferma identità',
@@ -357,7 +347,7 @@ export class Tab3Page implements OnInit, OnDestroy {
               this.confirmDeleteAccount(data.password);
             } else {
               this.showToast('Inserisci la password', 'warning');
-              return false; 
+              return false;
             }
             return true;
           }
@@ -366,7 +356,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-
 
   async confirmDeleteAccount(password: string): Promise<void> {
     const alert = await this.alertCtrl.create({

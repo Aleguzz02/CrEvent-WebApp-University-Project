@@ -7,13 +7,11 @@ const User = {
       return run(query, [email, password, nome, cognome, telefono, dataNascita, 0], email);
   },
   
-  // Trova utente con la mail
   findByEmail: (email) => {
     const query = `SELECT * FROM User WHERE email = ?`;
       return get(query, [email]);
   },
 
-  // Recupera tutti gli utenti senza restituire la password
   findAllSafe: () => {
     const query = `
       SELECT email, nome, cognome, telefono, dataNascita, urlFotoProfilo, tipoUtente, idStaff, idLocation
@@ -23,7 +21,6 @@ const User = {
     return all(query);
   },
 
-  // Aggiorna il telefono
   updatePhone: (email, telefono) => {
       const query = `UPDATE User SET telefono = ? WHERE email = ?`;
       return run(query, [telefono, email]);
