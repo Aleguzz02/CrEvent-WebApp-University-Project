@@ -150,6 +150,7 @@ export class EventSummaryPage {
         }
 
         this.toastService.success('Evento creato con successo');
+        this.eventService.notifyEventsChanged();
         this.router.navigate(['/tabs/tab1']);
       },
       error: (err) => {

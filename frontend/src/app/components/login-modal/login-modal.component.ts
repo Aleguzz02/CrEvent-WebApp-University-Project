@@ -67,6 +67,7 @@ export class LoginModalComponent  implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
+      cssClass: ['auth-modal', 'auth-signup-modal'],
     });
       await modal.present();
     }
@@ -74,6 +75,7 @@ export class LoginModalComponent  implements OnInit {
     async openForgotPasswordModal() {
       const modal = await this.modalCtrl.create({
         component: ForgotPasswordModalComponent,
+        cssClass: ['auth-modal', 'auth-recovery-modal'],
       });
       await modal.present();
 

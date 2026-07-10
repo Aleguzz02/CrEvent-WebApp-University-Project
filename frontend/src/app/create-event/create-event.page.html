@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar mode="ios" class="toolbar-grande">
     <ion-buttons slot="start">
-      <div class="contenitore-annulla">
+      <div class="contenitore-annulla annulla-uniforme">
         <ion-button class="bottone-annulla" fill="clear" (click)="goBackStep()">
           {{ step === 'staff' ? 'Indietro' : 'Annulla' }}
         </ion-button>
@@ -30,12 +30,24 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <div class="sezione-creazione">
+    <div class="booking-search-container">
+      <ion-searchbar
+        class="booking-search"
+        [value]="searchTerm"
+        [placeholder]="step === 'staff' ? 'Cerca staff' : 'Cerca location'"
+        [debounce]="100"
+        show-clear-button="focus"
+        [attr.aria-label]="step === 'staff' ? 'Cerca tra lo staff disponibile' : 'Cerca tra le location disponibili'"
+        (ionInput)="onSearchChange($event)">
+      </ion-searchbar>
+    </div>
+
     @if (step === 'locationDate') {
 
       @if (mode === 'location') {
 
         <div class="locations-grid">
-          @for (location of locations; track location.id) {
+          @for (location of locationFiltrate; track location.id) {
             <div class="location-cards">
               <app-location-selectable-card
                 [location]="location"
@@ -63,6 +75,10 @@
           }
         </div>
 
+        @if (isSearching && locationFiltrate.length === 0) {
+          <p class="empty-booking-section">Nessuna location corrisponde a “{{ searchTerm.trim() }}”.</p>
+        }
+
         @if (selectedLocation && showCalendar) {
           <ion-datetime
             presentation="date"
@@ -84,7 +100,7 @@
 
         @if (selectedDate) {
           <div class="locations-grid">
-            @for (location of freeLocations; track location.id) {
+            @for (location of freeLocationsFiltrate; track location.id) {
               <div class="location-cards">
                 <app-location-selectable-card
                   [location]="location"
@@ -103,6 +119,10 @@
               </div>
             }
           </div>
+
+          @if (isSearching && freeLocationsFiltrate.length === 0) {
+            <p class="empty-booking-section">Nessuna location disponibile corrisponde a “{{ searchTerm.trim() }}”.</p>
+          }
         }
 
       }
@@ -160,6 +180,10 @@
               </app-staff-selectable-card>
             }
           </div>
+        }
+
+        @if (isSearching && !hasStaffResults) {
+          <p class="empty-booking-section">Nessun membro dello staff corrisponde a “{{ searchTerm.trim() }}”.</p>
         }
       </div>
     }

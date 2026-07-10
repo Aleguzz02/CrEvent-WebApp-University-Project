@@ -93,6 +93,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
+      cssClass: ['auth-modal', 'auth-login-modal'],
     });
     await modal.present();
   }
@@ -100,6 +101,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
+      cssClass: ['auth-modal', 'auth-signup-modal'],
     });
     await modal.present();
   }
@@ -158,6 +160,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   async openCreateLocationModal() {
     const modal = await this.modalCtrl.create({
       component: AddLocationModalComponent,
+      cssClass: 'add-resource-modal'
     });
     await modal.present();
 

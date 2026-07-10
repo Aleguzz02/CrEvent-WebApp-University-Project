@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiResponse } from '../interfaces/profile.interface';
 import { EventDraft, Evento, StaffEventInfo } from '../interfaces/event.interface';
 import { UserEventsResponse, EventDetailResponse } from '../interfaces/event.interface';
@@ -16,6 +16,12 @@ export class EventService {
 
   constructor(private http: HttpClient) {}
 
+  private eventsChangedSubject = new Subject<void>();
+  eventsChanged$ = this.eventsChangedSubject.asObservable();
+
+  notifyEventsChanged() {
+    this.eventsChangedSubject.next();
+  }
   
   getUserEvents(): Observable<ApiResponse<Evento[]>> {
     return this.http.get<ApiResponse<Evento[]>>(this.apiUrl+'/myEvents');

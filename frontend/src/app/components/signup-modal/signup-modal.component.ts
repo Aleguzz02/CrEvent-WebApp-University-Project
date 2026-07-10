@@ -66,6 +66,7 @@ export class SignupModalComponent  implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
+      cssClass: ['auth-modal', 'auth-login-modal'],
     });
       await modal.present();
   }

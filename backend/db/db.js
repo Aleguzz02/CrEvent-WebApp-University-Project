@@ -144,7 +144,6 @@ async function putData() {
         const saltRounds = 10;
         const pw1 = await bcrypt.hash('password1', saltRounds);
         const pw2 = await bcrypt.hash('password2', saltRounds);
-        const pw3 = await bcrypt.hash('password3', saltRounds);
         const pwVillaZuccarello = await bcrypt.hash('prova', saltRounds);
         const pwStaffLocation = await bcrypt.hash('prova', saltRounds);
         db.serialize(() => {
@@ -294,17 +293,6 @@ async function putData() {
             );
 
             db.run(`
-                INSERT OR IGNORE INTO Staff (id, nome, cognome, linkSito, tipo, costo, descrizione, genereFotografico)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [6, 'Ines', 'Mendola', 'https://www.inesmendola.com', 'fotografo', 1000, 'Studio fotografico focalizzato sulla cattura spontanea delle emozioni durante eventi privati in tutta la Sicilia.', 'Fine Art, Ritrattistica, Reportage Moderno'],
-                (err) => {
-                    if (err) console.error(err);
-                }    
-            );
-
-
-
-            db.run(`
                 INSERT OR IGNORE INTO Staff (id, nome, cognome, linkSito, tipo, costo, descrizione, mansione)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [7, 'Emanuele', 'D\'Angeli', 'https://www.emanueledangeli.com', 'altro', 600, 'Illusionista e prestigiatore palermitano, offre spettacoli di mentalismo e magia close-up itinerante tra i tavoli degli ospiti.', 'Illusionismo e Close-up Magic'],
@@ -352,14 +340,6 @@ async function putData() {
                 INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 ['admin1@crevent.com', pw2, 'Luca', 'Bianchi', '0987654321', '1985-05-15', '1'],
-                (err) => {
-                    if (err) console.error(err);
-                }
-            );
-            db.run(`
-                INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idStaff) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                ['inesmendola@crevent.com', pw3, 'Ines', 'Mendola', '1111111111', '1992-12-25', '2', 6],
                 (err) => {
                     if (err) console.error(err);
                 }
@@ -453,10 +433,10 @@ async function putData() {
             );
             const eventiProva1 = [
                 [1, '2025-09-15', 'Matrimonio Rossi-Verdi', 16200, 150, 'prova1@example.com', 1],
-                [2, '2026-02-14', 'Compleanno in Villa', 11050, 80, 'prova1@example.com', 2],
+                [2, '2026-02-14', 'Compleanno in Villa', 10050, 80, 'prova1@example.com', 2],
                 [3, '2026-05-20', 'Festa di Laurea', 16350, 120, 'prova1@example.com', 3],
                 [4, '2026-09-12', 'Anniversario Rossi', 11400, 90, 'prova1@example.com', 1],
-                [5, '2027-01-18', 'Evento Aziendale Palermo', 16750, 140, 'prova1@example.com', 2],
+                [5, '2027-01-18', 'Evento Aziendale Palermo', 15750, 140, 'prova1@example.com', 2],
             ];
 
             eventiProva1.forEach((evento) => {
@@ -469,10 +449,10 @@ async function putData() {
             });
             const coinvolgimentiProva1 = [
                 [1, 1], [1, 3], [1, 5],
-                [2, 2], [2, 4], [2, 6],
+                [2, 2], [2, 4],
                 [3, 2], [3, 7], [3, 8],
                 [4, 1], [4, 3], [4, 5],
-                [5, 2], [5, 4], [5, 6],
+                [5, 2], [5, 4],
                 ];
 
             coinvolgimentiProva1.forEach((coinvolge) => {
@@ -503,7 +483,6 @@ async function putData() {
                 [3, '2026-01-01', '2027-12-31'],
                 [4, '2026-01-01', '2027-12-31'],
                 [5, '2026-01-01', '2027-12-31'],
-                [6, '2026-01-01', '2027-12-31'],
                 [7, '2026-01-01', '2027-12-31'],
                 [8, '2025-01-01', '2025-12-31'],
                 ];

@@ -1,169 +1,329 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Aggiungi location</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="cancel()">Chiudi</ion-button>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla annulla-uniforme">
+        <ion-button class="bottone-annulla" fill="clear" (click)="cancel()">
+          Annulla
+        </ion-button>
+      </div>
     </ion-buttons>
+
+    <ion-title>Aggiungi location</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form [formGroup]="locationForm" (ngSubmit)="save()" class="admin-modal-form">
-    
-    <ion-item>
-      <ion-input formControlName="nome" label="Nome" labelPlacement="stacked" placeholder="Nome della location" errorText="Il nome è obbligatorio" maxlength="100" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="indirizzo" label="Indirizzo" labelPlacement="stacked" placeholder="Via Roma, 123" errorText="L'indirizzo è obbligatorio" maxlength="150" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="citta" label="Città" labelPlacement="stacked" placeholder="Roma" errorText="Città non valida" maxlength="80" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-textarea formControlName="descrizione" label="Descrizione" labelPlacement="stacked" placeholder="Descrizione dettagliata della location" errorText="La descrizione è obbligatoria" maxlength="2000" required></ion-textarea>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="capienza" label="Capienza (persone)" labelPlacement="stacked" type="number" min="1" placeholder="100" errorText="Inserisci un numero positivo" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="costo" label="Costo (€)" labelPlacement="stacked" type="number" min="0.01" step="0.01" placeholder="0.00" errorText="Inserisci un costo positivo" required></ion-input>
-    </ion-item>
-
-    <div class="upload-section">
-      <ion-label class="upload-label">Immagine location</ion-label>
-      
-      <input 
-        #fileInput
-        type="file"
-        accept="image/*"
-        (change)="onFileSelected($event)"
-        style="display: none"
-      />
-
-      <div class="upload-area" [class.uploading]="isUploading" (click)="!isUploading && fileInput.click()">
-        @if (previewUrl) {
-          <div class="preview-container">
-            <ion-img [src]="previewUrl" alt="Anteprima"></ion-img>
-            @if (!isUploading) {
-              <ion-button
-                fill="clear"
-                color="danger"
-                size="small"
-                class="remove-image"
-                (click)="$event.stopPropagation(); resetFileInput()"
-              >
-                <ion-icon name="close" slot="icon-only"></ion-icon>
-              </ion-button>
-            }
+  <div class="location-modal-content">
+    <form [formGroup]="locationForm" (ngSubmit)="save()" class="admin-modal-form">
+      <section class="form-section" aria-labelledby="location-main-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Profilo location</p>
+            <h2 id="location-main-heading">Informazioni principali</h2>
           </div>
-        } @else {
-          <div class="upload-placeholder">
-            <ion-icon name="cloud-upload" size="large"></ion-icon>
-            <p>Clicca per selezionare un'immagine</p>
-            <ion-text color="medium" class="upload-hint">
-              <small>JPG, PNG, GIF - max 5MB</small>
-            </ion-text>
+          <p>Inserisci i dati con cui la location verrà mostrata agli utenti.</p>
+        </div>
+
+        <div class="form-grid">
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="nome"
+              label="Nome"
+              labelPlacement="stacked"
+              placeholder="Nome della location"
+              errorText="Il nome è obbligatorio"
+              maxlength="100"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="citta"
+              label="Città"
+              labelPlacement="stacked"
+              placeholder="Roma"
+              errorText="Città non valida"
+              maxlength="80"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item full-width" lines="none">
+            <ion-input
+              formControlName="indirizzo"
+              label="Indirizzo"
+              labelPlacement="stacked"
+              placeholder="Via Roma, 123"
+              errorText="L'indirizzo è obbligatorio"
+              maxlength="150"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item full-width description-input" lines="none">
+            <ion-textarea
+              formControlName="descrizione"
+              label="Descrizione"
+              labelPlacement="stacked"
+              placeholder="Descrizione dettagliata della location"
+              errorText="La descrizione è obbligatoria"
+              maxlength="2000"
+              [autoGrow]="true"
+              required>
+            </ion-textarea>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="capienza"
+              label="Capienza (persone)"
+              labelPlacement="stacked"
+              type="number"
+              min="1"
+              placeholder="100"
+              errorText="Inserisci un numero positivo"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="costo"
+              label="Costo (€)"
+              labelPlacement="stacked"
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="0.00"
+              errorText="Inserisci un costo positivo"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+      </section>
+
+      <section class="form-section media-section" aria-labelledby="location-image-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Immagine di copertina</p>
+            <h2 id="location-image-heading">Foto location</h2>
           </div>
+          <p>Carica un'immagine nitida e rappresentativa, fino a 5 MB.</p>
+        </div>
+
+        <input
+          #fileInput
+          class="file-input"
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        />
+
+        <div
+          class="upload-area"
+          [class.uploading]="isUploading"
+          [class.has-preview]="previewUrl"
+          (click)="!isUploading && fileInput.click()">
+          @if (previewUrl) {
+            <div class="preview-container">
+              <ion-img [src]="previewUrl" alt="Anteprima immagine della location"></ion-img>
+              @if (!isUploading) {
+                <ion-button
+                  fill="clear"
+                  color="danger"
+                  size="small"
+                  class="remove-image"
+                  aria-label="Rimuovi immagine"
+                  (click)="$event.stopPropagation(); resetFileInput()">
+                  <ion-icon name="close" slot="icon-only"></ion-icon>
+                </ion-button>
+              }
+            </div>
+          } @else {
+            <div class="upload-placeholder">
+              <span class="upload-icon-shell">
+                <ion-icon name="cloud-upload"></ion-icon>
+              </span>
+              <strong>Seleziona un'immagine</strong>
+              <p>Trascina qui il file oppure clicca per sfogliare</p>
+              <span class="upload-hint">JPG, PNG o GIF · max 5 MB</span>
+            </div>
+          }
+
+          @if (isUploading) {
+            <div class="upload-overlay">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Caricamento in corso...</p>
+            </div>
+          }
+        </div>
+
+        @if (imageUploaded && !isUploading) {
+          <ion-text color="success" class="upload-status">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            Immagine pronta
+          </ion-text>
         }
 
-        @if (isUploading) {
-          <div class="upload-overlay">
+        <ion-input formControlName="urlImg" type="hidden"></ion-input>
+      </section>
+
+      <section class="form-section" aria-labelledby="location-account-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Accesso personale</p>
+            <h2 id="location-account-heading">Account gestore</h2>
+          </div>
+          <p>Le credenziali temporanee verranno inviate a questo indirizzo.</p>
+        </div>
+
+        <div class="form-grid">
+          <ion-item class="location-input-item full-width" lines="none">
+            <ion-input
+              formControlName="accountEmail"
+              label="Email account"
+              labelPlacement="stacked"
+              type="email"
+              placeholder="gestore@esempio.com"
+              errorText="Inserisci un'email valida"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="gestoreNome"
+              label="Nome gestore (opzionale)"
+              labelPlacement="stacked"
+              placeholder="Mario"
+              errorText="Nome non valido"
+              maxlength="80">
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="gestoreCognome"
+              label="Cognome gestore (opzionale)"
+              labelPlacement="stacked"
+              placeholder="Rossi"
+              errorText="Cognome non valido"
+              maxlength="80">
+            </ion-input>
+          </ion-item>
+        </div>
+      </section>
+
+      <section class="form-section" aria-labelledby="location-details-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Dettagli della struttura</p>
+            <h2 id="location-details-heading">Informazioni aggiuntive</h2>
+          </div>
+          <p>Completa il profilo con il sito web e le coordinate della location.</p>
+        </div>
+
+        <div class="form-grid">
+          <ion-item class="location-input-item full-width" lines="none">
+            <ion-input
+              formControlName="linkSito"
+              label="Link sito (opzionale)"
+              labelPlacement="stacked"
+              type="url"
+              placeholder="https://esempio.com"
+              errorText="URL non valido">
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="lat"
+              label="Latitudine (opzionale)"
+              labelPlacement="stacked"
+              type="number"
+              min="-90"
+              max="90"
+              step="any"
+              placeholder="41.9028"
+              errorText="Latitudine tra -90 e 90">
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item" lines="none">
+            <ion-input
+              formControlName="lng"
+              label="Longitudine (opzionale)"
+              labelPlacement="stacked"
+              type="number"
+              min="-180"
+              max="180"
+              step="any"
+              placeholder="12.4964"
+              errorText="Longitudine tra -180 e 180">
+            </ion-input>
+          </ion-item>
+        </div>
+      </section>
+
+      <section class="form-section" aria-labelledby="location-availability-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Calendario</p>
+            <h2 id="location-availability-heading">Disponibilità</h2>
+          </div>
+          <p>Definisci l'intervallo nel quale la location può essere prenotata.</p>
+        </div>
+
+        <div class="form-grid">
+          <ion-item class="location-input-item date-input-item" lines="none">
+            <ion-input
+              formControlName="dataInizio"
+              label="Disponibile da"
+              labelPlacement="stacked"
+              type="date"
+              [min]="today"
+              errorText="La data non può essere nel passato"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="location-input-item date-input-item" lines="none">
+            <ion-input
+              formControlName="dataFine"
+              label="Disponibile fino a"
+              labelPlacement="stacked"
+              type="date"
+              [min]="locationForm.get('dataInizio')?.value || today"
+              errorText="La data di fine deve essere successiva o uguale alla data di inizio"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+      </section>
+
+      @if (locationForm.invalid && locationForm.touched) {
+        <div class="form-error" role="alert">
+          <strong>Controlla i dati inseriti</strong>
+          <span>Compila correttamente tutti i campi obbligatori.</span>
+        </div>
+      }
+
+      <div class="form-actions">
+        <span>I campi obbligatori devono essere completati prima del salvataggio.</span>
+        <ion-button
+          class="save-location-button"
+          type="submit"
+          expand="block"
+          [strong]="true"
+          [disabled]="locationForm.invalid || !imageUploaded || isUploading">
+          @if (isUploading) {
             <ion-spinner name="crescent"></ion-spinner>
-            <p>Caricamento...</p>
-          </div>
-        }
+          } @else {
+            Salva location
+          }
+        </ion-button>
       </div>
-
-      @if (imageUploaded && !isUploading) {
-        <ion-text color="success" class="upload-status">
-          <ion-icon name="checkmark-circle"></ion-icon>
-          Immagine caricata con successo
-        </ion-text>
-      }
-
-      <ion-input formControlName="urlImg" type="hidden"></ion-input>
-    </div>
-
-
-<div class="account-section">
-  <ion-label class="section-label">Dati account gestore</ion-label>
-  
-  <ion-item>
-    <ion-input
-      formControlName="accountEmail"
-      label="Email account"
-      labelPlacement="stacked"
-      type="email"
-      placeholder="gestore@esempio.com"
-      errorText="Inserisci un'email valida"
-      required
-    ></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-input
-      formControlName="gestoreNome"
-      label="Nome gestore (opzionale)"
-      labelPlacement="stacked"
-      placeholder="Mario"
-      errorText="Nome non valido"
-      maxlength="80"
-    ></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-input
-      formControlName="gestoreCognome"
-      label="Cognome gestore (opzionale)"
-      labelPlacement="stacked"
-      placeholder="Rossi"
-      errorText="Cognome non valido"
-      maxlength="80"
-    ></ion-input>
-  </ion-item>
-</div>
-
-    <ion-item>
-      <ion-input formControlName="linkSito" label="Link Sito (opzionale)" labelPlacement="stacked" type="url" placeholder="https://esempio.com" errorText="URL non valido"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="lat" label="Latitudine (opzionale)" labelPlacement="stacked" type="number" min="-90" max="90" step="any" placeholder="41.9028" errorText="Latitudine tra -90 e 90"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="lng" label="Longitudine (opzionale)" labelPlacement="stacked" type="number" min="-180" max="180" step="any" placeholder="12.4964" errorText="Longitudine tra -180 e 180"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="dataInizio" label="Disponibile da" labelPlacement="stacked" type="date" [min]="today" errorText="La data non può essere nel passato" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input formControlName="dataFine" label="Disponibile fino a" labelPlacement="stacked" type="date" [min]="locationForm.get('dataInizio')?.value || today" errorText="La data di fine deve essere successiva o uguale alla data di inizio" required></ion-input>
-    </ion-item>
-
-    @if (locationForm.invalid && locationForm.touched) {
-      <ion-text color="danger" class="form-error">
-        <p>Compila correttamente tutti i campi obbligatori.</p>
-      </ion-text>
-    }
-
-    <ion-button
-      type="submit"
-      expand="block"
-      [disabled]="locationForm.invalid || !imageUploaded || isUploading"
-    >
-      @if (isUploading) {
-        <ion-spinner name="crescent"></ion-spinner>
-      } @else {
-        Salva location
-      }
-    </ion-button>
-  </form>
+    </form>
+  </div>
 </ion-content>

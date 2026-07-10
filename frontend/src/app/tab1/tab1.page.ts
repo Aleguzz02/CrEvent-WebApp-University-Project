@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { EventCardComponent } from '../components/event-card/event-card.component';
 import { StaffEventInfoCardComponent } from '../components/staff-event-info-card/staff-event-info-card.component';
-import { addOutline } from 'ionicons/icons';
+import { addOutline, calendarOutline, logIn, peopleOutline, personAdd } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
 import { SignupModalComponent } from '../components/signup-modal/signup-modal.component';
@@ -53,7 +53,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   
   constructor(private router: Router) {
-    addIcons({ addOutline });
+    addIcons({ addOutline, calendarOutline, logIn, peopleOutline, personAdd });
   }
 
   ngOnInit(){
@@ -91,6 +91,9 @@ export class Tab1Page implements OnInit, OnDestroy {
 
         this.loadEvents();
       });
+    this.eventService.eventsChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.loadEvents());
 
     if (!this.isAuthenticated) {
       this.openLoginModal();
@@ -108,6 +111,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
+      cssClass: ['auth-modal', 'auth-login-modal'],
     });
     await modal.present();
   }
@@ -115,6 +119,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
+      cssClass: ['auth-modal', 'auth-signup-modal'],
     });
     await modal.present();
   }
@@ -222,6 +227,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.alertCtrl.create({
       header: 'Conferma eliminazione staff',
       message: `Stai per eliminare lo staff "${user.nome} ${user.cognome}". Sei sicuro?`,
+      cssClass: 'admin-delete-alert',
       buttons: [
         { text: 'Annulla', role: 'cancel' },
         {
@@ -245,6 +251,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.alertCtrl.create({
         header: 'Conferma eliminazione utente',
         message: message,
+        cssClass: 'admin-delete-alert',
         buttons: [
           { text: 'Annulla', role: 'cancel' },
           {
@@ -262,6 +269,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.alertCtrl.create({
         header: 'Attenzione',
         message: "Impossibile recuperare il conteggio degli eventi. Eliminare comunque l'utente? Verranno cancellati tutti i suoi eventi.",
+        cssClass: 'admin-delete-alert',
         buttons: [
           { text: 'Annulla', role: 'cancel' },
           {
@@ -315,24 +323,33 @@ private proceedDeleteUser(user: AdminUser) {
   }
 
   deleteAdminEvent(event: AdminEvent) {
-    const confirmed = confirm(`Eliminare l'evento "${event.nome}"?`);
-    if (!confirmed) {
-      return;
-    }
-
-    this.adminService.deleteEvent(event.id).subscribe({
-      next: (response) => {
-        if (!response.success) {
-          this.toastService.error(response.message || "Errore durante l'eliminazione dell'evento");
-          return;
+    this.alertCtrl.create({
+      header: 'Conferma eliminazione evento',
+      message: `Eliminare l'evento "${event.nome}"?`,
+      cssClass: 'admin-delete-alert',
+      buttons: [
+        { text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Elimina',
+          cssClass: 'danger',
+          handler: () => {
+            this.adminService.deleteEvent(event.id).subscribe({
+              next: (response) => {
+                if (!response.success) {
+                  this.toastService.error(response.message || "Errore durante l'eliminazione dell'evento");
+                  return;
+                }
+                this.adminEvents = this.adminEvents.filter(item => item.id !== event.id);
+                this.toastService.success('Evento eliminato');
+              },
+              error: (err) => {
+                console.error(err);
+                this.toastService.error(err.error?.message || err.message || "Errore durante l'eliminazione dell'evento");
+              }
+            });
+          }
         }
-        this.adminEvents = this.adminEvents.filter(item => item.id !== event.id);
-        this.toastService.success('Evento eliminato');
-      },
-      error: (err) => {
-        console.error(err);
-        this.toastService.error(err.error?.message || err.message || "Errore durante l'eliminazione dell'evento");
-      }
-    });
+      ]
+    }).then(alert => alert.present());
   }
 }

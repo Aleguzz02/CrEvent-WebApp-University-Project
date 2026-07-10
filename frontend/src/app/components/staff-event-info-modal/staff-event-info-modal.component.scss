@@ -182,6 +182,46 @@ ion-title {
   gap: 12px;
 }
 
+.modal-map-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.maps-button {
+  min-height: 46px;
+  margin: 0;
+  --background: var(--ion-color-primary);
+  --background-hover: var(--ion-color-primary-shade);
+  --background-activated: var(--ion-color-primary-shade);
+  --border-radius: 23px;
+  --box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+  --color: #ffffff;
+  --padding-end: 18px;
+  --padding-start: 10px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: none;
+  transition: transform 0.2s ease;
+}
+
+.maps-button:hover {
+  transform: translateY(-2px);
+}
+
+.maps-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.maps-button ion-icon {
+  margin-right: 8px;
+  padding: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 18px;
+}
+
 @media (max-width: 680px) {
   .date-pill {
     width: 52px;
@@ -199,6 +239,16 @@ ion-title {
 
   .modal-summary {
     align-items: flex-start;
+  }
+
+  .maps-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maps-button {
+    transition: none;
   }
 }
 

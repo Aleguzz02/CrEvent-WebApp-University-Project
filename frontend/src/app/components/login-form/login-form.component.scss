@@ -1,0 +1,45 @@
+form {
+  width: 100%;
+}
+
+.auth-form-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0;
+  background: transparent;
+}
+
+.auth-input-item {
+  --background: #323232;
+  --border-color: transparent;
+  --border-radius: 16px;
+  --border-width: 0;
+  --color: #ffffff;
+  --inner-border-width: 0;
+  --inner-padding-end: 16px;
+  --min-height: 72px;
+  --padding-start: 16px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.auth-input-item ion-input {
+  width: 100%;
+  --color: #ffffff;
+  --highlight-color-focused: var(--ion-color-primary, #3880ff);
+  --placeholder-color: rgba(255, 255, 255, 0.46);
+  --placeholder-opacity: 1;
+}
+
+.auth-input-item ion-input::part(label) {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+}
+
+.auth-input-item ion-input::part(error-text) {
+  padding-top: 4px;
+  font-size: 12px;
+}

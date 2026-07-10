@@ -30,14 +30,19 @@
   </ion-header>
 
   @if(isAuthenticated == false) {
-    <div class="centered-container">
-      <ion-card>
+    <section class="auth-empty-state" aria-labelledby="events-auth-title">
+      <ion-card class="auth-gate-card">
         <ion-card-content>
-          <div class="text-center">
-            <p class="ion-text-muted">
-              Accedi per visualizzare i tuoi eventi.
-            </p>
+          <div class="auth-gate-icon" aria-hidden="true">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
 
+          <h2 id="events-auth-title" class="auth-gate-title">I miei eventi</h2>
+          <p class="auth-gate-copy">
+            Accedi per utilizzare la piattaforma e ritrovare i tuoi eventi.
+          </p>
+
+          <div class="auth-gate-actions">
             <ion-button 
               (click)="openLoginModal()" 
               expand="block" 
@@ -53,15 +58,16 @@
               expand="block" 
               fill="outline"
               shape="round"
+              class="auth-secondary-action"
             >
               <ion-icon slot="start" name="person-add"></ion-icon>
-              Crea un nuovo account
+              Crea un account
             </ion-button>
-            
           </div>
+
         </ion-card-content>
       </ion-card>
-    </div>
+    </section>
   }
 
 
@@ -94,27 +100,32 @@
 
   @if(isAuthenticated == true && isAdmin == true) {
     @if(adminView == 'home') {
-      <div class="contenitore-iniziale">
-        <ion-card class="bottone-grande" button="true" (click)="showAdminUsers()">
-          <div class="overlay-scuro">
+      <section class="admin-home">
+        <div class="admin-intro">
+          <span>Area amministratore</span>
+          <p>Gestisci rapidamente utenti ed eventi.</p>
+        </div>
+
+        <div class="contenitore-iniziale">
+          <ion-card class="bottone-grande" button="true" (click)="showAdminUsers()">
+            <ion-icon class="admin-card-icon" name="people-outline" aria-hidden="true"></ion-icon>
             <ion-card-header>
               <ion-card-title>
                 <strong>Utenti</strong>
               </ion-card-title>
             </ion-card-header>
-          </div>
-        </ion-card>
+          </ion-card>
 
-        <ion-card class="bottone-grande" button="true" (click)="showAdminEvents()">
-          <div class="overlay-scuro">
+          <ion-card class="bottone-grande" button="true" (click)="showAdminEvents()">
+            <ion-icon class="admin-card-icon" name="calendar-outline" aria-hidden="true"></ion-icon>
             <ion-card-header>
               <ion-card-title>
                 <strong>Eventi</strong>
               </ion-card-title>
             </ion-card-header>
-          </div>
-        </ion-card>
-      </div>
+          </ion-card>
+        </div>
+      </section>
     }
 
     @if(adminView == 'users') {

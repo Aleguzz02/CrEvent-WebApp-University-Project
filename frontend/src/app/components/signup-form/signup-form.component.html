@@ -1,40 +1,82 @@
 <form [formGroup]="signupForm" (ngSubmit)="submitForm()">
-  <ion-list>
-    <ion-item>
-      <ion-input formControlName="nome" label="Nome"labelPlacement="stacked" placeholder="Nome"
-      errorText="Nome non valido" required="true"></ion-input>
+  <ion-list class="auth-form-list">
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="nome"
+        label="Nome"
+        labelPlacement="stacked"
+        placeholder="Nome"
+        errorText="Nome non valido"
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="cognome" label="Cognome" labelPlacement="stacked" placeholder="Cognome"
-      errorText="Cognome non valido" required="true"></ion-input>
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="cognome"
+        label="Cognome"
+        labelPlacement="stacked"
+        placeholder="Cognome"
+        errorText="Cognome non valido"
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="dataNascita" label="Data di Nascita" type="date"
-      errorText="Data non valida. Devi avere almeno 18 anni." required="true"></ion-input>
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="dataNascita"
+        label="Data di Nascita"
+        labelPlacement="stacked"
+        type="date"
+        errorText="Data non valida. Devi avere almeno 18 anni."
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="email" label="Email" type="email" placeholder="email@domain.com"
-      errorText="Email non valida" required="true"></ion-input>
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="email"
+        label="Email"
+        labelPlacement="stacked"
+        type="email"
+        placeholder="email@domain.com"
+        errorText="Email non valida"
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="telefono" label="Telefono" type="tel" placeholder="123 4567890"
-      errorText="Telefono non valido" required="true"></ion-input>
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="telefono"
+        label="Telefono"
+        labelPlacement="stacked"
+        type="tel"
+        placeholder="123 4567890"
+        errorText="Telefono non valido"
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="password" label="Password" type="password"
-      errorText="Password non valida. Almeno 8 caratteri, una lettera maiuscola, minuscola e
-      un numero" required="true"></ion-input>
+    <ion-item class="auth-input-item" lines="none">
+      <ion-input
+        formControlName="password"
+        label="Password"
+        labelPlacement="stacked"
+        type="password"
+        errorText="Password non valida. Almeno 8 caratteri, una lettera maiuscola, minuscola e un numero"
+        required="true">
+      </ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input formControlName="confermaPassword" label="Conferma Password" type="password"
-      errorText="Le password inserite non coincidono" required="true"></ion-input>
+    <ion-item class="auth-input-item auth-input-full" lines="none">
+      <ion-input
+        formControlName="confermaPassword"
+        label="Conferma Password"
+        labelPlacement="stacked"
+        type="password"
+        errorText="Le password inserite non coincidono"
+        required="true">
+      </ion-input>
     </ion-item>
-
   </ion-list>
 </form>

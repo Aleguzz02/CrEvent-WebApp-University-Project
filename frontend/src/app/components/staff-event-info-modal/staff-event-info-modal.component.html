@@ -98,6 +98,20 @@
           </div>
         }
       </div>
+
+      @if (locationMapUrl; as mapUrl) {
+        <div class="modal-map-action">
+          <ion-button
+            class="maps-button"
+            size="small"
+            [href]="mapUrl"
+            target="_blank"
+            rel="noopener noreferrer">
+            <ion-icon slot="start" name="map-outline"></ion-icon>
+            Apri su Maps
+          </ion-button>
+        </div>
+      }
     </section>
   </div>
 </ion-content>

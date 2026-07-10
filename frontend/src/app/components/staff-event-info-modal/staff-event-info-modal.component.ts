@@ -11,7 +11,7 @@ import {
   ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { callOutline, closeOutline, mailOutline } from 'ionicons/icons';
+import { callOutline, closeOutline, mailOutline, mapOutline } from 'ionicons/icons';
 import type { StaffEventCard } from '../staff-event-info-card/staff-event-info-card.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class StaffEventInfoModalComponent implements OnInit {
   locationAddress: string | null = null;
 
   constructor(private modalController: ModalController) {
-    addIcons({ callOutline, closeOutline, mailOutline });
+    addIcons({ callOutline, closeOutline, mailOutline, mapOutline });
   }
 
   ngOnInit(): void {
@@ -85,5 +85,21 @@ export class StaffEventInfoModalComponent implements OnInit {
 
   close(): void {
     this.modalController.dismiss();
+  }
+
+  get locationMapUrl(): string | null {
+    const event = this.eventCard.event;
+
+    if (
+      event.customLocation !== 1 ||
+      typeof event.lat !== 'number' ||
+      typeof event.lng !== 'number' ||
+      !Number.isFinite(event.lat) ||
+      !Number.isFinite(event.lng)
+    ) {
+      return null;
+    }
+
+    return `https://www.google.com/maps?q=${event.lat},${event.lng}`;
   }
 }

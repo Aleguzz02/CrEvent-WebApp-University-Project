@@ -28,14 +28,19 @@
   </ion-refresher>
 
   @if(!isAuthenticated) {
-    <div class="centered-container">
-      <ion-card class="profile-card login-card">
+    <section class="auth-empty-state" aria-labelledby="profile-auth-title">
+      <ion-card class="auth-gate-card">
         <ion-card-content>
-          <div class="text-center">
-            <p class="ion-text-muted">
-              Accedi per visualizzare il tuo profilo.
-            </p>
+          <div class="auth-gate-icon" aria-hidden="true">
+            <ion-icon name="person-circle-outline"></ion-icon>
+          </div>
 
+          <h2 id="profile-auth-title" class="auth-gate-title">Profilo</h2>
+          <p class="auth-gate-copy">
+            Accedi per utilizzare la piattaforma e gestire il tuo profilo.
+          </p>
+
+          <div class="auth-gate-actions">
             <ion-button 
               (click)="openLoginModal()" 
               expand="block" 
@@ -51,15 +56,16 @@
               expand="block" 
               fill="outline"
               shape="round"
+              class="auth-secondary-action"
             >
               <ion-icon slot="start" name="person-add"></ion-icon>
-              Crea un nuovo account
+              Crea un account
             </ion-button>
-            
           </div>
+
         </ion-card-content>
       </ion-card>
-    </div>
+    </section>
   }
 
   @if(isAuthenticated) {

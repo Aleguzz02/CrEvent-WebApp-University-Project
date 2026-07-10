@@ -18,7 +18,7 @@
 
     @if(sezione !== 'iniziale') {
       <ion-buttons slot="start">
-        <ion-button (click)="sezione = 'iniziale'">Indietro</ion-button>
+        <ion-button class="comando-toolbar-grigio" fill="clear" (click)="sezione = 'iniziale'">Indietro</ion-button>
       </ion-buttons>
     }
 
@@ -54,25 +54,41 @@
 
     @if (sezione === 'iniziale') {
     <div class="contenitore-iniziale">
-      <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
-        <div class="overlay-scuro">
-          <ion-card-header>
-            <ion-card-title id="locationTitleButtonBrowse">
-              <strong>Location</strong>
-            </ion-card-title>
-          </ion-card-header>
-        </div>
-      </ion-card>
+      <section class="intro-evento" aria-labelledby="titolo-intro-evento">
+        <h1 id="titolo-intro-evento">
+          <span class="titolo-brand">CrEvent</span>
+          <span class="titolo-catchphrase">Create your Event</span>
+          <span class="sottotitolo-catchphrase">Scegli, personalizza e crea la tua serata. Al resto pensiamo noi.</span>
+        </h1>
+        <p>
+          Esplora le nostre proposte e trova la combinazione perfetta per il tuo evento:
+          scopri location selezionate, professionisti e servizi dedicati, confronta le diverse
+          possibilità e scegli tutto ciò che renderà speciale la tua serata. Quando avrai trovato
+          la soluzione giusta, potrai personalizzarla e prenotarla direttamente con CrEvent.
+        </p>
+      </section>
 
-      <ion-card class="bottone-grande staff-bg" (click)="selezionaSezione('staff')">
-        <div class="overlay-scuro">
-          <ion-card-header>
-            <ion-card-title>
-              <strong>Staff</strong>
-            </ion-card-title>
-          </ion-card-header>
-        </div>
-      </ion-card>
+      <div class="scelte-evento">
+        <ion-card class="bottone-grande location-bg" (click)="selezionaSezione('location')">
+          <div class="overlay-scuro">
+            <ion-card-header>
+              <ion-card-title id="locationTitleButtonBrowse">
+                <strong>Location</strong>
+              </ion-card-title>
+            </ion-card-header>
+          </div>
+        </ion-card>
+
+        <ion-card class="bottone-grande staff-bg" (click)="selezionaSezione('staff')">
+          <div class="overlay-scuro">
+            <ion-card-header>
+              <ion-card-title>
+                <strong>Staff</strong>
+              </ion-card-title>
+            </ion-card-header>
+          </div>
+        </ion-card>
+      </div>
     </div>
     }
     @if(sezione === 'location'){

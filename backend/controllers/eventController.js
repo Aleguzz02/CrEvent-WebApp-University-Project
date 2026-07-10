@@ -171,7 +171,8 @@ exports.getAvailableStaff = async (request, response) => {
           location.lng,
           location.nome,
           emailUtente,
-          data
+          data,
+          invitati
         );
 
         finalIdLocation = newLocation.id;

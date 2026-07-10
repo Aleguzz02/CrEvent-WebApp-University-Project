@@ -15,7 +15,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { camera, call, pencil, lockClosed, chevronForward, trash, images, close, logIn, personAdd } from 'ionicons/icons';
+import {
+  camera, call, pencil, lockClosed, chevronForward, trash, images, close,
+  logIn, personAdd, personCircleOutline
+} from 'ionicons/icons';
 import { EditPhoneModalComponent } from '../components/edit-phone-modal/edit-phone-modal.component';
 import { ChangePasswordModalComponent } from '../components/change-password-modal/change-password-modal.component';
 
@@ -50,7 +53,10 @@ export class Tab3Page implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor() {
-    addIcons({ camera, call, pencil, lockClosed, chevronForward, trash, images, close, logIn, personAdd });
+    addIcons({
+      camera, call, pencil, lockClosed, chevronForward, trash, images, close,
+      logIn, personAdd, personCircleOutline
+    });
   }
 
   ngOnInit(): void {
@@ -106,6 +112,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
+      cssClass: ['auth-modal', 'auth-login-modal'],
     });
     await modal.present();
   }
@@ -113,6 +120,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
+      cssClass: ['auth-modal', 'auth-signup-modal'],
     });
     await modal.present();
   }

@@ -22,6 +22,35 @@ ion-segment {
   margin: 0 auto;
 }
 
+.booking-search-container {
+  width: min(100%, 800px);
+  margin: 8px auto 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  .booking-search {
+    padding: 0;
+    --background: transparent;
+    --box-shadow: none;
+    border-radius: 14px;
+    color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+    --icon-color: rgba(255, 255, 255, 0.7);
+    --clear-button-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.empty-booking-section {
+  width: 100%;
+  margin: 20px auto;
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+
 .locations-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -70,9 +99,9 @@ ion-datetime {
 
 .titolo-nuovo-evento {
   font-family: 'Montserrat', sans-serif;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: var(--ion-color-primary, #3880ff);
 }
 

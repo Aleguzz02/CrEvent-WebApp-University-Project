@@ -14,7 +14,8 @@ import {
   IonDatetime,
   ModalController,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  IonSearchbar
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { LocationSelectableCardComponent } from '../components/location-selectable-card/location-selectable-card.component';
@@ -55,7 +56,8 @@ type SelectedStaffByCategory = {
     IonDatetime,
     LocationSelectableCardComponent,
     IonCard, IonCardContent,
-    StaffSelectableCardComponent
+    StaffSelectableCardComponent,
+    IonSearchbar
   ]
 })
 
@@ -90,6 +92,9 @@ export class CreateEventPage implements OnInit {
   fotografo: StaffResource[] = [];
   altro: StaffResource[] = [];
 
+  searchTerm = '';
+  isSearching = false;
+
   selectedStaffByCategory: SelectedStaffByCategory = {
     catering: null,
     intrattenimento: null,
@@ -118,6 +123,59 @@ export class CreateEventPage implements OnInit {
 
   get eventCapacity(): number {
     return this.tempEvent?.capacity ?? 0;
+  }
+
+  get locationFiltrate(): LocationResource[] {
+    return this.filterLocations(this.locations);
+  }
+
+  get freeLocationsFiltrate(): LocationResource[] {
+    return this.filterLocations(this.freeLocations);
+  }
+
+  get hasStaffResults(): boolean {
+    return this.catering.length > 0
+      || this.intrattenimento.length > 0
+      || this.fotografo.length > 0
+      || this.altro.length > 0;
+  }
+
+  onSearchChange(event: any) {
+    this.searchTerm = event.detail.value || '';
+    this.filterBookingData();
+  }
+
+  private filterBookingData() {
+    const ricerca = this.searchTerm.trim().toLowerCase();
+    this.isSearching = ricerca !== '';
+
+    if (this.step !== 'staff') {
+      return;
+    }
+
+    const staffFiltrato = this.staffDisponibile.filter(staff => {
+      const testoStaff = `${staff.nome} ${staff.cognome} ${staff.tipo} ${staff.descrizione} ${staff.genereMusicale ?? ''} ${staff.genereFotografico ?? ''} ${staff.mansione ?? ''}`.toLowerCase();
+      return testoStaff.includes(ricerca);
+    });
+
+    this.catering = staffFiltrato.filter(staff => staff.tipo === 'catering');
+    this.intrattenimento = staffFiltrato.filter(staff => staff.tipo === 'intrattenimento');
+    this.fotografo = staffFiltrato.filter(staff => staff.tipo === 'fotografo');
+    this.altro = staffFiltrato.filter(staff => staff.tipo === 'altro');
+  }
+
+  private filterLocations(locations: LocationResource[]): LocationResource[] {
+    const ricerca = this.searchTerm.trim().toLowerCase();
+
+    return locations.filter(location => {
+      const testoLocation = `${location.nome} ${location.citta} ${location.indirizzo} ${location.descrizione}`.toLowerCase();
+      return testoLocation.includes(ricerca);
+    });
+  }
+
+  private resetSearch() {
+    this.searchTerm = '';
+    this.isSearching = false;
   }
 
   caricaLocations() {
@@ -250,6 +308,7 @@ locationLibera(location: LocationResource, day: string) {
   continue() {
   if (this.step === 'locationDate') {
     this.step = 'staff';
+    this.resetSearch();
     this.loadAvaiableStaff();
     return;
   }
@@ -275,11 +334,7 @@ locationLibera(location: LocationResource, day: string) {
           if (!response.success || !response.data) return;
 
           this.staffDisponibile = response.data;
-
-          this.catering = this.staffDisponibile.filter(s => s.tipo === 'catering');
-          this.intrattenimento = this.staffDisponibile.filter(s => s.tipo === 'intrattenimento');
-          this.fotografo = this.staffDisponibile.filter(s => s.tipo === 'fotografo');
-          this.altro = this.staffDisponibile.filter(s => s.tipo === 'altro');
+          this.filterBookingData();
         },
         error: err => console.error(err)
       });  
@@ -288,6 +343,7 @@ locationLibera(location: LocationResource, day: string) {
   goBackStep() {
     if (this.step === 'staff') {
       this.step = 'locationDate';
+      this.resetSearch();
       this.resetStaffSelection();
       return;
     }

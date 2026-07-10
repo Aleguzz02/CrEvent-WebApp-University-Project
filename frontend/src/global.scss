@@ -39,13 +39,13 @@
 @import "leaflet/dist/leaflet.css";
 
 :root{
-  --ion-color-cash: rgb(28, 205, 28);
+  --ion-color-cash: #0ea5a8;
   --font-brand: 'Celestial', sans-serif;
   --font-title: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
   --ion-font-family: var(--font-body);
-  --app-glass-bg: rgba(0, 0, 0, 0.62);
-  --app-glass-border: rgba(255, 255, 255, 0.08);
+  --app-glass-bg: rgba(13, 19, 23, 0.82);
+  --app-glass-border: rgba(103, 232, 249, 0.18);
   --app-glass-blur: blur(6px);
 }
 
@@ -82,7 +82,7 @@ h3 {
 
 .resource-detail-modal::part(content) {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 11, 13, 0.88);
+  background: rgba(0, 0, 0, 0.48);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -97,6 +97,12 @@ h3 {
   --border-radius: 30px;
   --width: 600px;
   --height: 600px;
+}
+
+.create-modals::part(content){
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  --background: rgba(0,0,0,0.2);
 }
 
 .checkout-modal-sheet {
@@ -332,6 +338,31 @@ ion-alert.delete-account-alert {
   color: var(--ion-color-danger);
 }
 
+ion-alert.admin-delete-alert {
+  --width: 430px;
+  --max-width: calc(100% - 32px);
+  --background: rgba(12, 18, 22, 0.62);
+  --backdrop-opacity: 0.56;
+}
+
+ion-alert.admin-delete-alert ion-backdrop {
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+.admin-delete-alert .alert-wrapper {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.025) 55%),
+    rgba(12, 18, 22, 0.62);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+
 html,
 body,
 app-root {
@@ -388,8 +419,6 @@ ion-toolbar,
 ion-tab-bar {
   --background: var(--app-glass-bg);
   --color: #ffffff;
-    backdrop-filter: var(--app-glass-blur);
-    -webkit-backdrop-filter: var(--app-glass-blur);
 
   border-color: var(--app-glass-border);
 }
@@ -398,18 +427,145 @@ ion-toolbar {
   --border-color: var(--app-glass-border);
 }
 
+/* Stile testuale condiviso per Annulla, Indietro e Chiudi nelle toolbar. */
+.contenitore-annulla.annulla-uniforme {
+  width: auto !important;
+  height: auto !important;
+  margin-left: 4px !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+.contenitore-annulla.annulla-uniforme:hover {
+  transform: none !important;
+}
+
+.contenitore-annulla.annulla-uniforme:active {
+  transform: none !important;
+}
+
+.annulla-uniforme ion-button.bottone-annulla,
+ion-button.comando-toolbar-grigio {
+  --background: transparent !important;
+  --background-hover: transparent !important;
+  --background-activated: transparent !important;
+  --color: var(--ion-color-medium) !important;
+  --box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.annulla-uniforme ion-button.bottone-annulla:hover,
+ion-button.comando-toolbar-grigio:hover {
+  --color: var(--ion-color-medium) !important;
+}
+
+.annulla-uniforme ion-button.bottone-annulla:active,
+ion-button.comando-toolbar-grigio:active {
+  transform: none !important;
+}
+
 ion-tab-bar {
-  --color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: var(--app-glass-blur);
+  -webkit-backdrop-filter: var(--app-glass-blur);
+  --color: rgba(255, 255, 255, 0.348);
   --color-selected: #ffffff;
   border-top: 1px solid var(--app-glass-border);
+}
+
+ion-tab-button{
+  --background: transparent;
 }
 
 ion-modal.staff-event-detail-modal {
   --height: min(720px, 88vh);
   --width: min(680px, calc(100vw - 28px));
+  --max-width: calc(100% - 28px);
+  --max-height: 92%;
   --border-radius: 14px;
+  --background: transparent;
+  --backdrop-opacity: 0.58;
+}
+
+ion-modal.staff-event-detail-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 ion-modal.staff-event-detail-modal::part(content) {
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.38);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+ion-modal.staff-event-detail-modal .ion-page {
+  position: relative;
+  contain: content;
+}
+
+@media (max-width: 600px) {
+  ion-modal.staff-event-detail-modal {
+    --width: 100%;
+    --height: 100%;
+    --max-width: 100%;
+    --max-height: 100%;
+    --border-radius: 0;
+  }
+}
+
+ion-modal.auth-modal {
+  --width: min(620px, calc(100vw - 28px));
+  --max-width: calc(100% - 28px);
+  --max-height: 92%;
+  --border-radius: 30px;
+  --background: transparent;
+  --backdrop-opacity: 0.58;
+}
+
+ion-modal.auth-login-modal {
+  --height: min(580px, 90vh);
+}
+
+ion-modal.auth-signup-modal {
+  --height: min(720px, 92vh);
+}
+
+ion-modal.auth-recovery-modal {
+  --height: min(620px, 90vh);
+}
+
+ion-modal.auth-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.64);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+ion-modal.auth-modal::part(content) {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.38);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+ion-modal.auth-modal .ion-page {
+  position: relative;
+  contain: content;
+}
+
+@media (max-width: 600px) {
+  ion-modal.auth-modal,
+  ion-modal.auth-login-modal,
+  ion-modal.auth-signup-modal,
+  ion-modal.auth-recovery-modal {
+    --width: 100%;
+    --height: 100%;
+    --max-width: 100%;
+    --max-height: 100%;
+    --border-radius: 0;
+  }
 }

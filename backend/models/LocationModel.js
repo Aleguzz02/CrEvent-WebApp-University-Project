@@ -61,9 +61,9 @@ const LocationModel = {
         );
     },
 
-    addCustomLoc: (lat, lng, nome, idUtente, dataOggi) => {
+    addCustomLoc: (lat, lng, nome, idUtente, dataOggi, capienza) => {
             const query = `INSERT INTO Location (nome, indirizzo, citta, descrizione, capienza, lat, lng, costo, custom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`;
-            return run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, 0, lat, lng, 0]);
+            return run(query,[nome, `${idUtente} ${dataOggi}`, 0, 0, capienza, lat, lng, 0]);
     },
 
     remLoc: async (idLocation) => {

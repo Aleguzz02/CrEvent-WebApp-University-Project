@@ -27,14 +27,83 @@ ion-toolbar ion-button {
   --border-radius: 18px;
 }
 
-.text-center {
+.auth-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.auth-gate-card {
+  width: 100%;
+  max-width: 620px;
+  margin: 0;
+  border: 1px solid var(--app-glass-border);
+  border-radius: 20px;
+  background: var(--app-glass-bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.auth-gate-card ion-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px;
   text-align: center;
 }
 
-.centered-container {
+.auth-gate-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 16px;
+  border: 1px solid var(--ion-color-primary);
+  border-radius: 20px;
+  color: var(--ion-color-primary);
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
+}
+
+.auth-gate-icon ion-icon {
+  font-size: 36px;
+}
+
+.auth-gate-title {
+  margin: 0;
+  color: var(--ion-color-light);
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.auth-gate-copy {
+  max-width: 380px;
+  margin: 8px 0 0;
+  color: var(--ion-color-medium);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.auth-gate-actions {
+  display: flex;
+  gap: 12px;
   width: 100%;
-  max-width: 480px;
-  margin: 48px auto 0;
+  margin-top: 24px;
+}
+
+.auth-gate-actions ion-button {
+  flex: 1;
+  height: 50px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.auth-secondary-action {
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-color-light);
 }
 
 .profile-container {
@@ -52,27 +121,6 @@ ion-toolbar ion-button {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
   backdrop-filter: var(--app-glass-blur, blur(18px));
   -webkit-backdrop-filter: var(--app-glass-blur, blur(18px));
-}
-
-.login-card {
-  margin: 0;
-  overflow: hidden;
-}
-
-.login-card ion-card-content {
-  padding: 24px;
-}
-
-.login-card p {
-  margin: 0 0 18px;
-  color: var(--ion-color-medium);
-  line-height: 1.4;
-}
-
-.login-card ion-button {
-  height: 46px;
-  margin-top: 12px;
-  font-weight: 700;
 }
 
 .profile-loading-list {
@@ -216,8 +264,32 @@ ion-toolbar ion-button {
 }
 
 @media (max-width: 480px) {
-  .centered-container {
-    margin-top: 32px;
+  .auth-empty-state {
+    padding: 24px 0;
+  }
+
+  .auth-gate-card {
+    border-radius: 18px;
+  }
+
+  .auth-gate-card ion-card-content {
+    padding: 28px 22px;
+  }
+
+  .auth-gate-icon {
+    width: 66px;
+    height: 66px;
+    margin-bottom: 18px;
+    border-radius: 18px;
+  }
+
+  .auth-gate-icon ion-icon {
+    font-size: 34px;
+  }
+
+  .auth-gate-actions {
+    flex-direction: column;
+    margin-top: 24px;
   }
 
   .profile-container {
