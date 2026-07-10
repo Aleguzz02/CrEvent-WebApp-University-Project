@@ -33,7 +33,6 @@ import { ChangePasswordModalComponent } from '../components/change-password-moda
 })
 export class Tab3Page implements OnInit, OnDestroy {
 
-  // Servizi
   private authService = inject(AuthService);
   private profileService = inject(ProfileService);
   private modalCtrl = inject(ModalController);
@@ -44,12 +43,10 @@ export class Tab3Page implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  // Variabili pubbliche
   isAuthenticated = false;
   profile: UserProfile | null = null;
   loading = false;
 
-  // Gestione unsubscribe
   private destroy$ = new Subject<void>();
 
   constructor() {
@@ -57,44 +54,35 @@ export class Tab3Page implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Sottoscrizione allo stato di autenticazione
     this.authService.isAuthenticated$
       .pipe(takeUntil(this.destroy$))
       .subscribe(status => {
         this.isAuthenticated = status;
         if (status) {
-          // Se autenticato, carica il profilo
           this.loadProfile();
         } else {
-          // Se non autenticato, resetta il profilo
           this.profileService.resetProfile();
           this.profile = null;
         }
       });
 
-    // Sottoscrizione ai dati del profilo
     this.profileService.profile$
       .pipe(takeUntil(this.destroy$))
       .subscribe(profile => {
         this.profile = profile;
       });
 
-    // Sottoscrizione allo stato di caricamento
     this.profileService.loading$
       .pipe(takeUntil(this.destroy$))
       .subscribe(loading => {
         this.loading = loading;
       });
 
-    // Se non autenticato all'avvio, apri il login
     if (!this.isAuthenticated) {
       this.openLoginModal();
     }
   }
 
-  /**
-   * Carica il profilo con pull-to-refresh
-   */
   loadProfile(event?: any): void {
     this.profileService.loadProfile().subscribe({
       next: (response) => {
@@ -115,9 +103,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Apre il modal di login
-   */
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
       component: LoginModalComponent,
@@ -125,9 +110,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await modal.present();
   }
 
-  /**
-   * Apre il modal di signup
-   */
   async openSignupModal() {
     const modal = await this.modalCtrl.create({
       component: SignupModalComponent,
@@ -135,17 +117,12 @@ export class Tab3Page implements OnInit, OnDestroy {
     await modal.present();
   }
 
-  /**
-   * Logout
-   */
   logout(): void {
     this.authService.logout();
     this.profileService.resetProfile();
   }
 
-  // FUNZIONI PER IL TELEFONO (usando EditPhoneModalComponent)
 
-  // Apre il modale per modificare il telefono
   async openEditPhoneModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: EditPhoneModalComponent,
@@ -158,16 +135,12 @@ export class Tab3Page implements OnInit, OnDestroy {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'save' && data) {
-      // data è il nuovo telefono (stringa)
       await this.savePhone(data);
     } else if (role === 'error' && data?.error) {
       this.showToast(data.error, 'danger');
     }
   }
 
-  /**
-   * Salva il nuovo telefono (chiamato dal modale)
-   */
   async savePhone(newPhone: string): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Aggiornamento in corso...'
@@ -191,11 +164,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== FUNZIONI PER LA PASSWORD (usando ChangePasswordModalComponent) ====================
-
-  /**
-   * Apre il modale per cambiare password
-   */
   async openPasswordModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: ChangePasswordModalComponent,
@@ -205,16 +173,12 @@ export class Tab3Page implements OnInit, OnDestroy {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'save' && data) {
-      // data contiene { currentPassword, newPassword }
       await this.savePassword(data.currentPassword, data.newPassword);
     } else if (role === 'error' && data?.error) {
       this.showToast(data.error, 'danger');
     }
   }
 
-  /**
-   * Salva la nuova password (chiamata dal modale)
-   */
   async savePassword(currentPassword: string, newPassword: string): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Aggiornamento in corso...'
@@ -238,11 +202,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== FUNZIONI PER LA FOTO PROFILO ====================
-
-  /**
-   * Apre l'action sheet per gestire la foto
-   */
   async openPhotoActionSheet(): Promise<void> {
     const buttons: any[] = [
       {
@@ -252,7 +211,6 @@ export class Tab3Page implements OnInit, OnDestroy {
       }
     ];
 
-    // Se esiste già una foto, aggiungi il pulsante per rimuoverla
     if (this.profile?.urlFotoProfilo) {
       buttons.push({
         text: 'Rimuovi foto',
@@ -276,9 +234,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await actionSheet.present();
   }
 
-  /**
-   * Prende una foto dalla fotocamera o galleria
-   */
   async takePhoto(source: 'camera' | 'gallery'): Promise<void> {
     const input = document.createElement('input');
     input.type = 'file';
@@ -298,9 +253,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     input.click();
   }
 
-  /**
-   * Carica la foto sul server
-   */
   async uploadPhoto(file: File): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Caricamento in corso...'
@@ -325,9 +277,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Conferma la rimozione della foto
-   */
   async confirmDeletePicture(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Rimuovi foto',
@@ -347,9 +296,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  /**
-   * Rimuove la foto dal server
-   */
   async deletePicture(): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Rimozione in corso...'
@@ -374,11 +320,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== FUNZIONI PER ELIMINARE L'ACCOUNT ====================
-
-  /**
-   * Avvia il flusso di eliminazione account (primo step: chiede la password)
-   */
   async startDeleteAccount(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Conferma identità',
@@ -406,7 +347,7 @@ export class Tab3Page implements OnInit, OnDestroy {
               this.confirmDeleteAccount(data.password);
             } else {
               this.showToast('Inserisci la password', 'warning');
-              return false; // Mantiene l'alert aperto
+              return false;
             }
             return true;
           }
@@ -416,9 +357,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  /**
-   * Secondo step: conferma finale dell'eliminazione
-   */
   async confirmDeleteAccount(password: string): Promise<void> {
     const alert = await this.alertCtrl.create({
       cssClass: ['delete-account-alert', 'delete-account-alert-danger'],
@@ -439,9 +377,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  /**
-   * Esecuzione finale dell'eliminazione
-   */
   async executeDeleteAccount(password: string): Promise<void> {
     const loading = await this.loadingCtrl.create({
       message: 'Eliminazione in corso...'
@@ -453,7 +388,6 @@ export class Tab3Page implements OnInit, OnDestroy {
         loading.dismiss();
         if (response.success) {
           this.showToast('Account eliminato con successo', 'success');
-          // Logout e reset
           this.authService.logout();
           this.profileService.resetProfile();
           this.router.navigate(['/tabs/tab2']);
@@ -469,11 +403,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== UTILITY ====================
-
-  /**
-   * Mostra un toast
-   */
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success'): Promise<void> {
     const toast = await this.toastCtrl.create({
       message: message,
@@ -490,9 +419,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     await toast.present();
   }
 
-  /**
-   * Ottiene le iniziali per l'avatar fallback
-   */
   getInitials(): string {
     if (!this.profile) return '?';
     const nome = this.profile.nome || '';
@@ -500,9 +426,6 @@ export class Tab3Page implements OnInit, OnDestroy {
     return (nome.charAt(0) + cognome.charAt(0)).toUpperCase() || '?';
   }
 
-  /**
-   * Formatta la data di nascita
-   */
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
     const date = new Date(dateStr + 'T00:00:00');

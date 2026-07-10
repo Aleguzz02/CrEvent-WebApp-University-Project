@@ -28,7 +28,6 @@ import { AddStaffModalComponent } from '../components/add-staff-modal/add-staff-
 })
 export class Tab2Page implements OnInit, OnDestroy {
 
-  // Servizi
   private toast = inject(ToastService);
   private browseService = inject(BrowseService);
   private authService = inject(AuthService);
@@ -151,7 +150,6 @@ export class Tab2Page implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error("Impossibile connettersi al backend:", err);
-        //this.toast.error("Errore durante la ricezione degli elementi");
         this.toast.error(err.message);
       }
     });

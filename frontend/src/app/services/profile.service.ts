@@ -17,19 +17,14 @@ import {
 export class ProfileService {
   private apiUrl = 'http://localhost:3000/api';
 
-  // Stato del profilo (BehaviorSubject per reattività)
   private profileSubject = new BehaviorSubject<UserProfile | null>(null);
   profile$ = this.profileSubject.asObservable();
 
-  // Stato di caricamento
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Carica il profilo dal server
-   */
   loadProfile(): Observable<ApiResponse<UserProfile>> {
     this.loadingSubject.next(true);
     return this.http.get<ApiResponse<UserProfile>>(`${this.apiUrl}/profile`)
@@ -47,9 +42,6 @@ export class ProfileService {
       );
   }
 
-  /**
-   * Aggiorna il telefono
-   */
   updatePhone(telefono: string): Observable<ApiResponse<{ telefono: string }>> {
     this.loadingSubject.next(true);
     const payload: UpdatePhoneRequest = { telefono };
@@ -60,7 +52,6 @@ export class ProfileService {
       tap(response => {
         this.loadingSubject.next(false);
         if (response.success && response.data) {
-          // Aggiorna localmente il profilo
           const current = this.profileSubject.value;
           if (current) {
             this.profileSubject.next({
@@ -77,9 +68,6 @@ export class ProfileService {
     );
   }
 
-  /**
-   * Cambia password
-   */
   updatePassword(currentPassword: string, nuovaPassword: string): Observable<ApiResponse<null>> {
     this.loadingSubject.next(true);
     const payload: UpdatePasswordRequest = { passwordCorrente: currentPassword, nuovaPassword };
@@ -93,17 +81,13 @@ export class ProfileService {
       );
   }
 
-/**
- * Carica foto profilo
- */
 uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
   this.loadingSubject.next(true);
   const formData = new FormData();
   formData.append('file', file);
 
-  // Aggiungi ?type=profile come query parameter
   return this.http.post<ApiResponse<ProfilePictureResponse>>(
-    `${this.apiUrl}/profile/foto?type=profile`,  // <-- MODIFICATO
+    `${this.apiUrl}/profile/foto?type=profile`,
     formData
   ).pipe(
     tap(response => {
@@ -125,9 +109,6 @@ uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
   );
 }
 
-  /**
-   * Rimuovi foto profilo
-   */
   deletePicture(): Observable<ApiResponse<null>> {
     this.loadingSubject.next(true);
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/profile/foto`)
@@ -135,7 +116,6 @@ uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
         tap(response => {
           this.loadingSubject.next(false);
           if (response.success) {
-            // Aggiorna localmente il profilo
             const current = this.profileSubject.value;
             if (current) {
               this.profileSubject.next({
@@ -152,9 +132,6 @@ uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
       );
   }
 
-  /**
-   * Elimina account (fisico)
-   */
   deleteAccount(password: string): Observable<ApiResponse<null>> {
     this.loadingSubject.next(true);
     const payload: DeleteAccountRequest = { password };
@@ -169,17 +146,11 @@ uploadPicture(file: File): Observable<ApiResponse<ProfilePictureResponse>> {
     );
   }
 
-  /**
-   * Resetta lo stato del profilo (logout)
-   */
   resetProfile(): void {
     this.profileSubject.next(null);
     this.loadingSubject.next(false);
   }
 
-  /**
-   * Ottieni il profilo corrente (senza subscribe)
-   */
   getCurrentProfile(): UserProfile | null {
     return this.profileSubject.value;
   }

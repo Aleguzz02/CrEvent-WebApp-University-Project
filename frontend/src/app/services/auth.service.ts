@@ -78,7 +78,6 @@ export class AuthService {
     return this.http.post(`/api/login`, userData).pipe(
       switchMap((res: any) => {
         if (res && res.token) {
-          // Salva token e email nel localStorage
           localStorage.setItem('token', res.token);
           localStorage.setItem('userEmail', res.userEmail);
           if (res.userNome) {

@@ -23,12 +23,10 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- PULL TO REFRESH -->
   <ion-refresher slot="fixed" (ionRefresh)="loadProfile($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- NON AUTENTICATO -->
   @if(!isAuthenticated) {
     <div class="centered-container">
       <ion-card class="profile-card login-card">
@@ -64,10 +62,8 @@
     </div>
   }
 
-  <!-- AUTENTICATO -->
   @if(isAuthenticated) {
     @if(loading && !profile) {
-      <!-- SKELETON LOADING -->
       <ion-list class="profile-loading-list">
         <ion-item>
           <ion-avatar slot="start">
@@ -89,10 +85,8 @@
         </ion-item>
       </ion-list>
     } @else if(profile) {
-      <!-- PROFILO -->
       <div class="profile-container">
 
-        <!-- AVATAR -->
         <div class="avatar-section">
           <ion-avatar class="profile-avatar">
             @if(profile.urlFotoProfilo) {
@@ -113,7 +107,6 @@
           <p class="profile-email">{{ profile.email }}</p>
         </div>
 
-        <!-- DATI PERSONALI -->
         <ion-card class="profile-card">
           <ion-card-content>
             <ion-list class="profile-list" lines="none">
@@ -143,7 +136,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- SICUREZZA -->
         <ion-card class="profile-card">
           <ion-card-content>
             <ion-item button (click)="openPasswordModal()">
@@ -157,7 +149,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- DANGER ZONE -->
         <ion-card class="profile-card danger-card">
           <ion-card-content>
             <ion-item button (click)="startDeleteAccount()" lines="none">

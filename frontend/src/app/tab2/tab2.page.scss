@@ -17,7 +17,6 @@
   }
 }
 
-// Stile per il titolo grande quando la pagina non è ancora scrollata
 ion-header[collapse="condense"] .toolbar-grande ion-title {
   font-family: var(--font-brand);
   font-size: clamp(38px, 5vw, 54px);
@@ -64,26 +63,23 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
 
   .bottone-grande {
   width: 100%;
-  // Definiamo una dimensione base flessibile ed elegante per schermi desktop/web
   min-width: 180px;
   max-width: 260px;        
-  aspect-ratio: 1 / 1;     // Rapporto 1:1 fisso (Larghezza = Altezza)
+  aspect-ratio: 1 / 1;
   
-  margin: 0;               // Elimina i margini nativi di Ionic
+  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  border-radius: 20px;     // Arrotondamento moderno dei bordi
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-  //transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   background-size: cover;
   background-position: center;
 
-  // Effetto sollevamento al passaggio del mouse (Hover web)
   &:hover {
     transform: translateY(-6px); 
     box-shadow: 0 0ch 40px rgba(255, 255, 255, 0.7);
@@ -93,7 +89,6 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
     }
   }
 
-  // Sfondi fotografici provvisori
   &.location-bg {
     background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop');
   }
@@ -107,12 +102,12 @@ ion-header[collapse="condense"] .toolbar-grande ion-title {
 }
 }
 
-.overlay-scuro { //??? da capire cosa fa
+.overlay-scuro {
   background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 70%, rgba(0,0,0,0) 100%);
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;   // Spinge il testo in basso
+  align-items: flex-end;
   padding: 20px;
   box-sizing: border-box;
 

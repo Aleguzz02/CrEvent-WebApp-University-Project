@@ -17,14 +17,12 @@ export class UploadService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Carica un'immagine sul server
-   * @param file Il file da caricare
-   * @param type Tipo di immagine: 'profile', 'location', 'staff'
+   * @param file
+   * @param type
    */
   uploadImage(file: File, type: 'profile' | 'location' | 'staff'): Observable<ApiResponse<UploadResponse>> {
     const formData = new FormData();
     formData.append('file', file);
-    // type ora va come query param
     return this.http.post<ApiResponse<UploadResponse>>(
       `${this.apiUrl}/upload?type=${type}`,
       formData
