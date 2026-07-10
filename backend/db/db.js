@@ -145,6 +145,8 @@ async function putData() {
         const pw1 = await bcrypt.hash('password1', saltRounds);
         const pw2 = await bcrypt.hash('password2', saltRounds);
         const pw3 = await bcrypt.hash('password3', saltRounds);
+        const pwVillaZuccarello = await bcrypt.hash('prova', saltRounds);
+        const pwStaffLocation = await bcrypt.hash('prova', saltRounds);
         db.serialize(() => {
         
             db.run(`
@@ -362,6 +364,56 @@ async function putData() {
                     if (err) console.error(err);
                 }
             );
+            db.run(`
+                INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idLocation) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                ['villazuccarello@crevent.com', pwVillaZuccarello, 'Gestore', 'Villa Zuccarello', '0000000000', '2000-01-01', '2', 1],
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
+            const staffAccounts = [
+                ['galaticatering@crevent.com', pwStaffLocation, 'Galati', 'Catering', '1111111112', '2000-01-01', '2', 1],
+                ['natalegiunta@crevent.com', pwStaffLocation, 'Natale', 'Chef Catering', '1111111113', '2000-01-01', '2', 2],
+                ['riccardoferrarese@crevent.com', pwStaffLocation, 'Riccardo', 'Ferrarese', '1111111114', '2000-01-01', '2', 3],
+                ['nelloanfuso@crevent.com', pwStaffLocation, 'Nello', 'Anfuso', '1111111115', '2000-01-01', '2', 4],
+                ['tiberiocantafia@crevent.com', pwStaffLocation, 'Tiberio', 'Cantafia', '1111111116', '2000-01-01', '2', 5],
+                ['emanueledangeli@crevent.com', pwStaffLocation, 'Emanuele', 'D\'Angeli', '1111111117', '2000-01-01', '2', 7],
+                ['sognidigrande@crevent.com', pwStaffLocation, 'Sogni', 'di Grande', '1111111118', '2000-01-01', '2', 8],
+            ];
+
+            staffAccounts.forEach((account) => {
+                db.run(`
+                    INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idStaff)
+                    SELECT ?, ?, ?, ?, ?, ?, ?, ?
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM User WHERE tipoUtente = 2 AND idStaff = ?
+                    )`,
+                    [...account, account[7]],
+                    (err) => {
+                        if (err) console.error(err);
+                    }
+                );
+            });
+
+            const locationAccounts = [
+                ['villainfinito@crevent.com', pwStaffLocation, 'Gestore', 'Villa Infinito', '0000000001', '2000-01-01', '2', 2],
+                ['baglioculluzia@crevent.com', pwStaffLocation, 'Gestore', 'Baglio Culluzia', '0000000002', '2000-01-01', '2', 3],
+            ];
+
+            locationAccounts.forEach((account) => {
+                db.run(`
+                    INSERT OR IGNORE INTO User (email, password, nome, cognome, telefono, dataNascita, tipoUtente, idLocation)
+                    SELECT ?, ?, ?, ?, ?, ?, ?, ?
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM User WHERE tipoUtente = 2 AND idLocation = ?
+                    )`,
+                    [...account, account[7]],
+                    (err) => {
+                        if (err) console.error(err);
+                    }
+                );
+            });
             db.run(`
                 INSERT OR IGNORE INTO Evento (id, data, nome, prezzoTotale, invitati, emailUtente, idLocation)
                 VALUES (?, ?, ?, ?, ?, ?, ?)`,

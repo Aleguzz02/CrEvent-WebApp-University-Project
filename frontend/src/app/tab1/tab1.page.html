@@ -3,6 +3,8 @@
     <ion-title class="titolo-eventi">
       @if (isAdmin) {
         Dashboard
+      } @else if (isStaff) {
+        Eventi staff
       } @else {
         I miei eventi
       }
@@ -63,7 +65,14 @@
   }
 
 
-  @if(isAuthenticated == true && isAdmin == false) {
+  @if(isAuthenticated == true && isStaff == true) {
+  
+        <app-staff-event-info-card></app-staff-event-info-card>
+      
+    
+  }
+
+  @if(isAuthenticated == true && isAdmin == false && isStaff == false) {
     @if(userEvents.length > 0){
       @for(event of userEvents; track event.id){
         <app-event-card [evento]="event"></app-event-card>
@@ -237,5 +246,4 @@
       </div>
     }
   }
-
 </ion-content>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../interfaces/profile.interface';
-import { EventDraft, Evento } from '../interfaces/event.interface';
+import { EventDraft, Evento, StaffEventInfo } from '../interfaces/event.interface';
 import { UserEventsResponse, EventDetailResponse } from '../interfaces/event.interface';
 import { LocationsResponse, LocationFreeDatesResponse, LocationResource } from '../interfaces/location.interface';
 import { StaffResource } from '../interfaces/staff.interface';
@@ -19,6 +19,10 @@ export class EventService {
   
   getUserEvents(): Observable<ApiResponse<Evento[]>> {
     return this.http.get<ApiResponse<Evento[]>>(this.apiUrl+'/myEvents');
+  }
+
+  getStaffEvents(): Observable<ApiResponse<StaffEventInfo[]>> {
+    return this.http.get<ApiResponse<StaffEventInfo[]>>(`${this.apiUrl}/staff/events`);
   }
 
   getAvailableStaff(idLocation: number, day: string): Observable<ApiResponse<StaffResource[]>> {
@@ -53,11 +57,7 @@ export class EventService {
     });
   }
   getEventDetail(idEvento: number): Observable<EventDetailResponse> {
-    return this.http.get<EventDetailResponse>(`${this.apiUrl}`, {
-     params: {
-      id: idEvento
-     }      
-    });
+    return this.http.get<EventDetailResponse>(`${this.apiUrl}/event/${idEvento}`);
   }
   createEvent(eventData: EventDraft, loc: LocationResource, staff: StaffResource[], date: string, price: number): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${this.apiUrl}/create`, 

@@ -3,7 +3,7 @@ const { run, get, all } = require('../db/dbAsync');
 const StaffModel = {
     getAllAvaiable: () => {
         const query = `
-            SELECT S.*, Im.url 
+            SELECT DISTINCT S.*, Im.url 
             FROM Staff S 
             LEFT JOIN immaginiStaff Im ON S.id = Im.idStaff
             LEFT JOIN dateStaff ON S.id = dateStaff.idStaff

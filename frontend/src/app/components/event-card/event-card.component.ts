@@ -1,8 +1,8 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HttpClient} from "@angular/common/http";
-import {IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle} from "@ionic/angular/standalone";
+import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, ModalController } from '@ionic/angular/standalone';
 import { Evento } from '../../interfaces/event.interface';
+import { EventDetailModalComponent } from '../event-detail-modal/event-detail-modal.component';
 
 
 
@@ -13,20 +13,27 @@ import { Evento } from '../../interfaces/event.interface';
   standalone: true,
   imports: [CommonModule, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonButton] 
 })
-export class EventCardComponent  implements OnInit {
+export class EventCardComponent {
   @Input({ required: true }) evento!: Evento;
    
-  constructor(private http: HttpClient) { }
+  constructor(private modalController: ModalController) { }
 
-  ngOnInit() {
-    this.caricaEventi();
+  async apriDettagli(): Promise<void> {
+    if (!Number.isFinite(this.evento.id)) {
+      return;
+    }
+
+    const modal = await this.modalController.create({
+      component: EventDetailModalComponent,
+      cssClass: 'event-detail-modal-sheet',
+      componentProps: {
+        eventId: this.evento.id,
+        evento: this.evento
+      }
+    });
+
+    await modal.present();
   }
-
-  caricaEventi(){
-
-  }
-
-  apriDettagli(){}
 
   get formattedDate(): string {
     const date = this.evento?.data;

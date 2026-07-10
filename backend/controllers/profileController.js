@@ -24,7 +24,10 @@ const getProfile = async (req, res) => {
         cognome: user.cognome,
         telefono: user.telefono,
         dataNascita: user.dataNascita,
-        urlFotoProfilo: user.urlFotoProfilo || null
+        urlFotoProfilo: user.urlFotoProfilo || null,
+        tipoUtente: user.tipoUtente,
+        idStaff: user.idStaff,
+        idLocation: user.idLocation
       }
     });
   } catch (err) {

@@ -111,7 +111,9 @@ exports.me = async (req, res) => {
                 telefono: user.telefono,
                 dataNascita: user.dataNascita,
                 urlFotoProfilo: user.urlFotoProfilo || null,
-                tipoUtente: user.tipoUtente
+                tipoUtente: user.tipoUtente,
+                idStaff: user.idStaff,
+                idLocation: user.idLocation
             }
         });
     } catch (err) {

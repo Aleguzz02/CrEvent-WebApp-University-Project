@@ -8,7 +8,7 @@ const LocationModel = {
             const result = await run(
                 `INSERT INTO Location 
                 (nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [nome, indirizzo, citta, descrizione, capienza, lat, lng, linkSito, costo]
             );
 
@@ -52,7 +52,7 @@ const LocationModel = {
     },
     getAllAvaiable: () => {
         return all(
-            `SELECT L.*, Im.url 
+            `SELECT DISTINCT L.*, Im.url
             FROM Location L 
             LEFT JOIN immaginiLocation Im ON L.id = Im.idLocation
             LEFT JOIN dateLocation ON L.id = dateLocation.idLocation
@@ -67,7 +67,7 @@ const LocationModel = {
     },
 
     remLoc: async (idLocation) => {
-    // Controllo eventi futuri
+
     const events = await get(`
         SELECT COUNT(*) AS totale
         FROM Evento

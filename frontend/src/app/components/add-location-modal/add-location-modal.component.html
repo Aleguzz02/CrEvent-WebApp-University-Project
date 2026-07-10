@@ -71,22 +71,14 @@
           </div>
         }
 
-        @if (isUploading) {
-          <div class="upload-overlay">
-            <ion-spinner name="crescent"></ion-spinner>
-            <p>Caricamento...</p>
-          </div>
-        }
       </div>
 
-      @if (imageUploaded && !isUploading) {
+      @if (selectedFile) {
         <ion-text color="success" class="upload-status">
           <ion-icon name="checkmark-circle"></ion-icon>
-          Immagine caricata con successo
+          Immagine pronta per il salvataggio
         </ion-text>
       }
-
-      <ion-input formControlName="urlImg" type="hidden"></ion-input>
     </div>
 
 
@@ -161,13 +153,9 @@
     <ion-button
       type="submit"
       expand="block"
-      [disabled]="locationForm.invalid || !imageUploaded || isUploading"
+      [disabled]="locationForm.invalid || !selectedFile"
     >
-      @if (isUploading) {
-        <ion-spinner name="crescent"></ion-spinner>
-      } @else {
-        Salva location
-      }
+      Salva location
     </ion-button>
   </form>
 </ion-content>

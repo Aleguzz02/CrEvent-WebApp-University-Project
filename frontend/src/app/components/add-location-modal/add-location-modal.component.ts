@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import {
   IonHeader,
   IonToolbar,
@@ -12,14 +12,12 @@ import {
   IonInput,
   IonText,
   IonTextarea,
-  IonSpinner,
   IonImg,
   IonIcon,
   IonLabel,
   ModalController
 } from '@ionic/angular/standalone';
 import { CreateLocationRequest } from '../../services/admin.service';
-import { UploadService } from '../../services/upload.service';
 import { ToastService } from '../../services/toast.service';
 import { addIcons } from 'ionicons';
 import { cloudUpload, close, checkmarkCircle } from 'ionicons/icons';
@@ -42,30 +40,24 @@ import { cloudUpload, close, checkmarkCircle } from 'ionicons/icons';
     IonInput,
     IonText,
     IonTextarea,
-    IonSpinner,
     IonIcon,
     IonLabel,
     IonImg
   ]
 })
-export class AddLocationModalComponent implements OnInit, OnDestroy {
+export class AddLocationModalComponent implements OnInit {
   private modalCtrl = inject(ModalController);
   private fb = inject(FormBuilder);
-  private uploadService = inject(UploadService);
   private toastService = inject(ToastService);
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   today = new Date().toISOString().slice(0, 10);
   locationForm!: FormGroup;
-  private cityPattern = /^[a-zA-ZÀÈÉÌÒÙàèéìòù\s'’’-]+$/;
+  private cityPattern = /^[\p{L}\s'-]+$/u;
 
-  // Stato upload
   selectedFile: File | null = null;
   previewUrl: string | null = null;
-  isUploading = false;
-  imageUploaded = false;
-  isConfirmed = false;
 
   constructor() {
     addIcons({ cloudUpload, close, checkmarkCircle });
@@ -79,7 +71,6 @@ export class AddLocationModalComponent implements OnInit, OnDestroy {
       descrizione: ['', [Validators.required, Validators.maxLength(2000)]],
       capienza: [null, [Validators.required, Validators.min(1), Validators.max(100000)]],
       costo: [null, [Validators.required, Validators.min(0.01)]],
-      urlImg: ['', [Validators.required]],
       linkSito: ['', Validators.pattern(/^https?:\/\/.+$/)],
       lat: [null, [Validators.min(-90), Validators.max(90)]],
       lng: [null, [Validators.min(-180), Validators.max(180)]],
@@ -95,116 +86,85 @@ export class AddLocationModalComponent implements OnInit, OnDestroy {
     });
   }
 
-    ngOnDestroy() {
-    // Se l'immagine è stata caricata ma non è stata confermata (salvata), cancella il file
-    if (this.imageUploaded && !this.isConfirmed) {
-      const url = this.locationForm.get('urlImg')?.value;
-      if (url) {
-        this.uploadService.deleteImage(url).subscribe({
-          next: () => console.log('File cancellato (chiusura involontaria)'),
-          error: (err) => console.error('Errore cancellazione file:', err)
-        });
-      }
-    }
-  }
-
   validateNotPast(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const inputDate = new Date(control.value);
     inputDate.setHours(0, 0, 0, 0);
-    if (inputDate < today) {
-      return { pastDate: true };
-    }
-    return null;
+
+    return inputDate < today ? { pastDate: true } : null;
   }
 
   validateDateRange(control: AbstractControl): ValidationErrors | null {
     if (!this.locationForm) return null;
+
     const dataInizio = this.locationForm.get('dataInizio')?.value;
     const dataFine = control.value;
-    if (dataInizio && dataFine && dataFine < dataInizio) {
-      return { dateRangeInvalid: true };
-    }
-    return null;
+
+    return dataInizio && dataFine && dataFine < dataInizio
+      ? { dateRangeInvalid: true }
+      : null;
   }
 
   cancel() {
-    const url = this.locationForm.get('urlImg')?.value;
-    if (this.imageUploaded && url) {
-      this.uploadService.deleteImage(url).subscribe({
-        next: () => console.log('File cancellato'),
-        error: (err) => console.error('Errore cancellazione file:', err)
-      });
-    }
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.selectedFile = file;
-      this.imageUploaded = false;
+    const file = input.files?.[0];
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
 
-      this.uploadImage();
+    if (!file.type.startsWith('image/')) {
+      this.toastService.error('Seleziona un file immagine valido');
+      this.resetFileInput();
+      return;
     }
-  }
 
-  uploadImage() {
-    if (!this.selectedFile) return;
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastService.error("L'immagine non puo superare 5MB");
+      this.resetFileInput();
+      return;
+    }
 
-    this.isUploading = true;
+    this.selectedFile = file;
 
-    this.uploadService.uploadImage(this.selectedFile, 'location').subscribe({
-      next: (response) => {
-        this.isUploading = false;
-        if (response.success && response.data) {
-          this.locationForm.patchValue({ urlImg: response.data.url });
-          this.imageUploaded = true;
-          this.toastService.success('Immagine caricata con successo');
-        } else {
-          this.toastService.error(response.message || 'Errore durante il caricamento');
-        }
-      },
-      error: (err) => {
-        this.isUploading = false;
-        this.toastService.error(err.error?.message || 'Errore durante il caricamento');
-        this.previewUrl = null;
-        this.selectedFile = null;
-      }
-    });
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   resetFileInput() {
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
+
     this.previewUrl = null;
     this.selectedFile = null;
-    this.imageUploaded = false;
-    this.locationForm.patchValue({ urlImg: '' });
   }
 
-    save() {
+  save() {
     if (this.locationForm.invalid) {
       this.locationForm.markAllAsTouched();
       return;
     }
 
-    if (!this.imageUploaded) {
-      this.toastService.error('Carica un\'immagine prima di salvare');
+    if (!this.selectedFile) {
+      this.toastService.error("Seleziona un'immagine prima di salvare");
       return;
     }
 
-    this.isConfirmed = true;
-    this.modalCtrl.dismiss(this.locationForm.value, 'confirm');
+    const result: CreateLocationRequest = {
+      ...this.locationForm.value,
+      image: this.selectedFile
+    };
+
+    this.modalCtrl.dismiss(result, 'confirm');
   }
 }

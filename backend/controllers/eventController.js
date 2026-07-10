@@ -99,6 +99,25 @@ exports.getEventDetail = async (req, res) => {
   });
 };
 
+exports.getStaffEvents = async (request, response) => {
+  try {
+    const events = request.staffUser.idStaff
+      ? await Event.getStaffEvents(request.staffUser.idStaff)
+      : await Event.getLocationEvents(request.staffUser.idLocation);
+
+    response.status(200).json({
+      success: true,
+      data: events
+    });
+  } catch (err) {
+    response.status(500).json({
+      success: false,
+      message: "Errore nel recupero degli eventi staff/location",
+      error: err.message
+    });
+  }
+};
+
 exports.getAvailableStaff = async (request, response) => {
   try {
     const idLocation = Number(request.query.idLocation);

@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar mode="ios" class="toolbar-grande">
+    <ion-buttons slot="start">
+      <div class="contenitore-annulla">
+        <ion-button class="bottone-annulla" fill="clear" (click)="close()">
+          Chiudi
+        </ion-button>
+      </div>
+    </ion-buttons>
+
+    <ion-title>{{ modalTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (loading) {
+    <div class="state-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Caricamento dettagli evento...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="state-box">
+      <h2>Qualcosa non va</h2>
+      <p>{{ errorMessage }}</p>
+      <ion-button fill="outline" (click)="loadDetail()">Riprova</ion-button>
+    </div>
+  } @else if (detail; as eventDetail) {
+    <div class="detail-shell">
+      <section class="event-hero">
+        <img [src]="locationImage" alt="Foto location evento">
+        <div class="event-hero-copy">
+          <ion-badge [color]="statusColor">{{ statusLabel }}</ion-badge>
+          <h2>{{ eventDetail.nome }}</h2>
+          <div class="event-facts">
+            <span>{{ formatDate(eventDetail.data) }}</span>
+            <span>{{ eventDetail.invitati }} invitati</span>
+            <span>{{ formatPrice(eventDetail.prezzoTotale) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <h3>Location</h3>
+        </div>
+
+        @if (eventDetail.location; as location) {
+          <div class="location-panel">
+            <div class="location-copy">
+              <h4>{{ location.nome }}</h4>
+              <p>{{ getLocationAddress(location) }}</p>
+              <p>{{ location.citta || 'Citta non disponibile' }}</p>
+              <p>{{ location.descrizione || 'Descrizione non disponibile' }}</p>
+
+              <div class="meta-grid">
+                <span>Capienza: <strong>{{ location.capienza }}</strong></span>
+                <span>Costo: <strong>{{ formatPrice(location.costo) }}</strong></span>
+              </div>
+
+              <div class="action-row">
+                @if (locationSite; as site) {
+                  <ion-button size="small" fill="outline" [href]="site" target="_blank" rel="noopener noreferrer">
+                    Sito location
+                  </ion-button>
+                }
+
+                @if (locationMapUrl; as mapUrl) {
+                  <ion-button size="small" fill="clear" [href]="mapUrl" target="_blank" rel="noopener noreferrer">
+                    Apri mappa
+                  </ion-button>
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <p class="empty-text">Location non disponibile.</p>
+        }
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <h3>Staff coinvolti</h3>
+          <span>{{ eventDetail.staff.length }} {{ eventDetail.staff.length === 1 ? 'persona' : 'persone' }}</span>
+        </div>
+
+        <div class="staff-list">
+          @for (staff of eventDetail.staff; track staff.id) {
+            <article class="staff-card">
+              <img [src]="getStaffImage(staff)" [alt]="'Foto di ' + getStaffName(staff)">
+
+              <div class="staff-copy">
+                <div class="staff-topline">
+                  <div>
+                    <h4>{{ getStaffName(staff) }}</h4>
+                    <p>{{ getStaffRole(staff) }}</p>
+                  </div>
+                  <strong>{{ getStaffCost(staff) }}</strong>
+                </div>
+
+                <p class="staff-description">{{ staff.descrizione || 'Descrizione non disponibile.' }}</p>
+
+                <div class="staff-tags">
+                  <span>{{ staff.tipo }}</span>
+                  @if (staff.genereMusicale) {
+                    <span>{{ staff.genereMusicale }}</span>
+                  }
+                  @if (staff.genereFotografico) {
+                    <span>{{ staff.genereFotografico }}</span>
+                  }
+                </div>
+
+                @if (getStaffSite(staff); as staffSite) {
+                  <ion-button size="small" fill="clear" [href]="staffSite" target="_blank" rel="noopener noreferrer">
+                    Sito staff
+                  </ion-button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="empty-text">Nessuno staff collegato a questo evento.</p>
+          }
+        </div>
+      </section>
+    </div>
+  }
+</ion-content>

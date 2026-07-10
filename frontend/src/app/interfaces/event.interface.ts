@@ -31,5 +31,39 @@ export interface EventDraft {
   capacity: number;
 }
 
+export interface StaffEventInfo {
+  id: number;
+  nome: string;
+  data: string;
+  invitati: number;
+  emailUtente: string;
+  svolto: 0 | 1;
+  nomeCliente: string;
+  cognomeCliente: string;
+  telefonoCliente: string;
+  emailCliente: string;
+  urlFotoProfiloCliente: string | null;
+  idLocation?: number | null;
+  nomeLocation?: string | null;
+  indirizzoLocation?: string | null;
+  cittaLocation?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  customLocation?: 0 | 1 | null;
+  urlLocation?: string | null;
+  idStaff?: number | null;
+  nomeStaff?: string | null;
+  cognomeStaff?: string | null;
+  linkSitoStaff?: string | null;
+  tipoStaff?: StaffResource['tipo'] | null;
+  costoStaff?: number | null;
+  descrizioneStaff?: string | null;
+  genereMusicaleStaff?: string | null;
+  genereFotograficoStaff?: string | null;
+  mansioneStaff?: string | null;
+  urlStaff?: string | null;
+}
+
 export type UserEventsResponse = ApiResponse<Evento[]>;
 export type EventDetailResponse = ApiResponse<EventoDettaglio>;
+export type StaffEventsResponse = ApiResponse<StaffEventInfo[]>;

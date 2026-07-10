@@ -16,7 +16,7 @@ exports.uploadImage = (req, res) => {
       });
     }
 
-    const type = req.body.type;
+    const type = req.uploadType || req.query.type || req.body.type;
     
     // Costruisce l'URL pubblico (relativo alla root del server)
     const publicUrl = `/uploads/${type}/${path.basename(req.file.path)}`;

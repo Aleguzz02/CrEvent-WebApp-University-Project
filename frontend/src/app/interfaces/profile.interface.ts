@@ -5,6 +5,9 @@ export interface UserProfile {
   dataNascita: string;
   telefono: string;
   urlFotoProfilo: string | null;
+  tipoUtente: number;
+  idStaff: number | null;
+  idLocation: number | null;
 }
 
 // Payload per le richieste

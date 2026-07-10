@@ -5,7 +5,7 @@
     </ion-title>
     @if(isAuthenticated) {
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">Log Out</ion-button>
+      <ion-button (click)="logout()">Esci</ion-button>
     </ion-buttons>
     }
   </ion-toolbar>
@@ -31,7 +31,7 @@
   <!-- NON AUTENTICATO -->
   @if(!isAuthenticated) {
     <div class="centered-container">
-      <ion-card>
+      <ion-card class="profile-card login-card">
         <ion-card-content>
           <div class="text-center">
             <p class="ion-text-muted">
@@ -68,7 +68,7 @@
   @if(isAuthenticated) {
     @if(loading && !profile) {
       <!-- SKELETON LOADING -->
-      <ion-list>
+      <ion-list class="profile-loading-list">
         <ion-item>
           <ion-avatar slot="start">
             <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
@@ -114,9 +114,9 @@
         </div>
 
         <!-- DATI PERSONALI -->
-        <ion-card>
+        <ion-card class="profile-card">
           <ion-card-content>
-            <ion-list lines="full">
+            <ion-list class="profile-list" lines="none">
               <ion-item>
                 <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
                 <ion-label>
@@ -144,7 +144,7 @@
         </ion-card>
 
         <!-- SICUREZZA -->
-        <ion-card>
+        <ion-card class="profile-card">
           <ion-card-content>
             <ion-item button (click)="openPasswordModal()">
               <ion-icon name="lock-closed" slot="start" color="primary"></ion-icon>
@@ -158,7 +158,7 @@
         </ion-card>
 
         <!-- DANGER ZONE -->
-        <ion-card class="danger-card">
+        <ion-card class="profile-card danger-card">
           <ion-card-content>
             <ion-item button (click)="startDeleteAccount()" lines="none">
               <ion-icon name="trash" slot="start" color="danger"></ion-icon>

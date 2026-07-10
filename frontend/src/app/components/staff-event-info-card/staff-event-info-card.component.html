@@ -1,3 +1,258 @@
-<p>
-  staff-event-info-card works!
-</p>
+<ion-card class="staff-events-card">
+  <ion-card-content>
+    <div class="staff-events-header">
+      <div>
+        <p class="eyebrow">Agenda staff</p>
+        <h3>Eventi assegnati</h3>
+      </div>
+
+      @if(!loading && !errorMessage) {
+        <ion-badge color="primary">
+          {{ eventCards.length }} {{ eventCards.length === 1 ? 'evento' : 'eventi' }}
+        </ion-badge>
+      }
+    </div>
+
+    @if(loading) {
+      <div class="events-list">
+        @for(row of skeletonRows; track row) {
+          <div class="staff-event-row skeleton-row">
+            <div class="date-pill">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </div>
+
+            <div class="event-content">
+              <ion-skeleton-text animated class="skeleton-title"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-line"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-line short"></ion-skeleton-text>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if(errorMessage) {
+      <div class="empty-state error-state">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>{{ errorMessage }}</p>
+        <ion-button fill="clear" size="small" (click)="loadStaffEvents()">
+          <ion-icon slot="start" name="refresh-outline"></ion-icon>
+          Riprova
+        </ion-button>
+      </div>
+    } @else if(eventCards.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>Nessun evento assegnato.</p>
+      </div>
+    } @else {
+      <div class="events-list">
+        @for(card of eventCards; track card.event.id) {
+          <article
+            class="staff-event-row"
+            role="button"
+            tabindex="0"
+            [class.event-past]="card.event.svolto === 1"
+            (click)="openEventModal(card)"
+            (keydown)="handleCardKeydown($event, card)">
+            <div class="date-pill">
+              <span>{{ getDay(card.event.data) }}</span>
+              <small>{{ getMonth(card.event.data) }}</small>
+            </div>
+
+            <div class="event-content">
+              <div class="event-topline">
+                <div class="event-title">
+                  <h4>{{ card.event.nome }}</h4>
+
+                  @if(hasStaffList(card)) {
+                    <div class="staff-preview">
+                      <span class="staff-preview-label">Staff</span>
+                      <div class="staff-name-list">
+                        @for(staff of card.staff; track getStaffTrackId(staff)) {
+                          <span class="staff-name-pill">{{ staff.nome }}</span>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <p>
+                      <ion-icon name="location-outline"></ion-icon>
+                      {{ getLocationLabel(card.event) }}
+                    </p>
+                  }
+                </div>
+
+                <div class="event-actions">
+                  <ion-badge [color]="getStatusColor(card.event)">
+                    {{ getStatusLabel(card.event) }}
+                  </ion-badge>
+                  <ion-icon name="chevron-forward-outline"></ion-icon>
+                </div>
+              </div>
+
+              <div class="event-details-grid">
+                <section class="profile-block">
+                  <div class="client-avatar">
+                    @if(getProfileImage(card.event); as profileImage) {
+                      <img [src]="profileImage" alt="Foto profilo cliente">
+                    } @else {
+                      <span>{{ getClientInitials(card.event) }}</span>
+                    }
+                  </div>
+
+                  <div class="client-copy">
+                    <strong>{{ getClientName(card.event) }}</strong>
+                    <span>{{ card.event.emailCliente }}</span>
+                    <span>{{ card.event.telefonoCliente }}</span>
+                  </div>
+                </section>
+
+                <section class="detail-block">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <div>
+                    <strong>{{ formatDate(card.event.data) }}</strong>
+                    <span>Data evento</span>
+                  </div>
+                </section>
+
+                <section class="detail-block">
+                  <ion-icon name="people-outline"></ion-icon>
+                  <div>
+                    <strong>{{ card.event.invitati }}</strong>
+                    <span>Invitati</span>
+                  </div>
+                </section>
+
+                @if(hasStaffList(card)) {
+                  <section class="detail-block location-block">
+                    <ion-icon name="people-outline"></ion-icon>
+                    <div>
+                      <strong>{{ getStaffCountLabel(card) }}</strong>
+                      <span>{{ card.staffNames }}</span>
+                    </div>
+                  </section>
+                } @else {
+                  <section class="detail-block location-block">
+                    <ion-icon name="location-outline"></ion-icon>
+                    <div>
+                      <strong>{{ getLocationAddress(card.event) }}</strong>
+                      <span>{{ card.event.cittaLocation || 'Citta non disponibile' }}</span>
+                    </div>
+                  </section>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </ion-card-content>
+</ion-card>
+
+<ion-modal
+  class="staff-event-detail-modal"
+  [isOpen]="selectedEvent !== null"
+  (didDismiss)="closeEventModal()">
+  <ng-template>
+    @if(selectedEvent; as card) {
+      <ion-header>
+        <ion-toolbar mode="ios">
+          <ion-buttons slot="start">
+            <ion-button fill="clear" (click)="closeEventModal()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>{{ card.event.nome }}</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <div class="event-modal-content">
+          <div class="modal-summary">
+            <div class="date-pill modal-date">
+              <span>{{ getDay(card.event.data) }}</span>
+              <small>{{ getMonth(card.event.data) }}</small>
+            </div>
+
+            <div>
+              <h2>{{ card.event.nome }}</h2>
+              <p>{{ formatDate(card.event.data) }}</p>
+            </div>
+
+            <ion-badge [color]="getStatusColor(card.event)">
+              {{ getStatusLabel(card.event) }}
+            </ion-badge>
+          </div>
+
+          <section class="modal-section">
+            <h3>Staff</h3>
+
+            @if(hasStaffList(card)) {
+              <div class="modal-staff-list">
+                @for(staff of card.staff; track getStaffTrackId(staff)) {
+                  <article class="modal-staff-row">
+                    <div>
+                      <strong>{{ staff.nome }}</strong>
+                      <span>{{ staff.ruolo }}</span>
+                    </div>
+
+                    @if(staff.costo !== null) {
+                      <small>{{ staff.costo }} euro</small>
+                    }
+                  </article>
+                }
+              </div>
+            } @else {
+              <p class="muted-text">Staff non disponibile.</p>
+            }
+          </section>
+
+          <section class="modal-section">
+            <h3>Cliente</h3>
+
+            <div class="modal-client">
+              <div class="client-avatar">
+                @if(getProfileImage(card.event); as profileImage) {
+                  <img [src]="profileImage" alt="Foto profilo cliente">
+                } @else {
+                  <span>{{ getClientInitials(card.event) }}</span>
+                }
+              </div>
+
+              <div>
+                <strong>{{ getClientName(card.event) }}</strong>
+                <span>
+                  <ion-icon name="mail-outline"></ion-icon>
+                  {{ card.event.emailCliente }}
+                </span>
+                <span>
+                  <ion-icon name="call-outline"></ion-icon>
+                  {{ card.event.telefonoCliente }}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section class="modal-section">
+            <h3>Evento</h3>
+
+            <div class="modal-detail-grid">
+              <div>
+                <span>Invitati</span>
+                <strong>{{ card.event.invitati }}</strong>
+              </div>
+
+              <div>
+                <span>Location</span>
+                <strong>{{ getLocationLabel(card.event) }}</strong>
+              </div>
+
+              <div>
+                <span>Indirizzo</span>
+                <strong>{{ getLocationAddress(card.event) }}</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </ion-content>
+    }
+  </ng-template>
+</ion-modal>

@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { EventCardComponent } from '../components/event-card/event-card.component';
+import { StaffEventInfoCardComponent } from '../components/staff-event-info-card/staff-event-info-card.component';
 import { addOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
@@ -16,7 +17,7 @@ import { ToastService } from '../services/toast.service';
 import { EventDataModalComponent } from '../components/event-data-modal/event-data-modal.component';
 import { Evento, EventDraft } from '../interfaces/event.interface';
 import { AdminEvent, AdminService, AdminUser } from '../services/admin.service';
-
+import { StaffEventInfo } from '../interfaces/event.interface';
 type AdminView = 'home' | 'users' | 'events';
 
 @Component({
@@ -26,6 +27,7 @@ type AdminView = 'home' | 'users' | 'events';
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, EventCardComponent, IonFab, IonButton, 
     IonIcon, IonCard, IonCardContent, IonButtons, IonCardTitle, IonCardHeader,
+    StaffEventInfoCardComponent
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -41,6 +43,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   // Variabili
   isAuthenticated = false;
   isAdmin = false;
+  isStaff = false;
   private destroy$ = new Subject<void>();
   
   userEvents: Evento[] = [];
@@ -48,6 +51,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   adminEvents: AdminEvent[] = [];
   adminView: AdminView = 'home';
   isLoading: boolean = false;
+  staffEvents: StaffEventInfo[] = [];
 
   
   constructor(private router: Router) {
@@ -60,12 +64,9 @@ export class Tab1Page implements OnInit, OnDestroy {
       .subscribe(status => {
         this.isAuthenticated = status;
 
-        if (status && !this.isAdmin) {
-          this.loadEvents();
-        }
-
         if (!status) {
           this.userEvents = [];
+          this.isStaff = false;
         }
       });
 
@@ -80,6 +81,19 @@ export class Tab1Page implements OnInit, OnDestroy {
       }
     });
 
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.isStaff = user?.tipoUtente === 2 && (!!user.idStaff || !!user.idLocation);
+
+        if (!user || user.tipoUtente !== 0) {
+          this.userEvents = [];
+          return;
+        }
+
+        this.loadEvents();
+      });
+
     // Se non autenticato all'avvio, apri il login
     if (!this.isAuthenticated) {
       this.openLoginModal();
@@ -88,12 +102,11 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     if (this.isAuthenticated) {
-      if (!this.isAdmin) {
+      if (!this.isAdmin && !this.isStaff) {
         this.loadEvents();
-      }
+      } 
     }
   }
-
 
   async openLoginModal() {
     const modal = await this.modalCtrl.create({
@@ -118,6 +131,11 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async creaNuovoEvento(){
+    if (this.isStaff) {
+      this.toastService.warning('Gli account staff/location non possono prenotare eventi');
+      return;
+    }
+
     const modal = await this.modalCtrl.create({
         component: EventDataModalComponent,
         cssClass: 'create-modals'
@@ -147,13 +165,13 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.isLoading = true;
     
     this.eventService.getUserEvents().subscribe({
-      next: (risposta) => {
+      next: (response) => {
         this.isLoading = false;
-        if(!risposta.success){
-          this.toastService.error(risposta.message ?? 'Errore durante il caricamento');
+        if(!response.success){
+          this.toastService.error(response.message ?? 'Errore durante il caricamento');
           return; 
         }
-        this.userEvents = risposta.data ?? [];
+        this.userEvents = response.data ?? [];
       },
       error: (err) => { 
         this.isLoading = false;

@@ -19,6 +19,8 @@ export interface CurrentUser {
   dataNascita: string;
   urlFotoProfilo: string | null;
   tipoUtente: number;
+  idStaff: number | null;
+  idLocation: number | null;
 }
 
 interface ApiResponse<T> {

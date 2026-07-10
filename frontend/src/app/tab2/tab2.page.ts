@@ -68,10 +68,18 @@ export class Tab2Page implements OnInit, OnDestroy {
   }
   
   ionViewWillEnter(){
-    this.listaLocation = [];
-    this.listaStaff = [];
+   this.resetData();
 
     this.loadData();
+  }
+
+  resetData() {
+    this.listaLocation = [];
+    this.listaStaff = [];
+    this.dj = [];
+    this.catering = [];
+    this.altro = [];
+    this.fotografo = [];
   }
 
   async openLoginModal() {
@@ -144,9 +152,6 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         if (!response.success) {
           this.toast.error(response.message || 'Errore durante la creazione della location');
-          if (locationData.urlImg) {
-            this.uploadService.deleteImage(locationData.urlImg).subscribe();
-          }
           return;
         }
 
@@ -157,9 +162,6 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.isSaving = false;
         console.error(err);
         this.toast.error(err.error?.message || err.message || 'Errore durante la creazione della location');
-        if (locationData.urlImg) {
-          this.uploadService.deleteImage(locationData.urlImg).subscribe();
-        }
       }
     });
   }
